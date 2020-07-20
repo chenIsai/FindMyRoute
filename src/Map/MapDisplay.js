@@ -51,6 +51,11 @@ export default class MapDisplay extends React.Component {
     this.props.updateMarkers(coordinate);
   }
 
+  clearMarkers = () => {
+    this.props.clearMarkers();
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -66,6 +71,9 @@ export default class MapDisplay extends React.Component {
             return(<Marker coordinate={coordinate}/>)
           })}
         </MapView>
+        <View style={styles.buttonView}>
+          <Button title="Clear Markers"onPress={this.clearMarkers} />
+        </View>
       </View>
     );
   }
@@ -80,4 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: -1
   },
+  buttonView: {
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "flex-end"
+  }
 });

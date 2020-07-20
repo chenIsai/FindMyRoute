@@ -1,5 +1,5 @@
 import React from "react";
-import {Text} from "react-native";
+import {Text, AppState} from "react-native";
 import {NavigationContainer} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import MapDisplay from "./Map/MapDisplay.js";
@@ -23,6 +23,21 @@ export default class FooterNavigator extends React.Component {
       },
       distance: "1",
       unit: "km",
+      markers: [],
+    }
+  }
+
+  componentDidMount = () => {
+    AppState.addEventListener("change", this._handleAppStateChange)
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener("change", this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (nextAppState === "background" || nextAppState === "inactive") {
+      this.saveState;
     }
   }
 
@@ -46,13 +61,20 @@ export default class FooterNavigator extends React.Component {
     return this.state.distance;
   }
 
+  updateMarkers = (coordinates) => {
+    var updated = this.state.markers.concat(coordinates);
+    this.setState({markers: updated});
+  }
+
+  clearMarkers = () => {
+    this.setState({markers: []});
+  }
+
   handleRegionChange = (region) => {
     region.latitudeDelta = this.state.mapRegion.latitudeDelta;
     region.longitudeDelta = this.state.mapRegion.longitudeDelta;
     this.setState({mapRegion: region});
   }
-
-  // Make function to return device current position
 
 
   render() {
@@ -68,7 +90,7 @@ export default class FooterNavigator extends React.Component {
             {() => <Text>{this.state.distance} {this.state.unit}</Text>}
           </Tab.Screen>
           <Tab.Screen name="Map">
-          {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)} onRegionChange={this.handleRegionChange.bind(this)} />}
+          {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)} onRegionChange={this.handleRegionChange.bind(this)} updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers} />}
           </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>

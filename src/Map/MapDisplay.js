@@ -4,7 +4,7 @@ import {
   View,
   Button
 } from "react-native";
-import MapView from "react-native-maps";
+import MapView, {Marker} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 
 export default class MapDisplay extends React.Component {
@@ -45,6 +45,12 @@ export default class MapDisplay extends React.Component {
     );
   };
 
+  onLongPress = (e) => {
+    var coordinate = e.nativeEvent.coordinate
+    console.log(coordinate);
+    this.props.updateMarkers(coordinate);
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -54,7 +60,12 @@ export default class MapDisplay extends React.Component {
           style={{flex: 1, marginBottom: this.state.marginBottom}}
           onMapReady={this._onMapReady}
           initialRegion={this.props.getRegion()}
-        />
+          onLongPress={this.onLongPress}
+          >
+          {this.props.markers.map((coordinate) => {
+            return(<Marker coordinate={coordinate}/>)
+          })}
+        </MapView>
       </View>
     );
   }

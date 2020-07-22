@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, AppState} from "react-native";
+import {Text, AppState, Alert} from "react-native";
 import {NavigationContainer} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import MapDisplay from "./Map/MapDisplay.js";
@@ -26,6 +26,7 @@ export default class FooterNavigator extends React.Component {
       distance: "1",
       unit: "km",
       markers: [],
+      route: [],
     }
   }
 
@@ -59,6 +60,25 @@ export default class FooterNavigator extends React.Component {
   //     this.saveState;
   //   }
   // }
+
+  saveRoute = (name) => {
+    if ((this.state.route.length < 2) || (this.state.markers.length < 2)) {
+      Alert.alert("Invalid route selected!");
+      return;
+    }
+    const copyOfRoute = [...this.state.route];
+    const copyOfMarkers = [...this.state.markers];
+    const distance = this.state.distance;
+    const unit = this.state.unit;
+    const newRoute = {
+      route: {copyOfRoute},
+      markers: {copyOfMarkers},
+      distance: {distance},
+      unit: {unit},
+      name: {name},
+    };
+    AsyncStorage.setItem(name, newRoute);
+  }
 
   handleDistanceChange = (text) => {
     AsyncStorage.setItem("distance", text);
@@ -123,21 +143,25 @@ export default class FooterNavigator extends React.Component {
   }
 
 
+  // <Tab.Screen name="Setup">
+  //   {() => <InputScreen
+  //     getDistance={this.getCurrentDistance.bind(this)} updateDistance={this.handleDistanceChange.bind(this)}
+  //     getUnit={this.getCurrentUnit.bind(this)} updateUnit={this.handleUnitChange.bind(this)}/>}
+  // </Tab.Screen>
   render() {
     return (
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="Setup">
-            {() => <InputScreen
-              getDistance={this.getCurrentDistance.bind(this)} updateDistance={this.handleDistanceChange.bind(this)}
-              getUnit={this.getCurrentUnit.bind(this)} updateUnit={this.handleUnitChange.bind(this)}/>}
-          </Tab.Screen>
           <Tab.Screen name="Display">
-            {() => <Text>{this.state.distance} {this.state.unit}</Text>}
+            {() => <Text>{JSON.stringify(this.state)}</Text>}
           </Tab.Screen>
           <Tab.Screen name="Map">
-          {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)} onRegionChange={this.handleRegionChange.bind(this)} updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
-          clearMarkers={this.clearMarkers.bind(this)}/>}
+          {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)}
+            onRegionChange={this.handleRegionChange.bind(this)} updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
+            clearMarkers={this.clearMarkers.bind(this)}
+            saveRoute={this.saveRoute.bind(this)}
+            />
+          }
           </Tab.Screen>
         </Tab.Navigator>
       </NavigationContainer>

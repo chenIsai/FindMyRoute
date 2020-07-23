@@ -4,7 +4,7 @@ import {
   View,
   Button
 } from "react-native";
-import MapView, {Marker, Polyline} from "react-native-maps";
+import MapView, {Marker, Polyline, Alert} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
 
@@ -15,15 +15,21 @@ export default class MapDisplay extends React.Component {
     super(props);
     this.state = {
       marginBottom : 1,
-      directions: null,
+      directions: [],
+      calculated: 0,
     }
   }
   componentDidMount() {
     this.findPosition(true);
-    // this.getDirections("43.828221927142025,-79.28708653897047","43.827874594148206,-79.28570318967104");
   }
 
   _onMapReady = () => this.setState({marginBottom: 0});
+
+
+  onLongPress = (e) => {
+    var coordinate = e.nativeEvent.coordinate
+    this.props.updateMarkers(coordinate);
+  }
 
   findPosition = (animate) => {
     Geolocation.getCurrentPosition(
@@ -50,24 +56,36 @@ export default class MapDisplay extends React.Component {
     );
   };
 
-  onLongPress = (e) => {
-    var coordinate = e.nativeEvent.coordinate
-    this.props.updateMarkers(coordinate);
+  mergeCoords = (startLoc, endLoc) => {
+    const start = `${startLoc.latitude},${startLoc.longitude}`;
+    const end = `${endLoc.latitude},${endLoc.longitude}`;
+    return {start, end};
   }
 
-  async getDirections(start, end) {
+  async getDirections() {
+    if (this.state.calculated >= this.props.markers.length-1) {
+      return [];
+    }
+    var merged = this.mergeCoords(this.props.markers[this.state.calculated], this.props.markers[this.state.calculated+1]);
+    var start = merged.start;
+    var end = merged.end;
+    console.log(start);
+
     try {
-      const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=AIzaSyAQ47bNWVzgTz9hPb2qHSfcizUm2xS1c0c`);
+      const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const jsonResponse = await response.json();
       const points = decode(jsonResponse.routes[0].overview_polyline.points);
-      const coords = points.map(point => {
+      const directions = points.map(point => {
         return {
           latitude: point[0],
           longitude: point[1]
         }
       });
-      this.setState({coords});
-      console.log(coords);
+      var newDirections = this.state.directions.concat(directions);
+      var calculated = this.state.calculated+1;
+      this.setState({directions: newDirections, calculated}, () => {
+        this.getDirections();
+      });
     }
     catch(error) {
       console.log(error);
@@ -76,6 +94,7 @@ export default class MapDisplay extends React.Component {
 
   clearMarkers = () => {
     this.props.clearMarkers();
+    this.setState({calculated: 0, directions: []});
     this.forceUpdate();
   }
 
@@ -93,13 +112,14 @@ export default class MapDisplay extends React.Component {
             return(<Marker coordinate={coordinate}/>)
           })}
           <Polyline
-            coordinates={this.props.markers}
+            coordinates={this.state.directions}
             strokeWidth={6}
           />
         </MapView>
         <View style={styles.buttonView}>
           <Button title="Save Route"onPress={this.props.saveRoute} />
           <Button title="Clear Markers"onPress={this.clearMarkers} />
+          <Button title="Calculate Route"onPress={() => this.getDirections()} />
         </View>
       </View>
     );

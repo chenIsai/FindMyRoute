@@ -4,6 +4,7 @@ import {
   View,
   Button
 } from "react-native";
+
 import MapView, {Marker, Polyline, Alert} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
@@ -17,11 +18,15 @@ export default class MapDisplay extends React.Component {
       marginBottom : 1,
       directions: [],
       calculated: 0,
+      showDialog: false,
     }
   }
+
+
   componentDidMount() {
     this.findPosition(true);
   }
+
 
   _onMapReady = () => this.setState({marginBottom: 0});
 
@@ -56,11 +61,13 @@ export default class MapDisplay extends React.Component {
     );
   };
 
+
   mergeCoords = (startLoc, endLoc) => {
     const start = `${startLoc.latitude},${startLoc.longitude}`;
     const end = `${endLoc.latitude},${endLoc.longitude}`;
     return {start, end};
   }
+
 
   async getDirections() {
     if (this.state.calculated >= this.props.markers.length-1) {
@@ -69,7 +76,6 @@ export default class MapDisplay extends React.Component {
     var merged = this.mergeCoords(this.props.markers[this.state.calculated], this.props.markers[this.state.calculated+1]);
     var start = merged.start;
     var end = merged.end;
-    console.log(start);
 
     try {
       const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
@@ -81,8 +87,13 @@ export default class MapDisplay extends React.Component {
           longitude: point[1]
         }
       });
-      var newDirections = this.state.directions.concat(directions);
-      var calculated = this.state.calculated+1;
+      const newDirections = this.state.directions.concat(directions);
+      const oldDistance = this.props.getCurrentDistance();
+      const addDistance = jsonResponse.routes[0].legs[0].distance.value;
+      const newDistance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
+      console.log(newDistance);
+      const calculated = this.state.calculated+1;
+      this.props.onDistanceChange(newDistance);
       this.setState({directions: newDirections, calculated}, () => {
         this.getDirections();
       });
@@ -92,11 +103,19 @@ export default class MapDisplay extends React.Component {
     }
   }
 
+
   clearMarkers = () => {
     this.props.clearMarkers();
     this.setState({calculated: 0, directions: []});
+    this.props.onDistanceChange(0);
     this.forceUpdate();
   }
+
+
+  handleSave = (name) => {
+    this.props.saveRoute(name);
+  }
+
 
   render() {
     return (

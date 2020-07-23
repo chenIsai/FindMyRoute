@@ -23,7 +23,7 @@ export default class FooterNavigator extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      distance: "1",
+      distance: 1,
       unit: "km",
       markers: [],
       route: [],
@@ -31,7 +31,8 @@ export default class FooterNavigator extends React.Component {
   }
 
   componentDidMount = () => {
-    AsyncStorage.getItem("distance").then((distance) => {
+    AsyncStorage.getItem("distance").then((dist) => {
+      distance = parseInt(dist, 10);
       this.setState({distance});
     });
     AsyncStorage.getItem("unit").then((unit) => {
@@ -62,32 +63,23 @@ export default class FooterNavigator extends React.Component {
   // }
 
   saveRoute = (name) => {
-    if ((this.state.route.length < 2) || (this.state.markers.length < 2)) {
+    if (this.state.markers.length < 2) {
       Alert.alert("Invalid route selected!");
       return;
     }
-    const copyOfRoute = [...this.state.route];
-    const copyOfMarkers = [...this.state.markers];
-    const distance = this.state.distance;
-    const unit = this.state.unit;
-    const newRoute = {
-      route: {copyOfRoute},
-      markers: {copyOfMarkers},
-      distance: {distance},
-      unit: {unit},
-      name: {name},
-    };
-    AsyncStorage.setItem(name, newRoute);
+    AsyncStorage.setItem("route" + name, markers);
   }
 
-  handleDistanceChange = (text) => {
-    AsyncStorage.setItem("distance", text);
-    this.setState({distance: text})
+  handleDistanceChange = (dist) => {
+    distance = dist.toString();
+    console.log(distance);
+    AsyncStorage.setItem("distance", distance);
+    this.setState({distance: dist})
   }
 
-  handleUnitChange = (text) => {
-    AsyncStorage.setItem("unit", text);
-    this.setState({unit: text})
+  handleUnitChange = (unit) => {
+    AsyncStorage.setItem("unit", unit);
+    this.setState({unit: unit})
   }
 
   getCurrentRegion = () => {
@@ -113,28 +105,28 @@ export default class FooterNavigator extends React.Component {
     AsyncStorage.removeItem("markers");
   }
 
-  // saveState = async() => {
-  //   console.log("ashdkja");
-  //   try {
-  //     const items = [["@saveDistance", this.state.distance], ["@saveUnit", this.state.unit], ["@saveRegion", this.state.mapRegion]];
-  //     await AsyncStorage.multiSet(items);
-  //   } catch (e) {
-  //     alert(e);
-  //   }
-  // }
-  //
-  // retrieveOldState = async() => {
-  //   try {
-  //     await AsyncStorage.multiGet(["@saveDistance", "@saveUnit", "@saveRegion"]).then(data => {
-  //       // this.setState({mapRegion: {data[2][1]}, distance: {data[0][1]}, unit: {data[1][1]}});
-  //       console.log(data[2][1]);
-  //       console.log(data[0][1]);
-  //       console.log(data[1][1]);
-  //     })
-  //   } catch (e) {
-  //     alert(e);
-  //   }
-  // }
+  saveState = async() => {
+    console.log("ashdkja");
+    try {
+      const items = [["@saveDistance", this.state.distance], ["@saveUnit", this.state.unit], ["@saveRegion", this.state.mapRegion]];
+      await AsyncStorage.multiSet(items);
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+  retrieveOldState = async() => {
+    try {
+      await AsyncStorage.multiGet(["@saveDistance", "@saveUnit", "@saveRegion"]).then(data => {
+        // this.setState({mapRegion: {data[2][1]}, distance: {data[0][1]}, unit: {data[1][1]}});
+        console.log(data[2][1]);
+        console.log(data[0][1]);
+        console.log(data[1][1]);
+      })
+    } catch (e) {
+      alert(e);
+    }
+  }
 
   handleRegionChange = (region) => {
     region.latitudeDelta = this.state.mapRegion.latitudeDelta;
@@ -153,13 +145,16 @@ export default class FooterNavigator extends React.Component {
       <NavigationContainer>
         <Tab.Navigator>
           <Tab.Screen name="Display">
-            {() => <Text>{JSON.stringify(this.state)}</Text>}
+            {() => <Text>{this.state.distance}</Text>}
           </Tab.Screen>
           <Tab.Screen name="Map">
           {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)}
-            onRegionChange={this.handleRegionChange.bind(this)} updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
+            onRegionChange={this.handleRegionChange.bind(this)}
+            updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
             clearMarkers={this.clearMarkers.bind(this)}
             saveRoute={this.saveRoute.bind(this)}
+            onDistanceChange={this.handleDistanceChange.bind(this)}
+            getCurrentDistance={this.getCurrentDistance.bind(this)}
             />
           }
           </Tab.Screen>

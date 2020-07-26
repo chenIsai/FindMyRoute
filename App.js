@@ -3,10 +3,10 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import "react-native-gesture-handler";
-import FooterNavigator from "./src/FooterTabNavigation.js"
+import MainNavigator from "./src/Navigation/MainNavigation.js"
 
 export default function App() {
   return (
-    <FooterNavigator />
+    <MainNavigator />
   );
 }

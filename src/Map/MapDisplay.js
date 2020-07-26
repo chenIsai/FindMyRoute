@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Button
-} from "react-native";
+} from "react-native"; 
+import Picker from "@react-native-community/picker";
 
 import MapView, {Marker, Polyline, Alert} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";

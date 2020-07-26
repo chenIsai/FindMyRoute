@@ -1,11 +1,12 @@
 import React from "react";
 import {Text, AppState, Alert} from "react-native";
-import {NavigationContainer} from "@react-navigation/native";
+
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import MapDisplay from "./Map/MapDisplay.js";
-import UnitPicker from "./InputScreen/unitInput.js";
-import DistanceInput from "./InputScreen/distanceInput.js";
-import InputScreen from "./InputScreen/InputScreen.js";
+
+import MapDisplay from "../Map/MapDisplay.js";
+import UnitPicker from "../InputScreen/unitInput.js";
+import DistanceInput from "../InputScreen/distanceInput.js";
+import InputScreen from "../InputScreen/InputScreen.js";
 
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -13,7 +14,7 @@ import "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 
-export default class FooterNavigator extends React.Component {
+export default class Footer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -142,24 +143,22 @@ export default class FooterNavigator extends React.Component {
   // </Tab.Screen>
   render() {
     return (
-      <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="Display">
-            {() => <Text>{this.state.distance}</Text>}
-          </Tab.Screen>
-          <Tab.Screen name="Map">
-          {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)}
-            onRegionChange={this.handleRegionChange.bind(this)}
-            updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
-            clearMarkers={this.clearMarkers.bind(this)}
-            saveRoute={this.saveRoute.bind(this)}
-            onDistanceChange={this.handleDistanceChange.bind(this)}
-            getCurrentDistance={this.getCurrentDistance.bind(this)}
-            />
-          }
-          </Tab.Screen>
-        </Tab.Navigator>
-      </NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Display">
+          {() => <Text>{this.state.distance}</Text>}
+        </Tab.Screen>
+        <Tab.Screen name="Map">
+        {() => <MapDisplay getRegion={this.getCurrentRegion.bind(this)}
+          onRegionChange={this.handleRegionChange.bind(this)}
+          updateMarkers={this.updateMarkers.bind(this)} markers={this.state.markers}
+          clearMarkers={this.clearMarkers.bind(this)}
+          saveRoute={this.saveRoute.bind(this)}
+          onDistanceChange={this.handleDistanceChange.bind(this)}
+          getCurrentDistance={this.getCurrentDistance.bind(this)}
+          />
+        }
+        </Tab.Screen>
+      </Tab.Navigator>
     );
   }
 }

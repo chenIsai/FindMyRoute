@@ -4,9 +4,6 @@ import {Text, AppState, Alert} from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import MapDisplay from "../Map/MapDisplay.js";
-import UnitPicker from "../InputScreen/unitInput.js";
-import DistanceInput from "../InputScreen/distanceInput.js";
-import InputScreen from "../InputScreen/InputScreen.js";
 
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -49,19 +46,6 @@ export default class Footer extends React.Component {
     this.forceUpdate();
   }
 
-  // componentDidMount = () => {
-  //   AppState.addEventListener("change", this._handleAppStateChange)
-  // }
-  //
-  // componentWillUnmount() {
-  //   AppState.removeEventListener("change", this._handleAppStateChange);
-  // }
-  //
-  // _handleAppStateChange = nextAppState => {
-  //   if (nextAppState === "background" || nextAppState === "inactive") {
-  //     this.saveState;
-  //   }
-  // }
 
   saveRoute = (name) => {
     if (this.state.markers.length < 2) {
@@ -136,11 +120,7 @@ export default class Footer extends React.Component {
   }
 
 
-  // <Tab.Screen name="Setup">
-  //   {() => <InputScreen
-  //     getDistance={this.getCurrentDistance.bind(this)} updateDistance={this.handleDistanceChange.bind(this)}
-  //     getUnit={this.getCurrentUnit.bind(this)} updateUnit={this.handleUnitChange.bind(this)}/>}
-  // </Tab.Screen>
+
   render() {
     return (
       <Tab.Navigator>

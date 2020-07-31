@@ -1,7 +1,8 @@
 import React from "react";
-const UnitContext = REact.createContext({
-  unit: "km";
-  updateUnit: () => {},
-});
+const UnitContext = React.createContext({
+  unit: {
+    value: "km",
+    updateUnit: () => {},
+}});
 
 export default UnitContext;

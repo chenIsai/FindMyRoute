@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Button
-} from "react-native"; 
+} from "react-native";
 import Picker from "@react-native-community/picker";
 
 import MapView, {Marker, Polyline, Alert} from "react-native-maps";
@@ -34,7 +34,7 @@ export default class MapDisplay extends React.Component {
 
   onLongPress = (e) => {
     var coordinate = e.nativeEvent.coordinate
-    this.props.updateMarkers(coordinate);
+    this.props.markers.updateMarkers(coordinate);
   }
 
   findPosition = (animate) => {
@@ -49,7 +49,6 @@ export default class MapDisplay extends React.Component {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         };
-        this.props.onRegionChange(newRegion);
         if (animate) {
           this.map.animateToRegion(newRegion);
         }
@@ -71,10 +70,10 @@ export default class MapDisplay extends React.Component {
 
 
   async getDirections() {
-    if (this.state.calculated >= this.props.markers.length-1) {
+    if (this.state.calculated >= this.props.markers.value.length-1) {
       return [];
     }
-    var merged = this.mergeCoords(this.props.markers[this.state.calculated], this.props.markers[this.state.calculated+1]);
+    var merged = this.mergeCoords(this.props.markers.value[this.state.calculated], this.props.markers.value[this.state.calculated+1]);
     var start = merged.start;
     var end = merged.end;
 
@@ -89,12 +88,12 @@ export default class MapDisplay extends React.Component {
         }
       });
       const newDirections = this.state.directions.concat(directions);
-      const oldDistance = this.props.getCurrentDistance();
+      const oldDistance = this.props.distance.value;
       const addDistance = jsonResponse.routes[0].legs[0].distance.value;
       const newDistance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
       console.log(newDistance);
       const calculated = this.state.calculated+1;
-      this.props.onDistanceChange(newDistance);
+      this.props.distance.updateDistance(newDistance);
       this.setState({directions: newDirections, calculated}, () => {
         this.getDirections();
       });
@@ -106,15 +105,10 @@ export default class MapDisplay extends React.Component {
 
 
   clearMarkers = () => {
-    this.props.clearMarkers();
+    this.props.markers.clearMarkers();
     this.setState({calculated: 0, directions: []});
-    this.props.onDistanceChange(0);
+    this.props.distance.updateDistance(0);
     this.forceUpdate();
-  }
-
-
-  handleSave = (name) => {
-    this.props.saveRoute(name);
   }
 
 
@@ -128,7 +122,7 @@ export default class MapDisplay extends React.Component {
           onMapReady={this._onMapReady}
           onLongPress={this.onLongPress}
           >
-          {this.props.markers.map((coordinate) => {
+          {this.props.markers.value.map((coordinate) => {
             return(<Marker coordinate={coordinate}/>)
           })}
           <Polyline
@@ -137,7 +131,7 @@ export default class MapDisplay extends React.Component {
           />
         </MapView>
         <View style={styles.buttonView}>
-          <Button title="Save Route"onPress={this.props.saveRoute} />
+          <Button title="Save Route"onPress={() => this.props.navigation.push("SaveScreen")} />
           <Button title="Clear Markers"onPress={this.clearMarkers} />
           <Button title="Calculate Route"onPress={() => this.getDirections()} />
         </View>

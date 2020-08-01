@@ -8,12 +8,10 @@ import MarkersContext from "../Context/MarkersContext";
 function Summary() {
   const distance = useContext(DistanceContext);
   const unit = useContext(UnitContext);
-  const markers = useContext(MarkersContext);
   return (
     <View>
       <Text>{distance.value}</Text>
       <Text>{unit.value}</Text>
-      <Text>{markers.value}</Text>
     </View>
   )
 }

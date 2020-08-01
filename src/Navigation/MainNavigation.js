@@ -26,7 +26,6 @@ const Drawer = createDrawerNavigator();
 class MainNavigator extends React.Component {
   constructor(props) {
     super(props);
-
     this.updateDistance = (value) => {
       distance = {...this.state.distance};
       distance.value = value;
@@ -79,23 +78,22 @@ class MainNavigator extends React.Component {
     }
   }
 
-  // componentDidMount = () => {
-  //   // TODO: MAKE MORE EFFICIENT
-  //   AsyncStorage.getItem("distance").then((dist) => {
-  //     distance = parseInt(dist, 10);
-  //     this.setState({distance});
-  //   });
-  //   AsyncStorage.getItem("unit").then((unit) => {
-  //     this.setState({unit});
-  //   });
-  //   AsyncStorage.getItem("markers").then((markersString) => {
-  //     if (markersString === null) {
-  //       return;
-  //     }
-  //     markers = JSON.parse(markersString);
-  //     this.setState({markers});
-  //   })
-  // }
+  componentDidMount = () => {
+    this._loadState();
+  }
+
+  _loadState = async () => {
+    const keys = ["unit", "distance", "markers"];
+    AsyncStorage.multiGet(keys, (err, items) => {
+      var unit = {...this.state.unit};
+      var distance = {...this.state.distance};
+      var markers = {...this.state.markers};
+      unit.value = items[0][1] !== null ? items[0][1] : "m";
+      distance.value = items[1][1] !== null ? parseInt(items[1][1]) : 0;
+      markers.value = items[2][1] !== null ? JSON.parse(items[2][1]) : [];
+      this.setState({unit, distance, markers});
+    });
+  }
 
   render() {
     return(

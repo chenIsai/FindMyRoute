@@ -8,6 +8,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import DistanceContext from "../Context/DistanceContext";
 import MarkersContext from "../Context/MarkersContext";
 import UnitContext from "../Context/UnitContext";
+import RouteContext from "../Context/RouteContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -50,9 +51,15 @@ class MainNavigator extends React.Component {
     this.updateMarkers = (coordinates) => {
       markers = {...this.state.markers};
       markers.value = markers.value.concat(coordinates);
-      console.log(markers.value);
       this.setState(state => ({markers}));
       AsyncStorage.setItem("markers", JSON.stringify(markers.value));
+    }
+
+    this.updateRoute = (routeJSON) => {
+      route = {...this.state.route};
+      route.value = routeJSON;
+      this.setState(state => ({route}));
+      AsyncStorage.setItem("route", JSON.stringify(route.value));
     }
 
     this.state = {
@@ -74,6 +81,10 @@ class MainNavigator extends React.Component {
         value: [],
         updateMarkers: this.updateMarkers,
         clearMarkers: this.clearMarkers,
+      },
+      route: {
+        value: null,
+        updateRoute: this.updateRoute,
       }
     }
   }
@@ -83,31 +94,35 @@ class MainNavigator extends React.Component {
   }
 
   _loadState = async () => {
-    const keys = ["unit", "distance", "markers"];
+    const keys = ["unit", "distance", "markers", "route"];
     AsyncStorage.multiGet(keys, (err, items) => {
       var unit = {...this.state.unit};
       var distance = {...this.state.distance};
       var markers = {...this.state.markers};
+      var route = {...this.state.route};
       unit.value = items[0][1] !== null ? items[0][1] : "m";
       distance.value = items[1][1] !== null ? parseInt(items[1][1]) : 0;
       markers.value = items[2][1] !== null ? JSON.parse(items[2][1]) : [];
-      this.setState({unit, distance, markers});
+      route.value = items[3][1] !== null ? JSON.parse(items[3][1]) : [];
+      this.setState({unit, distance, markers, route});
     });
   }
 
   render() {
     return(
       <NavigationContainer>
-        <UnitContext.Provider value={this.state.unit}>
-          <DistanceContext.Provider value={this.state.distance}>
-            <MarkersContext.Provider value={this.state.markers}>
-              <Drawer.Navigator initlaRouteName="Home">
-                <Drawer.Screen name="Home" component={Footer} />
-                <Drawer.Screen name="Saved Routes" component={Temp}/>
-              </Drawer.Navigator>
-            </MarkersContext.Provider>
-          </DistanceContext.Provider>
-        </UnitContext.Provider>
+        <RouteContext.Provider value={this.state.route}>
+          <UnitContext.Provider value={this.state.unit}>
+            <DistanceContext.Provider value={this.state.distance}>
+              <MarkersContext.Provider value={this.state.markers}>
+                <Drawer.Navigator initlaRouteName="Home">
+                  <Drawer.Screen name="Home" component={Footer} />
+                  <Drawer.Screen name="Saved Routes" component={Temp}/>
+                </Drawer.Navigator>
+              </MarkersContext.Provider>
+            </DistanceContext.Provider>
+          </UnitContext.Provider>
+        </RouteContext.Provider>
       </NavigationContainer>
     );
   }

@@ -2,15 +2,16 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  Button
+  Button,
+  Alert
 } from "react-native";
 import Picker from "@react-native-community/picker";
 
-import MapView, {Marker, Polyline, Alert} from "react-native-maps";
+import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
 
-const apiKey = "";
+const apiKey = "AIzaSyAQ47bNWVzgTz9hPb2qHSfcizUm2xS1c0c";
 
 export default class MapDisplay extends React.Component {
   constructor(props) {
@@ -19,13 +20,17 @@ export default class MapDisplay extends React.Component {
       marginBottom : 1,
       directions: [],
       calculated: 0,
-      showDialog: false,
+      totalMarkers: this.props.markers.value.length,
     }
   }
 
 
   componentDidMount() {
     this.findPosition(true);
+    if (this.props.route.value !== null) {
+      const oldRoute = this.decodeResponse(this.props.route.value);
+      this.setState({directions: oldRoute.directions, calculated: oldRoute.calculated});
+    }
   }
 
 
@@ -33,8 +38,11 @@ export default class MapDisplay extends React.Component {
 
 
   onLongPress = (e) => {
-    var coordinate = e.nativeEvent.coordinate
-    this.props.markers.updateMarkers(coordinate);
+    if (this.state.totalMarkers <= 9) {
+      this.state.totalMarkers++;
+      var coordinate = e.nativeEvent.coordinate
+      this.props.markers.updateMarkers(coordinate);
+    }
   }
 
   findPosition = (animate) => {
@@ -70,6 +78,7 @@ export default class MapDisplay extends React.Component {
 
 
   async getDirections() {
+    console.log("Getting Directions");
     if (this.state.calculated >= this.props.markers.value.length-1) {
       return [];
     }
@@ -80,21 +89,8 @@ export default class MapDisplay extends React.Component {
     try {
       const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const jsonResponse = await response.json();
-      const points = decode(jsonResponse.routes[0].overview_polyline.points);
-      const directions = points.map(point => {
-        return {
-          latitude: point[0],
-          longitude: point[1]
-        }
-      });
-      const newDirections = this.state.directions.concat(directions);
-      const oldDistance = this.props.distance.value;
-      const addDistance = jsonResponse.routes[0].legs[0].distance.value;
-      const newDistance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
-      console.log(newDistance);
-      const calculated = this.state.calculated+1;
-      this.props.distance.updateDistance(newDistance);
-      this.setState({directions: newDirections, calculated}, () => {
+      const updated = this.decodeResponse(jsonResponse);
+      this.setState({directions: updated.newDirections, calculated: updated.calculated}, () => {
         this.getDirections();
       });
     }
@@ -103,10 +99,28 @@ export default class MapDisplay extends React.Component {
     }
   }
 
+  decodeResponse = (jsonResponse) => {
+    this.props.route.updateRoute(jsonResponse);
+    const points = decode(jsonResponse.routes[0].overview_polyline.points);
+    const directions = points.map(point => {
+      return {
+        latitude: point[0],
+        longitude: point[1]
+      }
+    });
+    const newDirections = this.state.directions.concat(directions);
+    const oldDistance = this.props.distance.value;
+    const addDistance = jsonResponse.routes[0].legs[0].distance.value;
+    const newDistance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
+    const calculated = this.state.calculated+1;
+    this.props.distance.updateDistance(newDistance);
+    return {directions: newDirections, calculated};
+  }
+
 
   clearMarkers = () => {
     this.props.markers.clearMarkers();
-    this.setState({calculated: 0, directions: []});
+    this.setState({calculated: 0, directions: [], totalMarkers: 0});
     this.props.distance.updateDistance(0);
     this.forceUpdate();
   }
@@ -122,17 +136,22 @@ export default class MapDisplay extends React.Component {
           onMapReady={this._onMapReady}
           onLongPress={this.onLongPress}
           >
-          {this.props.markers.value.map((coordinate) => {
-            const key = coordinate.latitude.toString() + "," + coordinate.longitude.toString();
-            return(<Marker coordinate={coordinate} key={key}/>)
+          {this.props.markers.value.map((coordinate, index) => {
+            return(<Marker coordinate={coordinate} key={index}/>)
           })}
           <Polyline
             coordinates={this.state.directions}
             strokeWidth={6}
           />
         </MapView>
-        <View style={styles.buttonView}>
-          <Button title="Save Route"onPress={() => this.props.navigation.push("SaveScreen")} />
+        <View style={styles.buttonView} directions={this.state.directions}>
+          <Button title="Save Route"onPress={() => {
+              if (this.props.markers.value.length > 1) {
+                this.props.navigation.push("SaveScreen")
+              } else {
+                Alert.alert("Invalid Route Selected!");
+              }
+            }}/>
           <Button title="Clear Markers"onPress={this.clearMarkers} />
           <Button title="Calculate Route"onPress={() => this.getDirections()} />
         </View>

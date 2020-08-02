@@ -11,7 +11,7 @@ import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
 
-const apiKey = "AIzaSyAQ47bNWVzgTz9hPb2qHSfcizUm2xS1c0c";
+const apiKey = "";
 
 export default class MapDisplay extends React.Component {
   constructor(props) {
@@ -27,7 +27,7 @@ export default class MapDisplay extends React.Component {
 
   componentDidMount() {
     this.findPosition(true);
-    if (this.props.route.value !== null) {
+    if (this.props.route.value !== []) {
       const oldRoute = this.decodeResponse(this.props.route.value);
       this.setState({directions: oldRoute.directions, calculated: oldRoute.calculated});
     }
@@ -78,7 +78,6 @@ export default class MapDisplay extends React.Component {
 
 
   async getDirections() {
-    console.log("Getting Directions");
     if (this.state.calculated >= this.props.markers.value.length-1) {
       return [];
     }
@@ -90,7 +89,7 @@ export default class MapDisplay extends React.Component {
       const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const jsonResponse = await response.json();
       const updated = this.decodeResponse(jsonResponse);
-      this.setState({directions: updated.newDirections, calculated: updated.calculated}, () => {
+      this.setState({directions: updated.directions, calculated: updated.calculated}, () => {
         this.getDirections();
       });
     }

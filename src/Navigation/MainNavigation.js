@@ -62,6 +62,13 @@ class MainNavigator extends React.Component {
       AsyncStorage.setItem("route", JSON.stringify(route.value));
     }
 
+    this.clearRoute = () => {
+      route = {...this.state.route};
+      route.value = null;
+      this.setState(state => ({route}));
+      AsyncStorage.removeItem("route");
+    }
+
     this.state = {
       mapRegion: {
         latitude: 0,
@@ -85,6 +92,7 @@ class MainNavigator extends React.Component {
       route: {
         value: null,
         updateRoute: this.updateRoute,
+        clearRoute: this.clearRoute,
       }
     }
   }

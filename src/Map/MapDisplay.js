@@ -27,7 +27,7 @@ export default class MapDisplay extends React.Component {
 
   componentDidMount() {
     this.findPosition(true);
-    if (this.props.route.value !== []) {
+    if (this.props.route.value.length > 0) {
       const oldRoute = this.decodeResponse(this.props.route.value);
       this.setState({directions: oldRoute.directions, calculated: oldRoute.calculated});
     }
@@ -121,6 +121,7 @@ export default class MapDisplay extends React.Component {
     this.props.markers.clearMarkers();
     this.setState({calculated: 0, directions: [], totalMarkers: 0});
     this.props.distance.updateDistance(0);
+    this.props.route.clearRoute();
     this.forceUpdate();
   }
 

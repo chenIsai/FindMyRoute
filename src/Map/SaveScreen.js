@@ -9,7 +9,7 @@ import LiteView from "./LiteView";
 
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");
-  const [desc, _onChangeDesc] = useState("");
+  const [description, _onChangeDesc] = useState("");
   const markers = React.useContext(MarkersContext);
   const unit = React.useContext(UnitContext);
   const distance = React.useContext(DistanceContext);
@@ -19,10 +19,7 @@ function SaveScreen({navigation}) {
     <View style={styles.container}>
       <View style={styles.emptySpace} />
       <View style={styles.detailsView}>
-        <View style={{flex: 0.4}}>
-          <LiteView markers={markers.value} directions={directions.value}/>
-        </View>
-        <View style={{flex: 0.6}}></View>
+        <LiteView markers={markers.value} directions={directions.value} distance={distance.value} unit={unit.value} name={name} description={description}/>
       </View>
       <View style={styles.saveOptions}>
         <View style={styles.nameRow}>
@@ -38,8 +35,8 @@ function SaveScreen({navigation}) {
           <TextInput style={styles.descriptionInput}
             maxLength={160}
             multiline={true}
-            numberOfLines={6}
-            maxLength={200}
+            numberOfLines={5}
+            maxLength={100}
             onChangeText={text => _onChangeDesc(text)}
             placeholder={"Enter a description for the route (optional)"} />
         </View>
@@ -49,7 +46,7 @@ function SaveScreen({navigation}) {
             style={styles.submitButton}
             onPress={() =>{
               console.log(name);
-              console.log(desc);
+              console.log(description);
             }}>
             <View>
               <Text style={styles.saveText}>Save Route</Text>
@@ -78,19 +75,18 @@ const styles = StyleSheet.create({
   },
 
   emptySpace: {
-    flex: .2,
+    flex: .1,
     flexDirection: "row",
     backgroundColor: "deepskyblue",
   },
 
   detailsView: {
-    flex: .2,
+    flex: .25,
     flexDirection: "row",
-    padding: 8,
   },
 
   saveOptions: {
-    flex: .6,
+    flex: .65,
   },
 
   nameRow: {

@@ -19,20 +19,35 @@ export default class MapDisplay extends React.Component {
     this.state = {
       marginBottom : 1,
       directions: [],
-      calculated: 0,
+      calculated: this.props.route.value.length,
       totalMarkers: this.props.markers.value.length,
     }
   }
 
 
+  // componentDidMount() {
+  //   this.findPosition(true);
+  //   if (this.props.route.value.length > 0) {
+  //     this.props.route.value.forEach(route => {
+  //       const oldRoute = this.decodeResponse(route);
+  //       this.setState({directions: oldRoute.directions, calculated: oldRoute.calculated});
+  //     })
+  //   }
+  // }
+
   componentDidMount() {
     this.findPosition(true);
-    if (this.props.route.value.length > 0) {
-      const oldRoute = this.decodeResponse(this.props.route.value);
-      this.setState({directions: oldRoute.directions, calculated: oldRoute.calculated});
-    }
+    this.getOldRoute(0, []);
   }
 
+  getOldRoute = (index, directions) => {
+    if (index >= this.props.route.value.length) {
+      this.setState({directions});
+      return;
+    }
+    const oldRoute = this.decodeResponse(this.props.route.value[index]);
+    this.getOldRoute(index+1, directions.concat(oldRoute.directions));
+  }
 
   _onMapReady = () => this.setState({marginBottom: 0});
 
@@ -88,6 +103,7 @@ export default class MapDisplay extends React.Component {
     try {
       const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const jsonResponse = await response.json();
+      this.props.route.updateRoute(jsonResponse);
       const updated = this.decodeResponse(jsonResponse);
       this.setState({directions: updated.directions, calculated: updated.calculated}, () => {
         this.getDirections();
@@ -99,7 +115,6 @@ export default class MapDisplay extends React.Component {
   }
 
   decodeResponse = (jsonResponse) => {
-    this.props.route.updateRoute(jsonResponse);
     const points = decode(jsonResponse.routes[0].overview_polyline.points);
     const directions = points.map(point => {
       return {

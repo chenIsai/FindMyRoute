@@ -57,14 +57,14 @@ class MainNavigator extends React.Component {
 
     this.updateRoute = (routeJSON) => {
       route = {...this.state.route};
-      route.value = routeJSON;
+      route.value = route.value.concat(routeJSON);
       this.setState(state => ({route}));
       AsyncStorage.setItem("route", JSON.stringify(route.value));
     }
 
     this.clearRoute = () => {
       route = {...this.state.route};
-      route.value = null;
+      route.value = [];
       this.setState(state => ({route}));
       AsyncStorage.removeItem("route");
     }

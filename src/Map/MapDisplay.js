@@ -106,6 +106,7 @@ export default class MapDisplay extends React.Component {
       this.props.route.updateRoute(jsonResponse);
       const updated = this.decodeResponse(jsonResponse);
       this.setState({directions: updated.directions, calculated: updated.calculated}, () => {
+        this.props.distance.updateDistance(updated.distance);
         this.getDirections();
       });
     }
@@ -125,10 +126,9 @@ export default class MapDisplay extends React.Component {
     const newDirections = this.state.directions.concat(directions);
     const oldDistance = this.props.distance.value;
     const addDistance = jsonResponse.routes[0].legs[0].distance.value;
-    const newDistance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
+    const distance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
     const calculated = this.state.calculated+1;
-    this.props.distance.updateDistance(newDistance);
-    return {directions: newDirections, calculated};
+    return {directions: newDirections, calculated, distance};
   }
 
 

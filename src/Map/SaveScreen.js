@@ -1,30 +1,45 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback} from "react-native";
-import Dialog from "react-native-dialog";
+import DistanceContext from "../Context/DistanceContext";
+import UnitContext from "../Context/UnitContext";
+import MarkersContext from "../Context/MarkersContext";
+import DirectionsContext from "../Context/DirectionsContext";
+
+import LiteView from "./LiteView";
 
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");
   const [desc, _onChangeDesc] = useState("");
+  const markers = React.useContext(MarkersContext);
+  const unit = React.useContext(UnitContext);
+  const distance = React.useContext(DistanceContext);
+  const directions = React.useContext(DirectionsContext);
 
   return (
     <View style={styles.container}>
       <View style={styles.emptySpace} />
       <View style={styles.detailsView}>
-        <Text style={{fontWeight: "bold", fontSize: 14,}}>Route Details</Text>
+        <View style={{flex: 0.4}}>
+          <LiteView markers={markers.value} directions={directions.value}/>
+        </View>
+        <View style={{flex: 0.6}}></View>
       </View>
       <View style={styles.saveOptions}>
         <View style={styles.nameRow}>
           <Text>Icon</Text>
-          <TextInput style={styles.textInputs}
-            maxLength={40}
+          <TextInput style={styles.nameInput}
+            maxLength={36}
             onChangeText={text => _onChangeName(text)}
             placeholder={"Name"}
           />
         </View>
         <View style={styles.descriptionRow}>
           <Text>Icon</Text>
-          <TextInput style={styles.textInputs}
+          <TextInput style={styles.descriptionInput}
             maxLength={160}
+            multiline={true}
+            numberOfLines={6}
+            maxLength={200}
             onChangeText={text => _onChangeDesc(text)}
             placeholder={"Enter a description for the route (optional)"} />
         </View>
@@ -94,9 +109,15 @@ const styles = StyleSheet.create({
     padding: 50,
   },
 
-  textInputs: {
+  nameInput: {
     flex: 1,
     backgroundColor: "white",
+  },
+
+  descriptionInput: {
+    flex: 1,
+    backgroundColor: "white",
+    textAlignVertical: "top",
   },
 
   buttonView: {

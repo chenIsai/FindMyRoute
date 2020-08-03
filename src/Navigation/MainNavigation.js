@@ -9,6 +9,7 @@ import DistanceContext from "../Context/DistanceContext";
 import MarkersContext from "../Context/MarkersContext";
 import UnitContext from "../Context/UnitContext";
 import RouteContext from "../Context/RouteContext";
+import DirectionsContext from "../Context/DirectionsContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -69,6 +70,12 @@ class MainNavigator extends React.Component {
       AsyncStorage.removeItem("route");
     }
 
+    this.updateDirections = (updated) => {
+       directions = {...this.state.directions};
+       directions.value = updated;
+       this.setState(state => ({directions}));
+    }
+
     this.state = {
       mapRegion: {
         latitude: 0,
@@ -93,6 +100,10 @@ class MainNavigator extends React.Component {
         value: null,
         updateRoute: this.updateRoute,
         clearRoute: this.clearRoute,
+      },
+      directions: {
+        value: [],
+        updateDirections: this.updateDirections,
       }
     }
   }
@@ -119,18 +130,20 @@ class MainNavigator extends React.Component {
   render() {
     return(
       <NavigationContainer>
-        <RouteContext.Provider value={this.state.route}>
-          <UnitContext.Provider value={this.state.unit}>
-            <DistanceContext.Provider value={this.state.distance}>
-              <MarkersContext.Provider value={this.state.markers}>
-                <Drawer.Navigator initlaRouteName="Home">
-                  <Drawer.Screen name="Home" component={Footer} />
-                  <Drawer.Screen name="Saved Routes" component={Temp}/>
-                </Drawer.Navigator>
-              </MarkersContext.Provider>
-            </DistanceContext.Provider>
-          </UnitContext.Provider>
-        </RouteContext.Provider>
+        <DirectionsContext.Provider value={this.state.directions}>
+          <RouteContext.Provider value={this.state.route}>
+            <UnitContext.Provider value={this.state.unit}>
+              <DistanceContext.Provider value={this.state.distance}>
+                <MarkersContext.Provider value={this.state.markers}>
+                  <Drawer.Navigator initlaRouteName="Home">
+                    <Drawer.Screen name="Home" component={Footer} />
+                    <Drawer.Screen name="Saved Routes" component={Temp}/>
+                  </Drawer.Navigator>
+                </MarkersContext.Provider>
+              </DistanceContext.Provider>
+            </UnitContext.Provider>
+          </RouteContext.Provider>
+        </DirectionsContext.Provider>
       </NavigationContainer>
     );
   }

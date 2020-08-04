@@ -4,6 +4,9 @@ import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
 import DirectionsContext from "../Context/DirectionsContext";
+import RouteContext from "../Context/RouteContext";
+
+import AsyncStorage from "@react-native-community/async-storage";
 
 import LiteView from "./LiteView";
 
@@ -14,6 +17,7 @@ function SaveScreen({navigation}) {
   const unit = React.useContext(UnitContext);
   const distance = React.useContext(DistanceContext);
   const directions = React.useContext(DirectionsContext);
+  const route = React.useContext(RouteContext);
 
   return (
     <View style={styles.container}>
@@ -45,8 +49,18 @@ function SaveScreen({navigation}) {
             background={TouchableNativeFeedback.Ripple("#AAF", true)}
             style={styles.submitButton}
             onPress={() =>{
-              console.log(name);
-              console.log(description);
+              const routeName = "saveRoute" + name;
+              const savedRoute = JSON.stringify({
+                name: routeName,
+                distance: distance.value,
+                unit: unit.value,
+                description,
+                markers: markers.value,
+                directions: directions.value,
+                route: route.value,
+              });
+              AsyncStorage.setItem(routeName, savedRoute);
+              navigation.navigate("Map");
             }}>
             <View>
               <Text style={styles.saveText}>Save Route</Text>
@@ -60,13 +74,6 @@ function SaveScreen({navigation}) {
 
 export default SaveScreen;
 
-function saveButton({navigation}) {
-  return (
-    <View>
-      <Button title="Save Route" onPress={() => {navigation.push("SavePage")}} />
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
   container: {

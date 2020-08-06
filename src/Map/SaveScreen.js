@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback} from "react-native";
+import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
@@ -49,6 +49,10 @@ function SaveScreen({navigation}) {
             background={TouchableNativeFeedback.Ripple("#AAF", true)}
             style={styles.submitButton}
             onPress={() =>{
+              if (!name) {
+                Alert.alert("Please enter a name for your route!");
+                return;
+              }
               const routeName = "saveRoute" + name;
               const savedRoute = JSON.stringify({
                 name: routeName,

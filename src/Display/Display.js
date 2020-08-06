@@ -5,6 +5,11 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 function DisplayView() {
   const [savedRoutes, updateRoutes] = useState(null);
+
+  const onRefresh = () => {
+    updateRoutes(null);
+  }
+
   if (!savedRoutes) {
     AsyncStorage.getAllKeys().then((keys) => {
       const saveKeys = keys.filter((key) => key.includes("saveRoute"));
@@ -19,11 +24,11 @@ function DisplayView() {
     console.log(savedRoutes);
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{flexGrow: .1}}>
           {savedRoutes.map((route, index) => {
             return (
               <LiteView
-                name={route.name}
+                name={route.name.replace("saveRoute", "")}
                 distance={route.distance}
                 markers={route.markers}
                 directions={route.directions}

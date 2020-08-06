@@ -3,10 +3,10 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import "react-native-gesture-handler";
-import MainNavigator from "./src/Navigation/MainNavigation"
+import ContextProvider from "./src/Context/ContextProvider";
 
 export default function App() {
   return (
-    <MainNavigator />
+    <ContextProvider />
   );
 }

@@ -1,43 +1,57 @@
-import React, {useState} from "react";
-import {ScrollView, View, Text, StyleSheet} from "react-native";
+import React, {useState, useEffect} from "react";
+import {ScrollView, View, Text, StyleSheet, Button} from "react-native";
 import LiteView from "../Map/LiteView";
 import AsyncStorage from "@react-native-community/async-storage";
+import Splash from "./Splash";
 
-function DisplayView() {
+function DisplayView(props) {
   const [savedRoutes, updateRoutes] = useState(null);
-
+  AsyncStorage.removeItem("saveRouteWgsisnz");
   const onRefresh = () => {
     updateRoutes(null);
   }
 
-  if (!savedRoutes) {
-    AsyncStorage.getAllKeys().then((keys) => {
-      const saveKeys = keys.filter((key) => key.includes("saveRoute"));
-      AsyncStorage.multiGet(saveKeys, (err, items) => {
-        updateRoutes(items.map((item) => JSON.parse(item[1])));
+  useEffect(() => {
+    setTimeout(() => {
+      AsyncStorage.getAllKeys().then((keys) => {
+        const saveKeys = keys.filter((key) => key.includes("saveRoute"));
+        AsyncStorage.multiGet(saveKeys, (err, items) => {
+          updateRoutes(items.map((item) => JSON.parse(item[1])));
+        });
       });
-    });
+    }, 200)
+  }, [])
+
+  if (!savedRoutes) {
     return (
-      <View><Text>Loading</Text></View>
+      <Splash />
     )
   } else if (savedRoutes) {
-    console.log(savedRoutes);
-    return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={{flexGrow: .1}}>
-          {savedRoutes.map((route, index) => {
-            return (
-              <LiteView
-                name={route.name.replace("saveRoute", "")}
-                distance={route.distance}
-                markers={route.markers}
-                directions={route.directions}
-                unit={route.unit}
-                description={route.description}
-              />)})}
-        </ScrollView>
-      </View>
-    )
+    if (savedRoutes.length > 0) {
+      return (
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={{flexGrow: .1}}>
+            {savedRoutes.map((route, index) => {
+              return (
+                <LiteView
+                  name={route.name.replace("saveRoute", "")}
+                  distance={route.distance}
+                  markers={route.markers}
+                  directions={route.directions}
+                  unit={route.unit}
+                  description={route.description}
+                />)})}
+          </ScrollView>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+          <Text>You have no saved routes</Text>
+          <Button title="Go to Map" onPress={() => props.navigation.navigate("Map")}/>
+        </View>)
+    }
   }
 }
 

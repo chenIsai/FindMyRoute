@@ -142,7 +142,7 @@ export default class MapDisplay extends React.Component {
           onLongPress={this.onLongPress}
           >
           {this.props.markers.value.map((coordinate, index) => {
-            return(<Marker coordinate={coordinate} key={index}/>)
+            return (<Marker coordinate={coordinate} key={index}/>)
           })}
           <Polyline
             coordinates={this.props.directions.value}

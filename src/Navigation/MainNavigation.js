@@ -14,6 +14,7 @@ import DirectionsContext from "../Context/DirectionsContext";
 import AsyncStorage from "@react-native-community/async-storage";
 
 import Footer from "./Footer";
+import Display from "../Display/Display";
 
 function Temp() {
   return (
@@ -137,7 +138,7 @@ class MainNavigator extends React.Component {
                 <MarkersContext.Provider value={this.state.markers}>
                   <Drawer.Navigator initlaRouteName="Home">
                     <Drawer.Screen name="Home" component={Footer} />
-                    <Drawer.Screen name="Saved Routes" component={Temp}/>
+                    <Drawer.Screen name="Saved Routes" component={Display}/>
                   </Drawer.Navigator>
                 </MarkersContext.Provider>
               </DistanceContext.Provider>

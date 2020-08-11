@@ -1,16 +1,70 @@
-import React, {useState} from "react";
-import {View, Text, TouchableNativeFeedback, TextInput, StyleSheet} from "react-native";
+import React, {useState, useContext, useRef} from "react";
+import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
+import AuthContext from "../Context/AuthContext";
+import links from "./link";
 
-const Login = () => {
+const Login = (props) => {
   const [username, updateUsername] = useState("");
   const [password, updatePassword] = useState("");
-  const [icon, updateIcon] = useState("eye")
+  const [icon, updateIcon] = useState("eye");
+  const [status, updateStatus] = useState("");
+  const [valid, updateValid] = useState(true);
+  const tokens = useContext(AuthContext);
+
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+
+  const shake = () => {
+    Animated.sequence([
+      Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: -5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: 0, duration: 1000, useNativeDriver: true})
+    ]).start(() => updateValid(true));
+  }
+
+  const link = links.login;
+  const sendLogin = () => {
+    if (username === "" || password === "") {
+      updateValid(false);
+      shake();
+      return;
+    }
+    fetch(link, {
+      method: "POST",
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return response.status;
+    }).then((data) => {
+      if (Number.isInteger(data)) {
+        updateStatus(data);
+      } else {
+
+        // tokens.updateAccess(data.accessToken);
+        // tokens.updateRefresh(data.refreshToken);
+      }
+    }).catch((error) => {
+      console.log(error)
+    });
+  }
+
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.topText}>Login</Text>
+      </View>
+      <View style={{paddingLeft: 20}}>
+        <Text style={{color: "#ED4337"}}>Error: Username or Password incorrect!</Text>
       </View>
       <View style={styles.inputViews}>
         <View style={{justifyContent: "center"}}>
@@ -52,25 +106,27 @@ const Login = () => {
           }}/>
         </View>
       </View>
-      <View style={styles.buttonView}>
+      <Animated.View
+        style={[styles.buttonView,
+          {transform: [{translateX: shakeAnimation}]},
+          {backgroundColor: valid ? "#67cfb3" : "#ED4337"}]}>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
-          onPress={() => //To add auth function
-            console.log(username + "|" + password) }
+          onPress={() => sendLogin()}
         >
           <View style={styles.loginButton}>
             <Text style={styles.buttonText}>SIGN IN</Text>
           </View>
         </TouchableNativeFeedback>
-      </View>
+      </Animated.View>
       <View style={{flexDirection: "row"}}>
         <Text
           style={styles.signUpText}
-          onPress={() => console.log("SIGN UP")}
+          onPress={() => props.navigation.navigate("SignUp")}
           >Sign up instead!</Text>
         <Text
           style={styles.forgotText}
-          onPress={() => console.log("FORGOT PASSWORD")}
+          onPress={() => props.navigation.navigate("ForgotPassword")}
           >Forgot Password?</Text>
       </View>
     </View>
@@ -107,7 +163,6 @@ const styles = StyleSheet.create({
   },
 
   buttonView: {
-    backgroundColor: "#67cfb3",
     height: 45,
     marginLeft: 20,
     marginRight: 20,

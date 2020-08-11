@@ -3,7 +3,7 @@ import {View, Text, TouchableNativeFeedback, TextInput, StyleSheet} from "react-
 import Icon from "react-native-vector-icons/Ionicons";
 
 
-const ForgotPassword = () => {
+const ForgotPassword = (props) => {
   const [email, updateEmail] = useState("");
   return (
     <View style={styles.container}>
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
       <View>
         <Text
           style={styles.accountText}
-          onPress={() => console.log("CREATE ACCOUNT")}
+          onPress={() => props.navigation.navigate("SignUp")}
         >Don't have an account yet? Create one here!</Text>
       </View>
     </View>

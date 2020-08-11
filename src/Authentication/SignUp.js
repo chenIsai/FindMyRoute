@@ -2,14 +2,47 @@ import React, {useState} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
+import AuthContext from "../Context/AuthContext";
+import links from "./link";
 
-const SignUp = () => {
+
+const SignUp = (props) => {
   const [givenName, updateGivenName] = useState("");
   const [email, updateEmail] = useState("");
   const [username, updateUsername] = useState("");
   const [password, updatePassword] = useState("");
   const [confirm, updateConfirm] = useState("");
   const [icon, updateIcon] = useState("eye");
+  const [status, updateStatus] = useState("");
+
+  const link = links.register;
+  const sendRegister = () => {
+    fetch(link, {
+      method: "POST",
+      body: JSON.stringify({
+        name: givenName,
+        email,
+        username,
+        password
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then((response) => {
+      if (response.ok) {
+        console.log(response);
+        return response.json();
+      }
+      return resposne.status;
+    }).then((data) => {
+      if (data.isInteger) {
+        updateStatus(data)
+      } else {
+        console.log(data);
+      }
+    })
+  }
+
   return (
     <View style={styles.container}>
       <View>
@@ -98,22 +131,32 @@ const SignUp = () => {
       <View style={styles.buttonView}>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
-          onPress={() => //To add auth function
-            console.log(givenName + "|" + email + "|" + username + "|" + password + "|" + confirm)}
+          onPress={() => {
+            if (password !== confirm) {
+              console.log("Error");
+              return;
+            }
+            console.log({
+              name: givenName,
+              email,
+              username,
+              password,
+            });
+          }}
         >
           <View style={styles.loginButton}>
-            <Text style={styles.buttonText}>SIGN IN</Text>
+            <Text style={styles.buttonText}>SIGN UP</Text>
           </View>
         </TouchableNativeFeedback>
       </View>
       <View style={{flexDirection: "row"}}>
         <Text
           style={styles.signUpText}
-          onPress={() => console.log("SIGN UP")}
+          onPress={() => props.navigation.navigate("Login")}
           >Sign in instead!</Text>
         <Text
           style={styles.forgotText}
-          onPress={() => console.log("FORGOT PASSWORD")}
+          onPress={() => props.navigation.navigate("ForgotPassword")}
           >Forgot Password?</Text>
       </View>
     </View>

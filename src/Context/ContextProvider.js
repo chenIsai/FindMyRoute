@@ -5,9 +5,10 @@ import MarkersContext from "../Context/MarkersContext";
 import UnitContext from "../Context/UnitContext";
 import RouteContext from "../Context/RouteContext";
 import DirectionsContext from "../Context/DirectionsContext";
+import AuthContext from "../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
-import MainNavigator from "../Navigation/MainNavigation";
+import AppNavigator from "../Navigation/AppNavigator";
 
 export default class ContextProvider extends React.Component {
   constructor(props) {
@@ -60,7 +61,27 @@ export default class ContextProvider extends React.Component {
        this.setState(state => ({directions}));
     }
 
+    this.updateAccess = (token) => {
+      tokens = {...this.state.tokens};
+      tokens.accessToken = token;
+      AsyncStorage.setItem("access", token);
+      this.setState(state => ({tokens}));
+    }
+
+    this.updateRefresh = (token) => {
+      tokens = {...this.state.tokens};
+      tokens.refreshToken = token;
+      AsyncStorage.setItem("refresh", token);
+      this.setState(state => ({tokens}));
+    }
+
     this.state = {
+      tokens: {
+        accessToken: null,
+        refreshToken: null,
+        updateAccess: this.updateAccess,
+        updateRefresh: this.updateRefresh,
+      },
       mapRegion: {
         latitude: 0,
         longitude: 0,
@@ -88,7 +109,8 @@ export default class ContextProvider extends React.Component {
       directions: {
         value: [],
         updateDirections: this.updateDirections,
-      }
+      },
+      isLoading: true,
     }
   }
 
@@ -97,8 +119,9 @@ export default class ContextProvider extends React.Component {
   }
 
   _loadState = async () => {
-    const keys = ["unit", "distance", "markers", "route"];
+    const keys = ["unit", "distance", "markers", "route", "access", "refresh"];
     AsyncStorage.multiGet(keys, (err, items) => {
+      var tokens = {...this.state.tokens};
       var unit = {...this.state.unit};
       var distance = {...this.state.distance};
       var markers = {...this.state.markers};
@@ -107,23 +130,27 @@ export default class ContextProvider extends React.Component {
       distance.value = items[1][1] !== null ? parseInt(items[1][1]) : 0;
       markers.value = items[2][1] !== null ? JSON.parse(items[2][1]) : [];
       route.value = items[3][1] !== null ? JSON.parse(items[3][1]) : [];
-      this.setState({unit, distance, markers, route});
+      tokens.accessToken = items[4][1] !== null ? items[4][1] : "";
+      tokens.refreshToken = items[5][1] !== null ? items[5][1] : "";
+      this.setState({unit, distance, markers, route, tokens, isLoading: false});
     });
   }
 
   render() {
     return (
-      <DirectionsContext.Provider value={this.state.directions}>
-        <RouteContext.Provider value={this.state.route}>
-          <UnitContext.Provider value={this.state.unit}>
-            <DistanceContext.Provider value={this.state.distance}>
-              <MarkersContext.Provider value={this.state.markers}>
-                <MainNavigator />
-              </MarkersContext.Provider>
-            </DistanceContext.Provider>
-          </UnitContext.Provider>
-        </RouteContext.Provider>
-      </DirectionsContext.Provider>
+      <AuthContext.Provider value={this.state.tokens}>
+        <DirectionsContext.Provider value={this.state.directions}>
+          <RouteContext.Provider value={this.state.route}>
+            <UnitContext.Provider value={this.state.unit}>
+              <DistanceContext.Provider value={this.state.distance}>
+                <MarkersContext.Provider value={this.state.markers}>
+                  <AppNavigator loading={this.state.isLoading}/>
+                </MarkersContext.Provider>
+              </DistanceContext.Provider>
+            </UnitContext.Provider>
+          </RouteContext.Provider>
+        </DirectionsContext.Provider>
+      </AuthContext.Provider>
     )
   }
 }

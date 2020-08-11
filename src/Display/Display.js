@@ -6,7 +6,6 @@ import Splash from "./Splash";
 
 function DisplayView(props) {
   const [savedRoutes, updateRoutes] = useState(null);
-  AsyncStorage.removeItem("saveRouteWgsisnz");
   const onRefresh = () => {
     updateRoutes(null);
   }

@@ -9,7 +9,7 @@ import Display from "../Display/Display";
 
 const Drawer = createDrawerNavigator();
 
-const MainNavigator = () => {
+const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Drawer.Navigator initlaRouteName="Home">
@@ -20,4 +20,4 @@ const MainNavigator = () => {
   );
 }
 
-export default MainNavigator;
+export default AppNavigator;

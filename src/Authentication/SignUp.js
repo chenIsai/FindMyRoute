@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {View, Text, TouchableNativeFeedback, TextInput, StyleSheet} from "react-native";
+import React, {useState, useRef} from "react";
+import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import AuthContext from "../Context/AuthContext";
@@ -14,9 +14,50 @@ const SignUp = (props) => {
   const [confirm, updateConfirm] = useState("");
   const [icon, updateIcon] = useState("eye");
   const [status, updateStatus] = useState("");
+  const [errorText, updateError] = useState("abc");
+  const [valid, updateValid] = useState(true);
 
-  const link = links.register;
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+  const fadeAnimation = useRef(new Animated.Value(0)).current;
+
+  const shake = () => {
+    Animated.sequence([
+      Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: -5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
+      Animated.timing(shakeAnimation, {toValue: 0, duration: 1000, useNativeDriver: true})
+    ]).start(() => updateValid(true));
+  }
+
+  const fadeInAndOut = () => {
+    Animated.sequence([
+      Animated.timing(fadeAnimation, {toValue: 1, duration: 0, useNativeDriver: true}),
+      Animated.timing(fadeAnimation, {toValue: 0, duration: 3000, useNativeDriver: true}),
+    ]).start();
+  }
+
+  const link = links.signUp;
   const sendRegister = () => {
+    var error = false;
+    if (username === "" || password === "" || givenName === "" || email === "") {
+      updateError("Error: One or more fields are empty");
+      error = true;
+    } else if (password !== confirm) {
+      updateError("Error: Passwords do not match");
+      error = true;
+    }
+    if (error) {
+      updateValid(false);
+      shake();
+      fadeInAndOut();
+      return;
+    }
+    console.log(JSON.stringify({
+      name:givenName,
+      email,
+      username,
+      password,
+    }));
     fetch(link, {
       method: "POST",
       body: JSON.stringify({
@@ -30,7 +71,6 @@ const SignUp = (props) => {
       }
     }).then((response) => {
       if (response.ok) {
-        console.log(response);
         return response.json();
       }
       return resposne.status;
@@ -40,7 +80,9 @@ const SignUp = (props) => {
       } else {
         console.log(data);
       }
-    })
+    }).catch((error) => {
+      console.log(error)
+    });
   }
 
   return (
@@ -48,6 +90,9 @@ const SignUp = (props) => {
       <View>
         <Text style={styles.topText}>Sign Up</Text>
       </View>
+      <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
+        <Text style={{color: "#ED4337"}}>{errorText}</Text>
+      </Animated.View>
       <View style={styles.inputViews}>
         <View style={{justifyContent: "center"}}>
           <Icon
@@ -128,27 +173,19 @@ const SignUp = (props) => {
           placeholder={"Confirm Password"}
           onChangeText={(text) => updateConfirm(text)}/>
       </View>
-      <View style={styles.buttonView}>
+      <Animated.View
+        style={[styles.buttonView,
+          {transform: [{translateX: shakeAnimation}]},
+          {backgroundColor: valid ? "#67cfb3" : "#ED4337"}]}>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
-          onPress={() => {
-            if (password !== confirm) {
-              console.log("Error");
-              return;
-            }
-            console.log({
-              name: givenName,
-              email,
-              username,
-              password,
-            });
-          }}
+          onPress={() => sendRegister()}
         >
           <View style={styles.loginButton}>
             <Text style={styles.buttonText}>SIGN UP</Text>
           </View>
         </TouchableNativeFeedback>
-      </View>
+      </Animated.View>
       <View style={{flexDirection: "row"}}>
         <Text
           style={styles.signUpText}

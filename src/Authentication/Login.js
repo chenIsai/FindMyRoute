@@ -14,6 +14,7 @@ const Login = (props) => {
   const tokens = useContext(AuthContext);
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
+  const fadeAnimation = useRef(new Animated.Value(0)).current;
 
   const shake = () => {
     Animated.sequence([
@@ -24,11 +25,19 @@ const Login = (props) => {
     ]).start(() => updateValid(true));
   }
 
+  const fadeInAndOut = () => {
+    Animated.sequence([
+      Animated.timing(fadeAnimation, {toValue: 1, duration: 0, useNativeDriver: true}),
+      Animated.timing(fadeAnimation, {toValue: 0, duration: 3000, useNativeDriver: true}),
+    ]).start();
+  }
+
   const link = links.login;
   const sendLogin = () => {
     if (username === "" || password === "") {
       updateValid(false);
       shake();
+      fadeInAndOut();
       return;
     }
     fetch(link, {
@@ -63,9 +72,9 @@ const Login = (props) => {
       <View>
         <Text style={styles.topText}>Login</Text>
       </View>
-      <View style={{paddingLeft: 20}}>
+      <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>Error: Username or Password incorrect!</Text>
-      </View>
+      </Animated.View>
       <View style={styles.inputViews}>
         <View style={{justifyContent: "center"}}>
           <Icon

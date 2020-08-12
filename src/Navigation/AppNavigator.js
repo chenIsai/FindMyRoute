@@ -32,11 +32,12 @@ const AppNavigator = (props) => {
       <Drawer.Navigator initlaRouteName="Home">
         <Drawer.Screen name="Home" component={Footer} />
         <Drawer.Screen name="Saved Routes" component={Display}/>
+        <Drawer.Screen name="Settings Screen" component={Loading} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
-
+ // Temporary while developing settings screen
 const Loading = () => {
   return (
     <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#d3dae3"}}>

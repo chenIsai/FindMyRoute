@@ -58,9 +58,8 @@ const Login = (props) => {
       if (Number.isInteger(data)) {
         updateStatus(data);
       } else {
-
-        // tokens.updateAccess(data.accessToken);
-        // tokens.updateRefresh(data.refreshToken);
+        tokens.updateAccess(data.accessToken);
+        tokens.updateRefresh(data.refreshToken);
       }
     }).catch((error) => {
       console.log(error)

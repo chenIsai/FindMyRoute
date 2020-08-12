@@ -17,6 +17,8 @@ const SignUp = (props) => {
   const [errorText, updateError] = useState("abc");
   const [valid, updateValid] = useState(true);
 
+  const tokens = useContext(AuthContext);
+
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
@@ -78,7 +80,8 @@ const SignUp = (props) => {
       if (data.isInteger) {
         updateStatus(data)
       } else {
-        console.log(data);
+        tokens.updateAccess(data.accessToken);
+        tokens.updateRefresh(data.refreshToken);
       }
     }).catch((error) => {
       console.log(error)

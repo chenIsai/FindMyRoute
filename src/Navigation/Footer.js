@@ -4,7 +4,7 @@ import {Text, AppState, Alert} from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import MapScreen from "../Map/MapScreen.js";
-import Summary from "./Summary.js";
+import Summary from "../Display/Summary.js";
 
 
 import AsyncStorage from "@react-native-community/async-storage";

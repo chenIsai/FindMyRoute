@@ -1,30 +1,15 @@
-import React from "react";
+import React, {useContext} from "react";
 import {View, Text, TouchableNativeFeedback, StyleSheet} from "react-native";
+import UnitContext from "../Context/UnitContext";
+import DistanceContext from "../Context/UnitContext";
+import {Picker} from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
-
-const Header = (props) => {
-  return (
-    <View style={{padding: 15, flexDirection: "row"}}>
-      <View style={{flexDirection: "row", flex: 1}}>
-        <View style={{flexDirection: "row", alignSelf: "flex-start"}}>
-          <Icon
-            name={"md-menu"}
-            size={30}
-            onPress={() => props.navigation.openDrawer()}
-          />
-        </View>
-        <View style={styles.headerTextView}>
-          <Text style={styles.headerText}>Profile</Text>
-        </View>
-      </View>
-    </View>
-  )
-}
+import Header from "./Header";
 
 const Settings = (props) => {
   return (
     <View style={styles.container}>
-      <Header navigation={props.navigation}/>
+      <Header navigation={props.navigation} header={"Profile"}/>
       <Profile />
       <Details />
       <Options />
@@ -48,6 +33,8 @@ const Profile = () => {
 }
 
 const Details = () => {
+  const unit = useContext(UnitContext);
+  const distance = useContext(DistanceContext);
   return (
     <View style={styles.detailsView}>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
@@ -56,7 +43,7 @@ const Details = () => {
       </View>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
         <Text style={{fontWeight: "bold"}}>Distance Ran</Text>
-        <Text style={{color: "dimgrey"}}>69</Text>
+        <Text style={{color: "dimgrey"}}>{distance.value}{unit.value}</Text>
       </View>
     </View>
   )
@@ -67,10 +54,10 @@ const Options = () => {
     <View style={styles.optionsView}>
       <Text style={{padding: 5, paddingLeft: 10, fontWeight: "bold"}}>Options</Text>
       <View>
-        <OptionsRow name={"clearSaved"} />
         <OptionsRow name={"update"} />
-        <OptionsRow name={"edit"} />
-        <OptionsRow name={"logout"} />
+        <UnitPicker />
+        <OptionsRow name={"clearSaved"} hide={true} />
+        <OptionsRow name={"logout"} hide={true}/>
       </View>
     </View>
   )
@@ -81,23 +68,53 @@ const OptionsRow = (props) => {
     "logout": () => console.log("logout"),
     "clearSaved": () => console.log("Clear Saved Routes"),
     "update": () => console.log("update"),
-    "edit": () => console.log("edit"),
   };
   const names = {
     logout: "Log Out",
     clearSaved: "Clear Saved Routes",
     update: "Update Profile",
-    edit: "Edit Preferences",
   };
+  if (props.hide) {
+    return (
+      <TouchableNativeFeedback style={{alignSelf: "strecth"}}onPress={callbacks[props.name]}>
+        <View style={styles.optionsRow}>
+          <Text style={{alignSelf: "center", color: props.name ==="logout" ? "red" : "black"}}>{names[props.name]}</Text>
+          <View style={{marginLeft: "auto", paddingRight: 10}}>
+            <Icon
+              name={"chevron-forward-sharp"}
+              size={20}
+              onPress={callbacks[props.name]}
+              />
+          </View>
+        </View>
+      </TouchableNativeFeedback>
+    )
+  }
+  return (
+    <TouchableNativeFeedback style={{alignSelf: "strecth"}}onPress={callbacks[props.name]}>
+      <View style={styles.optionsRow}>
+        <Text style={{alignSelf: "center", color: props.name ==="logout" ? "red" : "black"}}>{names[props.name]}</Text>
+      </View>
+    </TouchableNativeFeedback>
+  )
+}
+
+const UnitPicker = () => {
+  const unit = useContext(UnitContext);
   return (
     <View style={styles.optionsRow}>
-      <Text style={{alignSelf: "center", color: props.name ==="logout" ? "red" : "black"}}>{names[props.name]}</Text>
+      <Text style={{alignSelf: "center"}}>Unit</Text>
       <View style={{marginLeft: "auto"}}>
-        <Icon
-          name={"chevron-forward-sharp"}
-          size={20}
-          onPress={callbacks[props.name]}
-          />
+        <Picker
+          selectedValue={unit.value}
+          style={{width: 100, height: 20}}
+          onValueChange={(value, index) =>
+          unit.updateUnit(value)}
+        >
+          <Picker.Item label="Km" value="km" />
+          <Picker.Item label="M" value="m" />
+          <Picker.Item label="Mi" value="mi"/>
+        </Picker>
       </View>
     </View>
   )

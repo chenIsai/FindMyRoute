@@ -3,8 +3,9 @@ import {ScrollView, View, Text, StyleSheet, Button} from "react-native";
 import LiteView from "../Map/LiteView";
 import AsyncStorage from "@react-native-community/async-storage";
 import Splash from "./Splash";
+import Header from "./Header";
 
-function DisplayView(props) {
+function DisplayRoutes(props) {
   const [savedRoutes, updateRoutes] = useState(null);
   const onRefresh = () => {
     updateRoutes(null);
@@ -29,6 +30,7 @@ function DisplayView(props) {
     if (savedRoutes.length > 0) {
       return (
         <View style={styles.container}>
+          <Header navigation={props.navigation} header={"Saved Routes"}/>
           <ScrollView contentContainerStyle={{flexGrow: .1}}>
             {savedRoutes.map((route, index) => {
               return (
@@ -61,4 +63,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default DisplayView;
+export default DisplayRoutes;

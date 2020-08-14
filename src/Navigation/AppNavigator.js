@@ -7,7 +7,8 @@ import AuthContext from "../Context/AuthContext";
 import AuthNavigator from "./AuthNavigator";
 
 import Footer from "./Footer";
-import Display from "../Display/Display";
+import DisplayRoutes from "../Display/DisplayRoutes";
+import Settings from "../Display/Settings";
 import Images from "../Images/index";
 
 const Drawer = createDrawerNavigator();
@@ -29,15 +30,15 @@ const AppNavigator = (props) => {
   }
   return (
     <NavigationContainer>
-      <Drawer.Navigator initlaRouteName="Home">
-        <Drawer.Screen name="Home" component={Footer} />
-        <Drawer.Screen name="Saved Routes" component={Display}/>
-        <Drawer.Screen name="Settings Screen" component={Loading} />
+      <Drawer.Navigator initlaRouteName="Home" screenOptions = {{swipeEnabled: false}}>
+        <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
+        <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
+        <Drawer.Screen name="Settings" component={Settings} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
- // Temporary while developing settings screen
+
 const Loading = () => {
   return (
     <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#d3dae3"}}>

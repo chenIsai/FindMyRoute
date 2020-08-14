@@ -23,8 +23,8 @@ export default class ContextProvider extends React.Component {
     this.updateUnit = (value) => {
       unit = {...this.state.unit};
       unit.value = value;
-      this.setSTate(state => ({unit}));
-      AsyncStorage.setitem("unit", unit.value);
+      this.setState(state => ({unit}));
+      AsyncStorage.setItem("unit", unit.value);
     }
 
     this.clearMarkers = () => {

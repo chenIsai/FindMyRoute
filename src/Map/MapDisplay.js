@@ -6,6 +6,7 @@ import {
   Alert
 } from "react-native";
 import Picker from "@react-native-community/picker";
+import Icon from "react-native-vector-icons/Ionicons";
 
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
@@ -149,6 +150,13 @@ export default class MapDisplay extends React.Component {
             strokeWidth={6}
           />
         </MapView>
+        <View style={styles.menuView}>
+          <Icon
+            name={"md-menu"}
+            size={30}
+            onPress={() => this.props.navigation.openDrawer()}
+          />
+        </View>
         <View style={styles.buttonView}>
           <Button title="Save Route"onPress={() => {
               if (this.props.markers.value.length > 1) {
@@ -170,14 +178,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5FCFF"
   },
+
   map: {
     flex: 1,
     zIndex: -1
   },
+
   buttonView: {
     position: "absolute",
     bottom: 0,
     alignSelf: "flex-end",
     flexDirection: "row",
+  },
+
+  menuView: {
+    position: "absolute",
+    backgroundColor: "white",
+    borderRadius: 30,
+    padding: 5,
+    top: 10,
+    left: 10,
+    alignSelf: "flex-start",
   }
 });

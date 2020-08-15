@@ -125,8 +125,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
     justifyContent: "center",
   },
 

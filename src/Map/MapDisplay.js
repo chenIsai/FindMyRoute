@@ -26,16 +26,6 @@ export default class MapDisplay extends React.Component {
 
   componentDidMount() {
     this.findPosition(true);
-    this.getOldRoute(0, []);
-  }
-
-  getOldRoute = (index, directions) => {
-    if (index >= this.props.route.value.length) {
-      this.props.directions.updateDirections(directions);
-      return;
-    }
-    const oldRoute = this.decodeResponse(this.props.route.value[index]);
-    this.getOldRoute(index+1, directions.concat(oldRoute.directions));
   }
 
   _onMapReady = () => this.setState({marginBottom: 0});
@@ -90,12 +80,12 @@ export default class MapDisplay extends React.Component {
     var end = merged.end;
 
     try {
-      const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
-      const jsonResponse = await response.json();
-      this.props.route.updateRoute(jsonResponse);
-      const updated = this.decodeResponse(jsonResponse);
+      const raw = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
+      const response = await raw.json();
+      this.props.route.updateRoute(response.routes[0].overview_polyline.points);
+      this.props.distance.updateDistance(response.routes[0].legs[0].distance.value);
+      const updated = this.decodeResponse(response);
       this.setState({directions: updated.directions, calculated: updated.calculated}, () => {
-        this.props.distance.updateDistance(updated.distance);
         this.props.directions.updateDirections(updated.directions);
         this.getDirections();
       });
@@ -105,8 +95,8 @@ export default class MapDisplay extends React.Component {
     }
   }
 
-  decodeResponse = (jsonResponse) => {
-    const points = decode(jsonResponse.routes[0].overview_polyline.points);
+  decodeResponse = (response) => {
+    const points = decode(response.routes[0].overview_polyline.points);
     const directions = points.map(point => {
       return {
         latitude: point[0],
@@ -114,18 +104,15 @@ export default class MapDisplay extends React.Component {
       }
     });
     const newDirections = this.props.directions.value.concat(directions);
-    const oldDistance = this.props.distance.value;
-    const addDistance = jsonResponse.routes[0].legs[0].distance.value;
-    const distance = Number.isInteger(oldDistance) ? oldDistance + addDistance : addDistance;
     const calculated = this.state.calculated+1;
-    return {directions: newDirections, calculated, distance};
+    return {directions: newDirections, calculated};
   }
 
 
   clearMarkers = () => {
     this.props.markers.clearMarkers();
     this.setState({calculated: 0, directions: [], totalMarkers: 0});
-    this.props.distance.updateDistance(0);
+    this.props.distance.clearDistance();
     this.props.route.clearRoute();
     this.props.directions.updateDirections([]);
     this.forceUpdate();

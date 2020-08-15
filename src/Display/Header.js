@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const Header = (props) => {
   return (
-    <View style={{padding: 15, flexDirection: "row"}}>
+    <View style={{padding: 15, flexDirection: "row", backgroundColor: "white"}}>
       <View style={{flexDirection: "row", flex: 1}}>
         <View style={{flexDirection: "row", alignSelf: "flex-start"}}>
           <Icon

@@ -18,12 +18,13 @@ function SaveScreen({navigation}) {
   const distance = React.useContext(DistanceContext);
   const directions = React.useContext(DirectionsContext);
   const route = React.useContext(RouteContext);
+  const showDistance = unit.value === "m" ? distance.total : (unit.value === "km" ? distance.conversion.km : distance.conversion.mi);
 
   return (
     <View style={styles.container}>
       <View style={styles.emptySpace} />
       <View style={styles.detailsView}>
-        <LiteView markers={markers.value} directions={directions.value} distance={distance.value} unit={unit.value} name={name} description={description}/>
+        <LiteView markers={markers.value} directions={directions.value} distance={showDistance} unit={unit.value} name={name} description={description}/>
       </View>
       <View style={styles.saveOptions}>
         <View style={styles.nameRow}>
@@ -56,8 +57,8 @@ function SaveScreen({navigation}) {
               const routeName = "saveRoute" + name;
               const savedRoute = JSON.stringify({
                 name: routeName,
-                distance: distance.value,
-                unit: unit.value,
+                distance: distance.total,
+                conversion: distance.conversion,
                 description,
                 markers: markers.value,
                 directions: directions.value,

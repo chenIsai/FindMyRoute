@@ -10,10 +10,11 @@ import Header from "./Header";
 const Summary = (props) => {
   const distance = useContext(DistanceContext);
   const unit = useContext(UnitContext);
+  const showDistance = unit.value === "m" ? distance.total : (unit.value === "km" ? distance.conversion.km : distance.conversion.mi);
   return (
     <View>
       <Header navigation={props.navigation} header={"Display"}/>
-      <Text>{distance.value}</Text>
+      <Text>{showDistance}</Text>
       <Text>{unit.value}</Text>
     </View>
   )

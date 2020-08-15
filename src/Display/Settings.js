@@ -2,8 +2,10 @@ import React, {useContext} from "react";
 import {View, Text, TouchableNativeFeedback, StyleSheet} from "react-native";
 import UnitContext from "../Context/UnitContext";
 import DistanceContext from "../Context/UnitContext";
+import AuthContext from "../Context/AuthContext";
 import {Picker} from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
+import links from "../Authentication/link";
 import Header from "./Header";
 
 const Settings = (props) => {
@@ -57,7 +59,7 @@ const Options = () => {
         <OptionsRow name={"update"} />
         <UnitPicker />
         <OptionsRow name={"clearSaved"} hide={true} />
-        <OptionsRow name={"logout"} hide={true}/>
+        <Logout />
       </View>
     </View>
   )
@@ -65,12 +67,10 @@ const Options = () => {
 
 const OptionsRow = (props) => {
   const callbacks = {
-    "logout": () => console.log("logout"),
     "clearSaved": () => console.log("Clear Saved Routes"),
     "update": () => console.log("update"),
   };
   const names = {
-    logout: "Log Out",
     clearSaved: "Clear Saved Routes",
     update: "Update Profile",
   };
@@ -78,7 +78,7 @@ const OptionsRow = (props) => {
     return (
       <TouchableNativeFeedback style={{alignSelf: "strecth"}}onPress={callbacks[props.name]}>
         <View style={styles.optionsRow}>
-          <Text style={{alignSelf: "center", color: props.name ==="logout" ? "red" : "black"}}>{names[props.name]}</Text>
+          <Text style={{alignSelf: "center"}}>{names[props.name]}</Text>
           <View style={{marginLeft: "auto", paddingRight: 10}}>
             <Icon
               name={"chevron-forward-sharp"}
@@ -91,12 +91,40 @@ const OptionsRow = (props) => {
     )
   }
   return (
-    <TouchableNativeFeedback style={{alignSelf: "strecth"}}onPress={callbacks[props.name]}>
+    <TouchableNativeFeedback style={{alignSelf: "stretch"}}onPress={callbacks[props.name]}>
       <View style={styles.optionsRow}>
         <Text style={{alignSelf: "center", color: props.name ==="logout" ? "red" : "black"}}>{names[props.name]}</Text>
       </View>
     </TouchableNativeFeedback>
   )
+}
+
+const Logout = () => {
+  const tokens = useContext(AuthContext);
+  const logout = () => {
+    console.log("Logging Out");
+    fetch(links.logout, {
+      method: "DELETE",
+      body: JSON.stringify({
+        token: tokens.refreshToken}),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then((response) => {
+        tokens.updateRefresh("");
+        tokens.updateAccess("");
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+  return (
+    <TouchableNativeFeedback onPress={logout}>
+      <View style={styles.optionsRow}>
+        <Text style={{alignSelf: "center", color: "red"}}>Log Out</Text>
+      </View>
+    </TouchableNativeFeedback>
+  )
+
 }
 
 const UnitPicker = () => {

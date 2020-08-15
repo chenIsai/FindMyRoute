@@ -146,7 +146,7 @@ export default class MapDisplay extends React.Component {
         </View>
         <View style={styles.buttonView}>
           <Button title="Save Route"onPress={() => {
-              if (this.props.markers.value.length > 1) {
+              if (this.props.markers.value.length > 1 && this.props.directions.value.length) {
                 this.props.navigation.push("SaveScreen")
               } else {
                 Alert.alert("Invalid Route Selected!");

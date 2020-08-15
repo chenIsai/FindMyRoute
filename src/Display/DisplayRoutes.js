@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import {ScrollView, View, Text, StyleSheet, Button} from "react-native";
-import LiteView from "../Map/LiteView";
+import LiteView from "./LiteView";
 import UnitContext from "../Context/UnitContext";
 import AsyncStorage from "@react-native-community/async-storage";
 import Splash from "./Splash";

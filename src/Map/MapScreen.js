@@ -1,7 +1,7 @@
 import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
 import MapDisplayWrapper from "./MapDisplayWrapper";
-import SaveScreen from "./SaveScreen";
+import SaveScreen from "../Display/SaveScreen";
 
 const Stack = createStackNavigator();
 

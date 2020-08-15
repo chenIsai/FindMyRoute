@@ -1,8 +1,9 @@
-import React, {useState, useContext} from "react";
-import {View, Image} from "react-native";
+import React, {useState, useContext, useRef} from "react";
+import {Animated, Image} from "react-native";
 
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from "@react-navigation/stack";
 import AuthContext from "../Context/AuthContext";
 import AuthNavigator from "./AuthNavigator";
 
@@ -12,14 +13,15 @@ import Settings from "../Display/Settings";
 import Images from "../Images/index";
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 const AppNavigator = (props) => {
-  const [isLoading, updateLoading] = useState(true);
+  const [animationFinished, updateStatus] = useState(false);
   const tokens = useContext(AuthContext);
 
-  if (props.loading) {
+  if (props.loading || !animationFinished) {
     return (
-      <Loading />
+      <Loading loading={props.loading} update={updateStatus}/>
     )
   } else if (!tokens.refreshToken) {
     return (
@@ -30,21 +32,40 @@ const AppNavigator = (props) => {
   }
   return (
     <NavigationContainer>
-      <Drawer.Navigator initlaRouteName="Home" screenOptions = {{swipeEnabled: false}}>
-        <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
-        <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
-        <Drawer.Screen name="Settings" component={Settings} />
-      </Drawer.Navigator>
+      <Stack.Navigator screenOptions = {{headerShown: false}}>
+      {!tokens.refreshToken ? (
+        <Stack.Screen name="Auth" component={AuthNavigator} />
+      ) : (
+        <Stack.Screen name="Main" component={MainApp} />
+      )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const Loading = () => {
+const Loading = (props) => {
+  const fadeAnimation = useRef(new Animated.Value(1)).current;
+  const fadeOut = () => {
+    Animated.timing(fadeAnimation, {toValue: 0, duration: 1000, useNativeDriver: true}).start(() => props.update(true));
+  }
+  if (!props.loading) {
+    fadeOut();
+  }
   return (
-    <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#d3dae3"}}>
+    <Animated.View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#d3dae3", opacity: fadeAnimation}}>
       <Image source={Images.logo300} />
-    </View>
+    </Animated.View>
   )
+}
+
+const MainApp = () => {
+  return (
+    <Drawer.Navigator initlaRouteName="Home" screenOptions = {{swipeEnabled: false}}>
+      <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
+      <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
+      <Drawer.Screen name="Settings" component={Settings} />
+    </Drawer.Navigator>
+  );
 }
 
 export default AppNavigator;

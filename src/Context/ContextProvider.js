@@ -145,9 +145,7 @@ export default class ContextProvider extends React.Component {
       unit.value = items[0][1] !== null ? items[0][1] : "m";
       tokens.accessToken = items[1][1] !== null ? items[1][1] : "";
       tokens.refreshToken = items[2][1] !== null ? items[2][1] : "";
-      setTimeout(() => {
-        this.setState({unit, tokens, isLoading: false});
-      }, 200)
+      this.setState({unit, tokens, isLoading: false});
     });
   }
 

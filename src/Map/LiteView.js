@@ -32,13 +32,13 @@ function LiteView(props) {
         </MapView>
       </View>
       <View style={styles.details}>
-        <Badge info>
-          <Text>Name: {props.name}</Text>
-        </Badge>
-        <Badge info>
-          <Text>Distance:  {props.distance}{props.unit}</Text>
-        </Badge>
-        <Text>Description: {props.description}</Text>
+        <View style={{flex: .2, justifyContent: "center", borderBottomWidth: 1}}>
+          <Text style={{fontSize: 20, fontWeight: "bold", paddingLeft: 7}}>{props.name}</Text>
+        </View>
+        <View style={{flex: 1, paddingLeft: 7}}>
+          <Text style={{fontSize: 18,fontWeight: "bold", color: "#deac2c", top: 5}}>{props.distance}{props.unit}</Text>
+          <Text style={{color: "#bd005f", top: 8}}>{props.description}</Text>
+        </View>
       </View>
     </View>
   )
@@ -47,18 +47,18 @@ function LiteView(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
+    padding: 15,
+    margin: 5,
     flexDirection: "row",
-    borderColor: "lightgrey",
+    backgroundColor: "white",
   },
   map: {
     flex: .4,
   },
   details: {
     flex: .6,
-    borderLeftWidth: 1,
     padding: 4,
-    borderColor: "lightgrey",
+    backgroundColor: "#b0f5f2"
   }
 })
 

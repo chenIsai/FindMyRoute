@@ -1,16 +1,36 @@
 import React, {useState, useEffect, useContext} from "react";
 import {ScrollView, View, Text, StyleSheet, Button} from "react-native";
-import LiteView from "./LiteView";
-import UnitContext from "../Context/UnitContext";
+
 import AsyncStorage from "@react-native-community/async-storage";
+import {decode} from "@mapbox/polyline"
+
+import UnitContext from "../Context/UnitContext";
+import LiteView from "./LiteView";
 import Splash from "./Splash";
 import Header from "./Header";
 
 function DisplayRoutes(props) {
   const [savedRoutes, updateRoutes] = useState(null);
   const unit = useContext(UnitContext);
+  const [isLoading, updateLoading] = useState(true);
   const onRefresh = () => {
     updateRoutes(null);
+  }
+
+  const decodePolyline = (polyline) => {
+    const points = decode(polyline);
+    const directions = points.map(point => {
+      return {
+        latitude: point[0],
+        longitude: point[1]
+      }
+    });
+    return directions;
+  }
+
+  const decodeRoute = (route) => {
+    const directions = route.flatMap((item) => decodePolyline(item));
+    return directions;
   }
 
   useEffect(() => {
@@ -41,7 +61,7 @@ function DisplayRoutes(props) {
                   name={route.name.replace("saveRoute", "")}
                   distance={showDistance}
                   markers={route.markers}
-                  directions={route.directions}
+                  directions={decodeRoute(route.route)}
                   unit={unit.value}
                   description={route.description}
                 />)})}

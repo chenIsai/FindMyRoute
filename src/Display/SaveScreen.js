@@ -1,32 +1,75 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
+
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
 import DirectionsContext from "../Context/DirectionsContext";
 import RouteContext from "../Context/RouteContext";
+import AuthContext from "../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import {encode} from "@mapbox/polyline"
 
 import LiteMap from "./LiteMap";
 import Icon from "react-native-vector-icons/Ionicons";
+import links from "../Authentication/link";
 
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");
   const [description, _onChangeDesc] = useState("");
+  const [pressable, gotPressed] = useState(false);
 
-  const markers = React.useContext(MarkersContext);
-  const unit = React.useContext(UnitContext);
-  const distance = React.useContext(DistanceContext);
-  const directions = React.useContext(DirectionsContext);
-  const route = React.useContext(RouteContext);
-
+  const markers = useContext(MarkersContext);
+  const unit = useContext(UnitContext);
+  const distance = useContext(DistanceContext);
+  const directions = useContext(DirectionsContext);
+  const route = useContext(RouteContext);
+  const tokens = useContext(AuthContext);
   const showDistance = unit.value === "m" ? distance.total : (
     unit.value === "km" ? distance.total/1000 : Math.round(distance.total/1609 + Number.EPSILON * 100)/100);
 
   const encodeMarkers = (markers) => {
     return encode(markers.map((item) => [item.latitude, item.longitude]));
+  }
+
+  const saveRoute = () => {
+    if (!name) {
+      Alert.alert("Please enter a name for your route!");
+      return;
+    }
+    gotPressed(true);
+    const routeJSON = JSON.stringify({
+      name: name,
+      distance: distance.total,
+      description,
+      markers: encodeMarkers(markers.value),
+      route: route.value,
+    });
+    fetch(links.routes, {
+      method: "POST",
+      body: JSON.stringify({
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXQiLCJpYXQiOjE1OTc2OTgwODcsImV4cCI6MTU5NzY5OTg4N30.4RIwkKl1QirZGbK9wOkwM2r81WsbdosuO4vFMl4mYh4",
+        name,
+        distance: distance.total,
+        description,
+        markers: encodeMarkers(markers.value),
+        route: route.value,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      }
+    }).then((response) => {
+      if (response.ok) {
+        Alert.alert("Success");
+        navigation.goBack();
+      } else {
+        console.log(response);
+        Alert.alert("Error saving!");
+      }
+    }).catch((error) => {
+      console.log(error)
+    });
   }
 
   return (
@@ -43,7 +86,7 @@ function SaveScreen({navigation}) {
             size={30}
             />
           <TextInput style={styles.nameInput}
-            maxLength={36}
+            maxLength={24}
             onChangeText={ text => _onChangeName(text)}
             placeholder={"Name"}
           />
@@ -65,22 +108,8 @@ function SaveScreen({navigation}) {
         </View>
       </View>
       <TouchableNativeFeedback
-        onPress={() =>{
-          if (!name) {
-            Alert.alert("Please enter a name for your route!");
-            return;
-          }
-          const routeName = "saveRoute" + name;
-          const savedRoute = JSON.stringify({
-            name: routeName,
-            distance: distance.total,
-            description,
-            markers: encodeMarkers(markers.value),
-            route: route.value,
-          });
-          AsyncStorage.setItem(routeName, savedRoute);
-          navigation.navigate("Map");
-        }}
+        disabled = {pressable}
+        onPress={() => saveRoute()}
         >
         <View style={styles.buttonView}>
           <Icon

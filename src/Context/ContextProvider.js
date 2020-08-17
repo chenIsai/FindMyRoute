@@ -9,6 +9,7 @@ import AuthContext from "../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import AppNavigator from "../Navigation/AppNavigator";
+import link from "../Authentication/link";
 
 export default class ContextProvider extends React.Component {
   constructor(props) {
@@ -85,12 +86,38 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({tokens}));
     }
 
+    this.refreshAccessToken = () => {
+      if (this.state.tokens.refreshToken !== "" && this.state.tokens.refreshToken) {
+        fetch(link.refresh, {
+          method: "POST",
+          body: JSON.stringify({token: this.state.tokens.refreshToken}),
+          headers: {"Content-Type": "application/json"}
+        }).then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          return response.status;
+        }).then((data) => {
+          if (Number.isInteger(data)) {
+            return false;
+          }
+          this.state.tokens.updateRefresh(data.refreshToken);
+          this.state.tokens.updateAccess(data.accessToken);
+          return true;
+        }).catch((error) => {
+          console.log(error);
+          return false;
+        });
+      }
+    }
+
     this.state = {
       tokens: {
         accessToken: null,
         refreshToken: null,
         updateAccess: this.updateAccess,
         updateRefresh: this.updateRefresh,
+        refreshAccess: this.refreshAccessToken,
       },
       mapRegion: {
         latitude: 0,
@@ -129,6 +156,7 @@ export default class ContextProvider extends React.Component {
   componentDidMount = () => {
     this._loadState();
   }
+
   _loadState = async () => {
     const keys = ["unit", "access", "refresh"];
 

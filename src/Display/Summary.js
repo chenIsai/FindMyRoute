@@ -11,7 +11,7 @@ const Summary = (props) => {
   const distance = useContext(DistanceContext);
   const unit = useContext(UnitContext);
   const showDistance = unit.value === "m" ? distance.total : (
-    unit.value === "km" ? distance.total/1000 : Math.round(distance.total/1609 + Number.EPSILON * 100)/100);
+    unit.value === "km" ? distance.total/1000 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100);
   return (
     <View>
       <Header navigation={props.navigation} header={"Display"}/>

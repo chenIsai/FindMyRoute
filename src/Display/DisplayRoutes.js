@@ -66,7 +66,7 @@ function DisplayRoutes(props) {
           <ScrollView contentContainerStyle={{flexGrow: .1}}>
             {savedRoutes.map((route, index) => {
               const showDistance = unit.value === "m" ? route.distance : (
-                unit.value === "km" ? route.distance/1000 : Math.round(route.distance/1609 + Number.EPSILON * 1000)/1000);
+                unit.value === "km" ? route.distance/1000 : Math.round((route.distance/1609 + Number.EPSILON) * 1000)/1000);
               return (
                 <LiteView
                   name={route.name.replace("saveRoute", "")}

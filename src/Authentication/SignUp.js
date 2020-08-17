@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useContext} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -54,12 +54,6 @@ const SignUp = (props) => {
       fadeInAndOut();
       return;
     }
-    console.log(JSON.stringify({
-      name:givenName,
-      email,
-      username,
-      password,
-    }));
     fetch(link, {
       method: "POST",
       body: JSON.stringify({

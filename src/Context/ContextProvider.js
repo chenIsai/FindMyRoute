@@ -13,14 +13,12 @@ import AppNavigator from "../Navigation/AppNavigator";
 export default class ContextProvider extends React.Component {
   constructor(props) {
     super(props);
+
+    // Distance
     this.updateDistance = (value) => {
       const distance = {...this.state.distance};
       distance.value = distance.value.concat(value);
       distance.total = distance.value.reduce((total, next) => total + next, 0);
-      distance.conversion = {
-        km: distance.total/1000,
-        mi: Math.round((distance.total/1609 + Number.EPSILON) * 100) / 100,
-      }
       this.setState(state => ({distance}));
     }
 
@@ -28,13 +26,10 @@ export default class ContextProvider extends React.Component {
       const distance = {...this.state.distance};
       distance.value = [];
       distance.total = 0;
-      distance.conversion = {
-        km: 0,
-        mi: 0,
-      }
       this.setState(state=> ({distance}));
     }
 
+    // Unit
     this.updateUnit = (value) => {
       const unit = {...this.state.unit};
       unit.value = value;
@@ -42,6 +37,7 @@ export default class ContextProvider extends React.Component {
       AsyncStorage.setItem("unit", unit.value);
     }
 
+    // Markers
     this.clearMarkers = () => {
       const markers = {...this.state.markers};
       markers.value = [];
@@ -54,6 +50,7 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({markers}));
     }
 
+    // Current route
     this.updateRoute = (overview_polyline) => {
       const route = {...this.state.route};
       route.value = route.value.concat(overview_polyline);
@@ -66,12 +63,14 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({route}));
     }
 
+    // Current Directions (decoded route)
     this.updateDirections = (updated) => {
        const directions = {...this.state.directions};
        directions.value = updated;
        this.setState(state => ({directions}));
     }
 
+    //  Access and Refresh tokens
     this.updateAccess = (token) => {
       const tokens = {...this.state.tokens};
       tokens.accessToken = token;
@@ -102,10 +101,6 @@ export default class ContextProvider extends React.Component {
       distance: {
         value: [],
         total: 0,
-        conversion: {
-          km: 0,
-          mi: 0,
-        },
         updateDistance: this.updateDistance,
         clearDistance: this.clearDistance,
       },
@@ -134,7 +129,6 @@ export default class ContextProvider extends React.Component {
   componentDidMount = () => {
     this._loadState();
   }
-
   _loadState = async () => {
     const keys = ["unit", "access", "refresh"];
 
@@ -157,7 +151,7 @@ export default class ContextProvider extends React.Component {
             <UnitContext.Provider value={this.state.unit}>
               <DistanceContext.Provider value={this.state.distance}>
                 <MarkersContext.Provider value={this.state.markers}>
-                  <AppNavigator loading={this.state.isLoading}/>
+                  <AppNavigator isLoading={this.state.isLoading}/>
                 </MarkersContext.Provider>
               </DistanceContext.Provider>
             </UnitContext.Provider>

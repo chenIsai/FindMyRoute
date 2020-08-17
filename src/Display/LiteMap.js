@@ -24,7 +24,7 @@ const LiteMap = (props) => {
       })}
       <Polyline
         coordinates={props.directions}
-        strokeWidth={6}
+        strokeWidth={4}
       />
     </MapView>
   )

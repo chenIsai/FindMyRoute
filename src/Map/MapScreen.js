@@ -7,9 +7,13 @@ const Stack = createStackNavigator();
 
 function MapScreen(props) {
   return(
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Map" component={MapDisplayWrapper} />
-      <Stack.Screen name="SaveScreen" component={SaveScreen} />
+    <Stack.Navigator>
+      <Stack.Screen name="Map"
+        component={MapDisplayWrapper}
+        options = {{headerShown: false}}/>
+      <Stack.Screen name="SaveScreen"
+        component={SaveScreen}
+        options={{title: "Save Route", headerTitleAlign: "center"}}/>
     </Stack.Navigator>
   );
 }

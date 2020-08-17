@@ -33,6 +33,16 @@ function DisplayRoutes(props) {
     return directions;
   }
 
+  const decodeMarkers = (markers) => {
+    const points = decode(markers);
+    return points.map((point) => {
+      return {
+        latitude: point[0],
+        longitude: point[1]
+      }
+    });
+  }
+
   useEffect(() => {
     setTimeout(() => {
       AsyncStorage.getAllKeys().then((keys) => {
@@ -55,12 +65,13 @@ function DisplayRoutes(props) {
           <Header navigation={props.navigation} header={"Saved Routes"}/>
           <ScrollView contentContainerStyle={{flexGrow: .1}}>
             {savedRoutes.map((route, index) => {
-              const showDistance = unit.value === "m" ? route.total : (unit.value === "km" ? route.conversion.km : route.conversion.mi);
+              const showDistance = unit.value === "m" ? route.distance : (
+                unit.value === "km" ? route.distance/1000 : Math.round(route.distance/1609 + Number.EPSILON * 1000)/1000);
               return (
                 <LiteView
                   name={route.name.replace("saveRoute", "")}
                   distance={showDistance}
-                  markers={route.markers}
+                  markers={decodeMarkers(route.markers)}
                   directions={decodeRoute(route.route)}
                   unit={unit.value}
                   description={route.description}

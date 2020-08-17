@@ -7,19 +7,27 @@ import DirectionsContext from "../Context/DirectionsContext";
 import RouteContext from "../Context/RouteContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
+import {encode} from "@mapbox/polyline"
 
 import LiteMap from "./LiteMap";
-import Icon from "react-native-vector-icons/Ionicons"
+import Icon from "react-native-vector-icons/Ionicons";
 
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");
   const [description, _onChangeDesc] = useState("");
+
   const markers = React.useContext(MarkersContext);
   const unit = React.useContext(UnitContext);
   const distance = React.useContext(DistanceContext);
   const directions = React.useContext(DirectionsContext);
   const route = React.useContext(RouteContext);
-  const showDistance = unit.value === "m" ? distance.total : (unit.value === "km" ? distance.conversion.km : distance.conversion.mi);
+
+  const showDistance = unit.value === "m" ? distance.total : (
+    unit.value === "km" ? distance.total/1000 : Math.round(distance.total/1609 + Number.EPSILON * 100)/100);
+
+  const encodeMarkers = (markers) => {
+    return encode(markers.map((item) => [item.latitude, item.longitude]));
+  }
 
   return (
     <View style={styles.container}>
@@ -51,7 +59,7 @@ function SaveScreen({navigation}) {
             maxLength={160}
             multiline={true}
             numberOfLines={5}
-            maxLength={100}
+            maxLength={50}
             onChangeText={text => _onChangeDesc(text)}
             placeholder={"Enter a description for the route (optional)"} />
         </View>
@@ -66,10 +74,8 @@ function SaveScreen({navigation}) {
           const savedRoute = JSON.stringify({
             name: routeName,
             distance: distance.total,
-            conversion: distance.conversion,
             description,
-            markers: markers.value,
-            directions: directions.value,
+            markers: encodeMarkers(markers.value),
             route: route.value,
           });
           AsyncStorage.setItem(routeName, savedRoute);
@@ -136,6 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     textAlignVertical: "top",
+    maxHeight: 125,
   },
 
   buttonView: {

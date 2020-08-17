@@ -19,9 +19,9 @@ const AppNavigator = (props) => {
   const [animationFinished, updateStatus] = useState(false);
   const tokens = useContext(AuthContext);
 
-  if (props.loading || !animationFinished) {
+  if (props.isLoading || !animationFinished) {
     return (
-      <Loading loading={props.loading} update={updateStatus}/>
+      <Loading isLoading={props.isLoading} update={updateStatus}/>
     )
   } else if (!tokens.refreshToken) {
     return (
@@ -48,7 +48,7 @@ const Loading = (props) => {
   const fadeOut = () => {
     Animated.timing(fadeAnimation, {toValue: 0, duration: 1000, useNativeDriver: true}).start(() => props.update(true));
   }
-  if (!props.loading) {
+  if (!props.isLoading) {
     fadeOut();
   }
   return (

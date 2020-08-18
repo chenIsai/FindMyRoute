@@ -168,7 +168,7 @@ export default class ContextProvider extends React.Component {
       tokens.accessToken = items[1][1] !== null ? items[1][1] : "";
       tokens.refreshToken = items[2][1] !== null ? items[2][1] : "";
       this.setState({unit, tokens, isLoading: false});
-    });
+    }).then(this.refreshAccessToken);
   }
 
   render() {

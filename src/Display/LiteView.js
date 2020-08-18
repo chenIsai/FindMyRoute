@@ -2,6 +2,7 @@ import React from "react";
 import {View, Text, Button, StyleSheet} from "react-native";
 import MapView, {Marker, Polyline} from "react-native-maps";
 import LiteMap from "./LiteMap";
+import Icon from "react-native-vector-icons/Ionicons";
 
 
 function LiteView(props) {
@@ -12,8 +13,22 @@ function LiteView(props) {
         <LiteMap directions={props.directions} markers={props.markers}/>
       </View>
       <View style={styles.details}>
-        <View style={{flex: .2, justifyContent: "center", borderBottomWidth: 1}}>
+        <View style={{flex: .2, justifyContent: "flex-start", borderBottomWidth: 1, flexDirection: "row"}}>
           <Text style={{fontSize: 20, fontWeight: "bold", paddingLeft: 7}}>{props.name}</Text>
+          <View style={{flexDirection: "row", marginLeft: "auto", justifyContent: "center"}}>
+            <Icon
+              style={{padding: 5}}
+              name={"create-outline"}
+              size={20}
+              onPress={() => console.log("Edit")}
+              />
+            <Icon
+              style={{padding: 5}}
+              name={"md-trash-outline"}
+              size={20}
+              onPress={() => console.log("Delete")}
+              />
+          </View>
         </View>
         <View style={{flex: 1, paddingLeft: 7}}>
           <Text style={{fontSize: 18,fontWeight: "bold", color: "#deac2c", top: 5}}>{props.distance}{props.unit}</Text>

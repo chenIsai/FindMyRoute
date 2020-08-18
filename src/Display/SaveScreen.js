@@ -49,7 +49,7 @@ function SaveScreen({navigation}) {
     fetch(links.routes, {
       method: "POST",
       body: JSON.stringify({
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXQiLCJpYXQiOjE1OTc2OTgwODcsImV4cCI6MTU5NzY5OTg4N30.4RIwkKl1QirZGbK9wOkwM2r81WsbdosuO4vFMl4mYh4",
+        token: tokens.accessToken,
         name,
         distance: distance.total,
         description,
@@ -64,8 +64,9 @@ function SaveScreen({navigation}) {
         Alert.alert("Success");
         navigation.goBack();
       } else {
-        console.log(response);
+        console.log(tokens.accessToken);
         Alert.alert("Error saving!");
+        gotPressed(false);
       }
     }).catch((error) => {
       console.log(error)

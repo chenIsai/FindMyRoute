@@ -17,7 +17,7 @@ function LiteView(props) {
         </View>
         <View style={{flex: 1, paddingLeft: 7}}>
           <Text style={{fontSize: 18,fontWeight: "bold", color: "#deac2c", top: 5}}>{props.distance}{props.unit}</Text>
-          <Text style={{color: "#bd005f", top: 8}}>{props.description}</Text>
+          <Text style={{color: "#bd005f", top: 8, paddingBottom: 45}}>{props.description}</Text>
         </View>
       </View>
     </View>

@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
 })
-export default Header
+export default Header;

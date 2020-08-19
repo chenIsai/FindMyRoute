@@ -64,8 +64,11 @@ function SaveScreen({navigation}) {
         Alert.alert("Success");
         navigation.goBack();
       } else {
-        console.log(tokens.accessToken);
-        Alert.alert("Error saving!");
+        if (response.status === 409) {
+          Alert.alert("You cannot have two routes with the same name!");
+        } else {
+          Alert.alert("Error " + response.status);
+        }
         gotPressed(false);
       }
     }).catch((error) => {

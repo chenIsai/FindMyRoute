@@ -71,6 +71,32 @@ function DisplayRoutes(props) {
     });
   }
 
+  const editRoute = (routeName, newName, description) => {
+    fetch(links.editRoute, {
+      method: "POST",
+      body: JSON.stringify({
+        token: tokens.accessToken,
+        oldName: routeName,
+        name: newName,
+        description
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      if (response.ok) {
+        Alert.alert("Success");
+        getRoutes();
+      } else {
+        Alert.alert("Error " + response.status);
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
     setTimeout(() => getRoutes(), 200)
   }, [])
@@ -98,6 +124,7 @@ function DisplayRoutes(props) {
                   unit={unit.value}
                   description={route.description}
                   delete={(name) => deleteRoute(name)}
+                  edit={(oldName, name, description) => editRoute(oldName, name, description)}
                 />)})}
           </ScrollView>
         </View>

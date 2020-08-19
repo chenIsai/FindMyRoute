@@ -66,9 +66,23 @@ const Options = () => {
 }
 
 const OptionsRow = (props) => {
+  const tokens = useContext(AuthContext);
+  const clearRoutes = () => {
+    fetch(links.deleteALL, {
+      method: "DELETE",
+      body: JSON.stringify({
+        token: tokens.accessToken,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
   const callbacks = {
-    "clearSaved": () => console.log("Clear Saved Routes"),
-    "update": () => console.log("update"),
+    "clearSaved": clearRoutes,
+    "update": clearRoutes,
   };
   const names = {
     clearSaved: "Clear Saved Routes",

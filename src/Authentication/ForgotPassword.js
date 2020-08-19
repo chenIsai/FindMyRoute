@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-
+// NOT IMPLEMENTED
 const ForgotPassword = (props) => {
   const [email, updateEmail] = useState("");
   return (

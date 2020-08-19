@@ -127,15 +127,11 @@ const Login = (props) => {
           </View>
         </TouchableNativeFeedback>
       </Animated.View>
-      <View style={{flexDirection: "row"}}>
+      <View style={{flexDirection: "row", justifyContent: "center"}}>
         <Text
           style={styles.signUpText}
           onPress={() => props.navigation.navigate("SignUp")}
           >Sign up instead!</Text>
-        <Text
-          style={styles.forgotText}
-          onPress={() => props.navigation.navigate("ForgotPassword")}
-          >Forgot Password?</Text>
       </View>
     </View>
   )
@@ -189,17 +185,8 @@ const styles = StyleSheet.create({
 
   signUpText: {
     color: "#67cfb3",
-    flex: 1,
     padding: 10,
-    marginLeft: 10,
-    fontWeight: "bold",
-  },
-
-  forgotText: {
-    color: "#67cfb3",
-    alignSelf: "flex-end",
-    padding: 10,
-    marginRight: 10,
+    marginTop: 10,
     fontWeight: "bold",
   },
 })

@@ -17,9 +17,6 @@ function DisplayRoutes(props) {
   const [isLoading, updateLoading] = useState(true);
   const unit = useContext(UnitContext);
   const tokens = useContext(AuthContext);
-  const onRefresh = () => {
-    updateRoutes(null);
-  }
 
   const decodeRoute = (route) => {
     const points = decode(route);
@@ -43,7 +40,6 @@ function DisplayRoutes(props) {
   }
 
   const getRoutes = () => {
-    console.log("Getting Routes");
     fetch(links.routes, {
       method: "GET",
       headers: {
@@ -52,7 +48,24 @@ function DisplayRoutes(props) {
     }).then((response) => {
       return response.json();
     }).then((data) => {
-      updateRoutes(data.rows);
+      updateRoutes(data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const deleteRoute = (routeName) => {
+    fetch(links.routes, {
+      method: "DELETE",
+      body: JSON.stringify({
+        token: tokens.accessToken,
+        name: routeName,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then((response) => {
+      getRoutes();
     }).catch((error) => {
       console.log(error);
     });
@@ -77,12 +90,14 @@ function DisplayRoutes(props) {
                 unit.value === "km" ? route.distance/1000 : Math.round((route.distance/1609 + Number.EPSILON) * 1000)/1000);
               return (
                 <LiteView
-                  name={route.name.replace("saveRoute", "")}
+                  key={route.name}
+                  name={route.name}
                   distance={showDistance}
                   markers={decodeMarkers(route.markers)}
                   directions={decodeRoute(route.route)}
                   unit={unit.value}
                   description={route.description}
+                  delete={(name) => deleteRoute(name)}
                 />)})}
           </ScrollView>
         </View>
@@ -91,7 +106,7 @@ function DisplayRoutes(props) {
     else {
       return (
         <View style={{flex: 1}}>
-          <Header navigation={props.navigation} header={"Saved Routes"}/>
+          <RefreshHeader navigation={props.navigation} header={"Saved Routes"} refresh={() => getRoutes()}/>
           <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <Text>You have no saved routes</Text>
             <Button title="Go to Map" onPress={() => props.navigation.navigate("Map")}/>

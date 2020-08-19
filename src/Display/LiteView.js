@@ -20,13 +20,13 @@ function LiteView(props) {
               style={{padding: 5}}
               name={"create-outline"}
               size={20}
-              onPress={() => console.log("Edit")}
+              onPress={() => console.log("Edit" + props.name)}
               />
             <Icon
               style={{padding: 5}}
               name={"md-trash-outline"}
               size={20}
-              onPress={() => console.log("Delete")}
+              onPress={() => props.delete(props.name)}
               />
           </View>
         </View>

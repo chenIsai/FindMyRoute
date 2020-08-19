@@ -49,7 +49,6 @@ function SaveScreen({navigation}) {
     fetch(links.routes, {
       method: "POST",
       body: JSON.stringify({
-        token: tokens.accessToken,
         name,
         distance: distance.total,
         description,
@@ -57,6 +56,7 @@ function SaveScreen({navigation}) {
         route: route.value,
       }),
       headers: {
+        "Authorization": "Bearer " + tokens.accessToken,
         "Content-type": "application/json",
       }
     }).then((response) => {

@@ -58,10 +58,10 @@ function DisplayRoutes(props) {
     fetch(links.routes, {
       method: "DELETE",
       body: JSON.stringify({
-        token: tokens.accessToken,
         name: routeName,
       }),
       headers: {
+        "Authorization": "Bearer " + tokens.accessToken,
         "Content-Type": "application/json",
       }
     }).then((response) => {
@@ -75,12 +75,12 @@ function DisplayRoutes(props) {
     fetch(links.editRoute, {
       method: "POST",
       body: JSON.stringify({
-        token: tokens.accessToken,
         oldName: routeName,
         name: newName,
         description
       }),
       headers: {
+        "Authorization": "Bearer " + tokens.accessToken,
         "Content-Type": "application/json",
       }
     }).then((response) => {

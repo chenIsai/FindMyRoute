@@ -70,10 +70,8 @@ const OptionsRow = (props) => {
   const clearRoutes = () => {
     fetch(links.deleteALL, {
       method: "DELETE",
-      body: JSON.stringify({
-        token: tokens.accessToken,
-      }),
       headers: {
+        "Authorization": "Bearer " + tokens.accessToken,
         "Content-Type": "application/json",
       }
     }).catch((error) => {

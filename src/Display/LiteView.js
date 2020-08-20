@@ -20,7 +20,7 @@ function LiteView(props) {
               style={{padding: 5}}
               name={"create-outline"}
               size={20}
-              onPress={() => console.log("Edit" + props.name)}
+              onPress={() => props.edit(props.name, props.description)}
               />
             <Icon
               style={{padding: 5}}

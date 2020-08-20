@@ -103,9 +103,9 @@ function SaveScreen({navigation}) {
             size={30}
             />
           <TextInput style={styles.descriptionInput}
-            maxLength={160}
             multiline={true}
             numberOfLines={5}
+            blurOnSubmit={true}
             maxLength={50}
             onChangeText={text => _onChangeDesc(text)}
             placeholder={"Enter a description for the route (optional)"} />

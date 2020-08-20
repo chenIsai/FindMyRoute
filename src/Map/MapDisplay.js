@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
+import Modal from "react-native-modal"
 
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
@@ -28,6 +29,12 @@ export default class MapDisplay extends React.Component {
     this.findPosition(true);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.markers.value !== prevProps.markers.value) {
+      this.getDirections();
+    }
+  }
+
   _onMapReady = () => this.setState({marginBottom: 0});
 
 
@@ -36,6 +43,9 @@ export default class MapDisplay extends React.Component {
       this.state.totalMarkers++;
       var coordinate = e.nativeEvent.coordinate
       this.props.markers.updateMarkers(coordinate);
+      this.getDirections();
+    } else {
+      Alert.alert("Max number of markers reached!");
     }
   }
 
@@ -144,16 +154,29 @@ export default class MapDisplay extends React.Component {
             onPress={() => this.props.navigation.openDrawer()}
           />
         </View>
-        <View style={styles.buttonView}>
-          <Button title="Save Route"onPress={() => {
+        <View style={(styles.iconStyles)}>
+          <Icon
+            name={"add-outline"}
+            size={30}
+            onPress={() => console.log("Open tray")} />
+        </View>
+        <View style={[styles.iconStyles, {bottom: 75}]}>
+          <Icon
+            name={"save-outline"}
+            size={30}
+            onPress={() => {
               if (this.props.markers.value.length > 1 && this.props.directions.value.length) {
                 this.props.navigation.push("SaveScreen")
               } else {
                 Alert.alert("Invalid Route Selected!");
               }
-            }}/>
-          <Button title="Clear Markers"onPress={this.clearMarkers} />
-          <Button title="Calculate Route"onPress={() => this.getDirections()} />
+            }} />
+          </View>
+        <View style={[styles.iconStyles, {bottom: 130}]}>
+          <Icon
+            name={"trash-outline"}
+            size={30}
+            onPress={() => this.clearMarkers()} />
         </View>
       </View>
     );
@@ -174,17 +197,30 @@ const styles = StyleSheet.create({
   buttonView: {
     position: "absolute",
     bottom: 0,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     flexDirection: "row",
   },
 
   menuView: {
     position: "absolute",
     backgroundColor: "white",
-    borderRadius: 30,
     padding: 5,
     top: 10,
     left: 10,
+    borderRadius: 30,
+    borderWidth: 0.2,
+    elevation: 4,
     alignSelf: "flex-start",
-  }
+  },
+
+  iconStyles: {
+    position: "absolute",
+    backgroundColor: "white",
+    padding: 8,
+    bottom: 20,
+    right: 15,
+    borderRadius: 30,
+    borderWidth: 0.2,
+    elevation: 4,
+  },
 });

@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
-import {ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableNativeFeedback, Modal, Alert} from "react-native";
+import {ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableNativeFeedback, Alert} from "react-native";
+import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import AsyncStorage from "@react-native-community/async-storage";
@@ -122,11 +123,14 @@ function DisplayRoutes(props) {
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modalVisible}
+            isVisible={modalVisible}
             onRequestClose={() => {
-              console.log("closed");
               setVisible(false);
             }}
+            onBackdropPress={() => {
+              setVisible(false);
+            }}
+            backdropOpacity={0}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalView}>

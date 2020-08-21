@@ -171,7 +171,7 @@ function DisplayRoutes(props) {
                   <TouchableNativeFeedback
                     onPress={() => editRoute(currentRoute, editName, editDescription)}>
                     <View style={styles.saveButton}>
-                      <Text>Save</Text>
+                      <Text style={{color: "white"}}>Save</Text>
                     </View>
                   </TouchableNativeFeedback>
                 </View>
@@ -184,7 +184,7 @@ function DisplayRoutes(props) {
             contentContainerStyle={{flexGrow: .1}}
             overScrollMode={"always"}
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={getRoutes()} />
+              <RefreshControl refreshing={refreshing} onRefresh={() => getRoutes()} />
             }
             >
             {savedRoutes.map((route, index) => {

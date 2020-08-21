@@ -5,11 +5,12 @@ import MarkersContext from "../Context/MarkersContext";
 import UnitContext from "../Context/UnitContext";
 import RouteContext from "../Context/RouteContext";
 import DirectionsContext from "../Context/DirectionsContext";
+import UserContext from "../Context/UserContext";
 import AuthContext from "../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import AppNavigator from "../Navigation/AppNavigator";
-import link from "../Authentication/link";
+import links from "../Authentication/link";
 
 export default class ContextProvider extends React.Component {
   constructor(props) {
@@ -88,10 +89,13 @@ export default class ContextProvider extends React.Component {
 
     this.refreshAccessToken = () => {
       if (this.state.tokens.refreshToken !== "" && this.state.tokens.refreshToken) {
-        fetch(link.refresh, {
+        fetch(links.refresh, {
           method: "POST",
           body: JSON.stringify({token: this.state.tokens.refreshToken}),
-          headers: {"Content-Type": "application/json"}
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + this.state.tokens.refreshToken,
+          }
         }).then((response) => {
           if (response.ok) {
             return response.json();
@@ -109,6 +113,26 @@ export default class ContextProvider extends React.Component {
           return false;
         });
       }
+      this.updateUser();
+    }
+
+    this.updateUser = () => {
+      fetch(links.login, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + this.state.tokens.accessToken,
+        }
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      }).then((userData) => {
+        const user = {...this.state.user}
+        user.value = userData
+        this.setState({user})
+      }).catch((error) => {
+        console.log(error);
+      })
     }
 
     this.state = {
@@ -149,6 +173,10 @@ export default class ContextProvider extends React.Component {
         value: [],
         updateDirections: this.updateDirections,
       },
+      user: {
+        value: [],
+        updateUser: this.updateUser,
+      },
       isLoading: true,
     }
   }
@@ -159,7 +187,7 @@ export default class ContextProvider extends React.Component {
 
   _loadState = async () => {
     const keys = ["unit", "access", "refresh"];
-
+    
     AsyncStorage.multiGet(keys, (err, items) => {
       var tokens = {...this.state.tokens};
       var unit = {...this.state.unit};
@@ -174,17 +202,19 @@ export default class ContextProvider extends React.Component {
   render() {
     return (
       <AuthContext.Provider value={this.state.tokens}>
-        <DirectionsContext.Provider value={this.state.directions}>
-          <RouteContext.Provider value={this.state.route}>
-            <UnitContext.Provider value={this.state.unit}>
-              <DistanceContext.Provider value={this.state.distance}>
-                <MarkersContext.Provider value={this.state.markers}>
-                  <AppNavigator isLoading={this.state.isLoading}/>
-                </MarkersContext.Provider>
-              </DistanceContext.Provider>
-            </UnitContext.Provider>
-          </RouteContext.Provider>
-        </DirectionsContext.Provider>
+        <UserContext.Provider value={this.state.user}>
+          <DirectionsContext.Provider value={this.state.directions}>
+            <RouteContext.Provider value={this.state.route}>
+              <UnitContext.Provider value={this.state.unit}>
+                <DistanceContext.Provider value={this.state.distance}>
+                  <MarkersContext.Provider value={this.state.markers}>
+                    <AppNavigator isLoading={this.state.isLoading}/>
+                  </MarkersContext.Provider>
+                </DistanceContext.Provider>
+              </UnitContext.Provider>
+            </RouteContext.Provider>
+          </DirectionsContext.Provider>
+        </UserContext.Provider>
       </AuthContext.Provider>
     )
   }

@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useContext} from "react";
-import {ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableNativeFeedback, Alert} from "react-native";
+import {ScrollView, View, Text, TextInput,
+        StyleSheet, Button, TouchableNativeFeedback,
+        Alert, RefreshControl} from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -20,6 +22,7 @@ function DisplayRoutes(props) {
   const [currentRoute, updateCurrent] = useState("");
   const [editName, updateName] = useState("");
   const [editDescription, updateDescription] = useState("");
+  const [refreshing, updateRefresh] = useState(false);
   const unit = useContext(UnitContext);
   const tokens = useContext(AuthContext);
 
@@ -175,8 +178,15 @@ function DisplayRoutes(props) {
               </View>
             </View>
           </Modal>
-          <RefreshHeader navigation={props.navigation} header={"Saved Routes"} refresh={() => getRoutes()}/>
-          <ScrollView contentContainerStyle={{flexGrow: .1}}>
+          <Header navigation={props.navigation} header={"Saved Routes"}/>
+          <ScrollView
+            style={{flex: 1}}
+            contentContainerStyle={{flexGrow: .1}}
+            overScrollMode={"always"}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={getRoutes()} />
+            }
+            >
             {savedRoutes.map((route, index) => {
               const showDistance = unit.value === "m" ? route.distance : (
                 unit.value === "km" ? route.distance/1000 : Math.round((route.distance/1609 + Number.EPSILON) * 1000)/1000);
@@ -199,7 +209,7 @@ function DisplayRoutes(props) {
     else {
       return (
         <View style={{flex: 1}}>
-          <RefreshHeader navigation={props.navigation} header={"Saved Routes"} refresh={() => getRoutes()}/>
+          <Header navigation={props.navigation} header={"Saved Routes"}/>
           <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <Text>You have no saved routes</Text>
             <Button title="Go to Map" onPress={() => props.navigation.navigate("Map")}/>
@@ -208,31 +218,6 @@ function DisplayRoutes(props) {
       )
     }
   }
-}
-
-const RefreshHeader = (props) => {
-  return (
-    <View style={{padding: 15, flexDirection: "row", backgroundColor: "white"}}>
-      <View style={{flexDirection: "row", flex: 1}}>
-        <View style={{flexDirection: "row", alignSelf: "flex-start"}}>
-          <Icon
-            name={"md-menu"}
-            size={30}
-            onPress={() => props.navigation.openDrawer()}
-          />
-        </View>
-        <View style={styles.headerTextView}>
-          <Text style={styles.headerText}>{props.header}</Text>
-        </View>
-        <View style={{flexDirection: "row", alignSelf: "flex-end"}}>
-          <Icon
-            name={"refresh"}
-            size={30}
-            onPress={props.refresh}/>
-        </View>
-      </View>
-    </View>
-  )
 }
 
 

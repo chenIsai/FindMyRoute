@@ -5,7 +5,6 @@ import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
 import DirectionsContext from "../Context/DirectionsContext";
-import RouteContext from "../Context/RouteContext";
 import AuthContext from "../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
@@ -24,7 +23,6 @@ function SaveScreen({navigation}) {
   const unit = useContext(UnitContext);
   const distance = useContext(DistanceContext);
   const directions = useContext(DirectionsContext);
-  const route = useContext(RouteContext);
   const tokens = useContext(AuthContext);
   const showDistance = unit.value === "m" ? distance.total : (
     unit.value === "km" ? distance.total/1000 : Math.round(distance.total/1609 + Number.EPSILON * 100)/100);
@@ -39,22 +37,21 @@ function SaveScreen({navigation}) {
       return;
     }
     gotPressed(true);
+    const latlon = directions.value.map((point) => {
+      return [point.latitude, point.longitude]
+    })
+    const route = encode(latlon);
+    console.log(route);
     const routeJSON = JSON.stringify({
       name: name,
       distance: distance.total,
       description,
       markers: encodeMarkers(markers.value),
-      route: route.value,
+      route: route,
     });
     fetch(links.routes, {
       method: "POST",
-      body: JSON.stringify({
-        name,
-        distance: distance.total,
-        description,
-        markers: encodeMarkers(markers.value),
-        route: route.value,
-      }),
+      body: routeJSON,
       headers: {
         "Authorization": "Bearer " + tokens.accessToken,
         "Content-type": "application/json",

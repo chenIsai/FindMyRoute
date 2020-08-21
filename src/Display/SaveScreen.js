@@ -41,7 +41,6 @@ function SaveScreen({navigation}) {
       return [point.latitude, point.longitude]
     })
     const route = encode(latlon);
-    console.log(route);
     const routeJSON = JSON.stringify({
       name: name,
       distance: distance.total,

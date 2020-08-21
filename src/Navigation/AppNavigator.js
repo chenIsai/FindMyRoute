@@ -60,7 +60,7 @@ const Loading = (props) => {
 
 const MainApp = () => {
   return (
-    <Drawer.Navigator initlaRouteName="Home" screenOptions = {{swipeEnabled: false}}>
+    <Drawer.Navigator initlaRouteName="Home">
       <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
       <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
       <Drawer.Screen name="Settings" component={Settings} />

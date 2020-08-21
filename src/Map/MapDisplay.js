@@ -14,7 +14,7 @@ import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
 
-const apiKey = "";
+const apiKey = "AIzaSyDitJ9cQfbes0O-vwEZHU7ZY-b3UfU5zQs";
 
 const MapDisplay = (props) => {
   const mapRef = useRef(null);
@@ -35,7 +35,6 @@ const MapDisplay = (props) => {
           longitudeDelta: 0.0421,
         };
         if (animate) {
-          console.log(mapRef);
           mapRef.current.animateToRegion(newRegion);
         }
       },

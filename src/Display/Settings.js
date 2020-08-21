@@ -12,23 +12,25 @@ import links from "../Authentication/link";
 import Header from "./Header";
 import Modal from "react-native-modal";
 import {createStackNavigator} from "@react-navigation/stack";
-// import Edit from "./Edit";
+import EditUsername from "./EditUsername";
+import EditPassword from "./EditPassword";
 
 const Stack = createStackNavigator();
 
-const Settings = () => {
+const Settings = (props) => {
   return (
     <Stack.Navigator screenOptions = {{headerShown: false}}>
       <Stack.Screen name={"Profile"} component={MainScreen}/>
+      <Stack.Screen name={"EditNames"} component={EditUsername} />
+      <Stack.Screen name={"EditPass"} component={EditPassword} />
     </Stack.Navigator>
-          // <Stack.Screen name={"Edit"} component={Edit} />
   )
 }
 
 const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
   const [buttonID, updateID] = useState(0);
-    const tokens = useContext(AuthContext);
+  const tokens = useContext(AuthContext);
   const logoutText = "Are you sure you want to log out?";
   const deleteText = "Are you sure you want to delete ALL routes?";
 
@@ -81,7 +83,8 @@ const MainScreen = (props) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={{fontSize: 18, padding: 10}}>{buttonID === 1 ? logoutText : deleteText }</Text>
+            <Text style={{fontSize: 20, padding: 10}}>{buttonID === 1 ? "Log Out " : "Delete "}Confirmation</Text>
+            <Text style={{fontSize: 18, padding: 10, marginBottom: 30}}>{buttonID === 1 ? logoutText : deleteText }</Text>
             <View style = {{flexDirection: "row",}}>
               <TouchableNativeFeedback
                 onPress={() => setVisible(false)}>
@@ -91,7 +94,6 @@ const MainScreen = (props) => {
               </TouchableNativeFeedback>
               <TouchableNativeFeedback
                 onPress={() => {
-                  setVisible(false);
                   buttonID === 1 ? logout() : clearRoutes();
                 }}>
                 <View style={styles.negativeButton}>
@@ -105,7 +107,7 @@ const MainScreen = (props) => {
       <Header navigation={props.navigation} header={"Profile"}/>
       <Profile />
       <Details />
-      <Options showModal={(id) => openModal(id)}/>
+      <Options navigation={props.navigation} showModal={(id) => openModal(id)}/>
     </View>
   )
 }
@@ -148,7 +150,8 @@ const Options = (props) => {
     <View style={styles.optionsView}>
       <Text style={{padding: 5, paddingLeft: 10, fontWeight: "bold"}}>Options</Text>
       <View>
-        <OptionsRow name={"update"} />
+        <OptionsRow name={"editName"} navigation={props.navigation}/>
+        <OptionsRow name={"editPass"} navigation={props.navigation}/>
         <UnitPicker />
         <OptionsRow name={"clearSaved"} hide={true} showModal={props.showModal}/>
         <Logout showModal={props.showModal}/>
@@ -158,13 +161,19 @@ const Options = (props) => {
 }
 
 const OptionsRow = (props) => {
+  const user = useContext(UserContext)
   const callbacks = {
     "clearSaved": () => props.showModal(0),
-    "update": () => console.log("Update"),
+    "editName": () => props.navigation.navigate("EditNames", {
+      username: user.value.username,
+      name: user.value.name,
+    }),
+    "editPass": () => props.navigation.navigate("EditPass"),
   };
   const names = {
     clearSaved: "Clear Saved Routes",
-    update: "Update Profile",
+    editName: "Update Username or Name",
+    editPass: "Update Password"
   };
   if (!props.hide) {
     return (
@@ -295,7 +304,6 @@ const styles = StyleSheet.create({
   modalView: {
     width: 350,
     backgroundColor: "white",
-    borderWidth: 0.7,
     elevation: 6,
     overflow: "hidden"
   },

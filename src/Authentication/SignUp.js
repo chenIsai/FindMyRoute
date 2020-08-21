@@ -8,7 +8,6 @@ import links from "./link";
 
 const SignUp = (props) => {
   const [givenName, updateGivenName] = useState("");
-  const [email, updateEmail] = useState("");
   const [username, updateUsername] = useState("");
   const [password, updatePassword] = useState("");
   const [confirm, updateConfirm] = useState("");
@@ -41,7 +40,7 @@ const SignUp = (props) => {
   const link = links.signUp;
   const sendRegister = () => {
     var error = false;
-    if (username === "" || password === "" || givenName === "" || email === "") {
+    if (username === "" || password === "" || givenName === "") {
       updateError("Error: One or more fields are empty");
       error = true;
     } else if (password !== confirm) {
@@ -58,7 +57,6 @@ const SignUp = (props) => {
       method: "POST",
       body: JSON.stringify({
         name: givenName,
-        email,
         username,
         password
       }),
@@ -102,19 +100,6 @@ const SignUp = (props) => {
           style={{flex: 1}}
           placeholder={"Your name"}
           onChangeText={(text) => updateGivenName(text)}/>
-      </View>
-      <View style={styles.inputViews}>
-        <View style={{justifyContent: "center"}}>
-          <Icon
-            style={{alignSelf: "flex-end"}}
-            name={"mail"}
-            size={20}
-          />
-        </View>
-        <TextInput
-          style={{flex: 1}}
-          placeholder={"Enter email"}
-          onChangeText={(text) => updateEmail(text)}/>
       </View>
       <View style={styles.inputViews}>
         <View style={{justifyContent: "center"}}>

@@ -103,14 +103,14 @@ export default class ContextProvider extends React.Component {
           return response.status;
         }).then((data) => {
           if (Number.isInteger(data)) {
-            return false;
+            this.state.tokens.updateRefresh("");
+            this.state.tokens.updateAccess("");
+            return;
           }
           this.state.tokens.updateRefresh(data.refreshToken);
           this.state.tokens.updateAccess(data.accessToken);
-          return true;
         }).catch((error) => {
           console.log(error);
-          return false;
         });
       }
       this.updateUser();
@@ -187,7 +187,7 @@ export default class ContextProvider extends React.Component {
 
   _loadState = async () => {
     const keys = ["unit", "access", "refresh"];
-    
+
     AsyncStorage.multiGet(keys, (err, items) => {
       var tokens = {...this.state.tokens};
       var unit = {...this.state.unit};

@@ -1,6 +1,6 @@
 import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
-import MapDisplayWrapper from "./MapDisplayWrapper";
+import MapDisplay from "./MapDisplay";
 import SaveScreen from "../Display/SaveScreen";
 
 const Stack = createStackNavigator();
@@ -9,7 +9,7 @@ function MapScreen(props) {
   return(
     <Stack.Navigator>
       <Stack.Screen name="Map"
-        component={MapDisplayWrapper}
+        component={MapDisplay}
         options = {{headerShown: false}}/>
       <Stack.Screen name="SaveScreen"
         component={SaveScreen}

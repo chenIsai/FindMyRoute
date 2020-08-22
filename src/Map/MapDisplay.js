@@ -21,6 +21,20 @@ const MapDisplay = (props) => {
   const [marginBottom, updateMargin] = useState(1);
   const [calculated, updateCalculated] = useState(props.route.value.length);
   const [totalMarkers, updateTotalMarkers] = useState(props.markers.value.length);
+  const [trayVisible, setVisible] = useState(false);
+
+  const slideSave = useRef(new Animated.Value(0)).current;
+  const fadeSave = useRef(new Animated.Value(1)).current;
+  const slideDelete = useRef(new Animated.Value(0)).current;
+  const fadeDelete = useRef(new Animated.Value(1)).current;
+
+  const slideButton = (button, value, duration) => {
+    Animated.timing(button, {toValue: value, duration, useNativeDriver: true}).start();
+  }
+
+  const fadeButton = (button, value, duration) => {
+    Animated.timing(button, {toValue: value, duration, useNativeDriver: true}).start();
+  }
 
   const findPosition = (animate) => {
     Geolocation.getCurrentPosition(
@@ -144,9 +158,23 @@ const MapDisplay = (props) => {
         <Icon
           name={"add-outline"}
           size={30}
-          onPress={() => console.log("Open tray")} />
+          onPress={() => {
+            if (trayVisible) {
+              slideButton(slideSave, 55, 100);
+              slideButton(slideDelete, 110, 200);
+              fadeButton(fadeSave, 0, 100);
+              fadeButton(fadeDelete, 0, 200);
+              setVisible(false);
+            } else {
+              slideButton(slideSave, 0, 100);
+              slideButton(slideDelete, 0, 200);
+              fadeButton(fadeSave, 1, 100);
+              fadeButton(fadeDelete, 1, 200);
+              setVisible(true);
+            }
+          }} />
       </View>
-      <View style={{opacity: 1}}>
+      <Animated.View style={[{opacity: fadeSave}, {transform: [{translateY: slideSave}]}]}>
         <View style={[styles.iconStyles, {bottom: 75}]}>
           <Icon
             name={"save-outline"}
@@ -157,15 +185,18 @@ const MapDisplay = (props) => {
               } else {
                 Alert.alert("Invalid Route Selected!");
               }
-            }} />
-          </View>
+            }}
+          />
+        </View>
+      </Animated.View>
+      <Animated.View style={[{opacity: fadeDelete}, {transform: [{translateY: slideDelete}]}]}>
         <View style={[styles.iconStyles, {bottom: 130}]}>
           <Icon
             name={"trash-outline"}
             size={30}
             onPress={() => clearMarkers()} />
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 }

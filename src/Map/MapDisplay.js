@@ -10,12 +10,13 @@ import {
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal"
+import links from "../Authentication/links";
 
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import {decode} from "@mapbox/polyline";
 
-const apiKey = "AIzaSyDitJ9cQfbes0O-vwEZHU7ZY-b3UfU5zQs";
+const apiKey = links.key;
 
 const MapDisplay = (props) => {
   const mapRef = useRef(null);

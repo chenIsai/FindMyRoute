@@ -4,7 +4,8 @@ import {
   View,
   Button,
   Alert,
-  Animated
+  Animated,
+  TouchableWithoutFeedback
 } from "react-native";
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -27,6 +28,7 @@ const MapDisplay = (props) => {
   const fadeSave = useRef(new Animated.Value(1)).current;
   const slideDelete = useRef(new Animated.Value(0)).current;
   const fadeDelete = useRef(new Animated.Value(1)).current;
+  const TouchableAnimated = Animated.createAnimatedComponent(TouchableWithoutFeedback);
 
   const slideButton = (button, value, duration) => {
     Animated.timing(button, {toValue: value, duration, useNativeDriver: true}).start();
@@ -34,6 +36,22 @@ const MapDisplay = (props) => {
 
   const fadeButton = (button, value, duration) => {
     Animated.timing(button, {toValue: value, duration, useNativeDriver: true}).start();
+  }
+
+  const hideButtons = () => {
+    slideButton(slideSave, 55, 100);
+    slideButton(slideDelete, 110, 200);
+    fadeButton(fadeSave, 0, 100);
+    fadeButton(fadeDelete, 0, 200);
+    setVisible(false);
+  }
+
+  const showButtons = () => {
+    slideButton(slideSave, 0, 100);
+    slideButton(slideDelete, 0, 200);
+    fadeButton(fadeSave, 1, 100);
+    fadeButton(fadeDelete, 1, 200);
+    setVisible(true);
   }
 
   const findPosition = (animate) => {
@@ -156,47 +174,51 @@ const MapDisplay = (props) => {
       </View>
       <View style={(styles.iconStyles)}>
         <Icon
-          name={"add-outline"}
+          name={trayVisible ? "close-outline" : "add-outline"}
           size={30}
           onPress={() => {
             if (trayVisible) {
-              slideButton(slideSave, 55, 100);
-              slideButton(slideDelete, 110, 200);
-              fadeButton(fadeSave, 0, 100);
-              fadeButton(fadeDelete, 0, 200);
-              setVisible(false);
+              hideButtons();
             } else {
-              slideButton(slideSave, 0, 100);
-              slideButton(slideDelete, 0, 200);
-              fadeButton(fadeSave, 1, 100);
-              fadeButton(fadeDelete, 1, 200);
-              setVisible(true);
+              showButtons();
             }
           }} />
       </View>
-      <Animated.View style={[{opacity: fadeSave}, {transform: [{translateY: slideSave}]}]}>
+      <TouchableAnimated style={[{opacity: fadeSave}, {transform: [{translateY: slideSave}]}]}
+        onPress={() => {
+          if (!trayVisible) {
+            showButtons();
+          } else {
+            if (props.markers.value.length > 1 && props.directions.value.length) {
+              props.navigation.push("SaveScreen")
+            } else {
+              Alert.alert("Invalid Route Selected!");
+            }
+          }
+        }}
+        >
         <View style={[styles.iconStyles, {bottom: 75}]}>
           <Icon
             name={"save-outline"}
             size={30}
-            onPress={() => {
-              if (props.markers.value.length > 1 && props.directions.value.length) {
-                props.navigation.push("SaveScreen")
-              } else {
-                Alert.alert("Invalid Route Selected!");
-              }
-            }}
           />
         </View>
-      </Animated.View>
-      <Animated.View style={[{opacity: fadeDelete}, {transform: [{translateY: slideDelete}]}]}>
+      </TouchableAnimated>
+      <TouchableAnimated style={[{opacity: fadeDelete}, {transform: [{translateY: slideDelete}]}]}
+        onPress={() => {
+          if (!trayVisible) {
+            showButtons();
+          }
+          clearMarkers()
+        }}
+        >
         <View style={[styles.iconStyles, {bottom: 130}]}>
           <Icon
             name={"trash-outline"}
             size={30}
-            onPress={() => clearMarkers()} />
+          />
         </View>
-      </Animated.View>
+      </TouchableAnimated>
     </View>
   );
 }

@@ -70,7 +70,13 @@ export default class ContextProvider extends React.Component {
        const directions = {...this.state.directions};
        directions.value = updated;
        this.setState(state => ({directions}));
-    }
+    },
+
+    this.setRunning = () => {
+      const directions = {...this.state.directions};
+      directions.isRunning = !directions.isRunning;
+      this.setState(state => ({directions}));
+    },
 
     //  Access and Refresh tokens
     this.updateAccess = (token) => {
@@ -171,7 +177,9 @@ export default class ContextProvider extends React.Component {
       },
       directions: {
         value: [],
+        isRunning: false,
         updateDirections: this.updateDirections,
+        setRunning: this.setRunning,
       },
       user: {
         value: [],

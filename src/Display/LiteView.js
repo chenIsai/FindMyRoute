@@ -41,7 +41,6 @@ function LiteView(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 15,
     margin: 5,
     flexDirection: "row",

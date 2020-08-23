@@ -1,9 +1,12 @@
-import React, {useContext, useState, useRef} from "react";
-import {View, Text, TouchableNativeFeedback, StyleSheet} from "react-native";
+import React, {useContext, useState, useRef, useEffect} from "react";
+import {View, Text, TouchableNativeFeedback, StyleSheet, Alert} from "react-native";
 
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
+import DirectionsContext from "../Context/DirectionsContext";
+
+import Geolocation from "@react-native-community/geolocation";
 import Icon from "react-native-vector-icons/Ionicons";
 import Header from "./Header";
 
@@ -23,24 +26,60 @@ const Summary = (props) => {
   )
 }
 
+export default Summary;
+
 const CurrentRun = () => {
+  const directions = useContext(DirectionsContext);
   const [time, updateTime] = useState(0);
-  const [isRunning, setRunning] = useState(false);
+  const [latLonArr, updatelatLon] = useState([]);
   const timerRef = useRef();
 
   const startTimer = () => {
     const interval = setInterval(onTick, 1000);
-    setRunning(true);
+    directions.setRunning();
     timerRef.current = interval;
   }
   const onTick = () => {
-    updateTime(prevTime => prevTime + 1);
+    updateTime(prevTime => {
+      prevTime += 1;
+      // Get user position every 5 seconds
+      if (!(prevTime % 5)) {
+        findPosition();
+      }
+      return prevTime;
+    });
   }
 
   const stopTimer = () => {
     clearInterval(timerRef.current);
-    setRunning(false);
+    directions.setRunning();
   }
+
+  const findPosition = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const latLon = [{latitude: position.coords["latitude"], longitude: position.coords["longitude"]}];
+        updatelatLon(prevArr => {
+          return prevArr.concat(latLon)
+        });
+      },
+      error => {
+        Alert.alert(error.message);
+        throw error;
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 200 }
+    );
+  };
+
+  const clearRun = () => {
+    directions.updateDirections([]);
+    updatelatLon([]);
+    updateTime(0);
+  }
+
+  useEffect(() => {
+    directions.updateDirections(latLonArr);
+  }, [latLonArr]);
 
   return (
     <View style={styles.container}>
@@ -55,19 +94,25 @@ const CurrentRun = () => {
         </View>
       </View>
       <TouchableNativeFeedback
-        onPress={() => isRunning ? stopTimer() : startTimer()}
+        onPress={() => directions.isRunning ? stopTimer() : startTimer()}
         background={TouchableNativeFeedback.Ripple("grey")}
         >
         <View style={styles.startStopButton}>
-          <Text style={{color: "white", fontSize: 24,}}>{isRunning ? "Stop run" : "Start Run"}</Text>
+          <Text style={{color: "white", fontSize: 24,}}>{directions.isRunning ? "Stop run" : "Start Run"}</Text>
+        </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback
+        onPress={() => clearRun()}
+        background={TouchableNativeFeedback.Ripple("grey")}
+        >
+        <View style={styles.startStopButton}>
+          <Text style={{color: "white", fontSize: 24,}}>Clear Run</Text>
         </View>
       </TouchableNativeFeedback>
       <Text style={{alignSelf: "center", marginTop: 50, fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
     </View>
   )
 }
-
-export default Summary;
 
 const styles = StyleSheet.create({
   container: {

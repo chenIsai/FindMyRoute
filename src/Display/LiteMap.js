@@ -11,11 +11,18 @@ const LiteMap = (props) => {
       ref={ref => {map = ref;}}
       showsUserLocation={false}
       initialRegion={{latitude: 0, longitude: 0, latitudeDelta: 0.0721, longitudeDelta: 0.0421}}
-      onMapReady={() =>{
+      onMapReady={() => {
+        console.log(props.markers);
+        if (props.markers.length) {
           map.fitToCoordinates(props.markers, {
-    edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
-    animated: true,
-  });
+            edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+            animated: false,
+          });
+        } else {
+          map.fitToCoordinates(props.directions, {
+            edgePadding: { top: 100, right: 100, bottom: 100, left: 100}, animated: false,
+          });
+        }
         }}
       >
       {props.markers.map((coordinate) => {

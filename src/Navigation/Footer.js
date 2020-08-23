@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 
 const Footer = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator lazy={false}>
       <Tab.Screen name="Display" component={Summary} />
       <Tab.Screen name="Map" component={MapScreen} />
     </Tab.Navigator>

@@ -200,7 +200,7 @@ const MapDisplay = (props) => {
           if (!trayVisible) {
             showButtons();
           } else {
-            if (markers.value.length > 1 && directions.value.length) {
+            if (directions.value.length) {
               props.navigation.push("SaveScreen")
             } else {
               Alert.alert("Invalid Route Selected!");

@@ -90,7 +90,6 @@ const CurrentRun = () => {
 
   // ANIMATIONS
 const hideStartButton = () => {
-  console.log("hiding");
   Animated.timing(startButtonOpacity, {toValue: 0, duration: 200, useNativeDriver: true}).start();
 }
 
@@ -119,6 +118,7 @@ const animateButtonTray = (button, value) => {
     }
     directions.updateDirections(latLonArr);
   }, [latLonArr]);
+
   useEffect(() => {
     hideButtonTray();
   }, []);
@@ -136,19 +136,6 @@ const animateButtonTray = (button, value) => {
         </View>
       </View>
       <Text style={{alignSelf: "center", marginTop: 50, fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
-      <TouchableAnimated style={{opacity: startButtonOpacity}}>
-        <View style={{alignSelf: "center", overflow: "hidden"}}>
-          <Icon
-            style={styles.buttonIcon}
-            name={"play"}
-            size={50}
-            onPress={() => {
-              hideStartButton();
-              showButtonTray();
-            }}
-            />
-        </View>
-      </TouchableAnimated>
       <View>
         <View style={styles.buttonTray}>
           <TouchableAnimated style={[{opacity: buttonTrayOpacity},
@@ -183,6 +170,19 @@ const animateButtonTray = (button, value) => {
             </View>
           </TouchableAnimated>
         </View>
+        <TouchableAnimated style={{opacity: startButtonOpacity}}>
+          <View style={{alignSelf: "center", overflow: "hidden"}}>
+            <Icon
+              style={styles.buttonIcon}
+              name={"play"}
+              size={50}
+              onPress={() => {
+                hideStartButton();
+                showButtonTray();
+              }}
+              />
+          </View>
+        </TouchableAnimated>
       </View>
     </View>
   )
@@ -218,6 +218,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "center",
     bottom: 0,
-    left: 0,
   }
 })

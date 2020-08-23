@@ -33,7 +33,7 @@ const MapDisplay = (props) => {
   const [marginBottom, updateMargin] = useState(1);
   const [calculated, updateCalculated] = useState(route.value.length);
   const [totalMarkers, updateTotalMarkers] = useState(markers.value.length);
-  const [trayVisible, setVisible] = useState(false);
+  const [trayVisible, setVisible] = useState(true);
 
   const slideSave = useRef(new Animated.Value(0)).current;
   const fadeSave = useRef(new Animated.Value(1)).current;
@@ -89,7 +89,10 @@ const MapDisplay = (props) => {
     );
   };
 
-  const _onMapReady = () => updateMargin(0);
+  const _onMapReady = () => {
+    updateMargin(0);
+    hideButtons();
+  }
 
   const onLongPress = (e) => {
     if (totalMarkers <= 9) {

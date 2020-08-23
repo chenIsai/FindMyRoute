@@ -94,7 +94,7 @@ const hideStartButton = () => {
 }
 
 const showStartButton = () => {
-    Animated.timing(startButtonOpacity, {toValue: 1, duration: 300, useNativeDriver: true}).start();
+    Animated.timing(startButtonOpacity, {toValue: 1, duration: 200, useNativeDriver: true}).start();
 }
 
 const showButtonTray = () => {
@@ -106,7 +106,21 @@ const hideButtonTray = () => {
 }
 
 const animateButtonTray = (button, value) => {
-  Animated.timing(button, {toValue: value, duration: 1000, useNativeDriver: true}).start();
+  Animated.timing(button, {toValue: value, duration: 200, useNativeDriver: true}).start();
+}
+
+const startButtonAnimations = () => {
+  hideStartButton();
+  showButtonTray();
+  animateButtonTray(cancelButtonX, 25);
+  animateButtonTray(pauseButtonX, -25)
+}
+
+const buttonTrayAnimations = () => {
+  hideButtonTray();
+  animateButtonTray(cancelButtonX, -30);
+  animateButtonTray(pauseButtonX, 30)
+  showStartButton();
 }
 
   useEffect(() => {
@@ -142,8 +156,7 @@ const animateButtonTray = (button, value) => {
             {transform: [{translateX: pauseButtonX}]}]}
             onPress={() => {
               stopTimer();
-              hideButtonTray();
-              showStartButton();
+              buttonTrayAnimations();
             }}
             >
             <View>
@@ -157,8 +170,8 @@ const animateButtonTray = (button, value) => {
             {transform: [{translateX: cancelButtonX}]}]}
             onPress={() => {
               clearRun();
-              hideButtonTray();
-              showStartButton();
+              stopTimer();
+              buttonTrayAnimations();
             }}
             >
             <View>
@@ -177,8 +190,8 @@ const animateButtonTray = (button, value) => {
               name={"play"}
               size={50}
               onPress={() => {
-                hideStartButton();
-                showButtonTray();
+                startTimer();
+                startButtonAnimations();
               }}
               />
           </View>

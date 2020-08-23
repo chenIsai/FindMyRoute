@@ -83,7 +83,7 @@ export default class ContextProvider extends React.Component {
       const tokens = {...this.state.tokens};
       tokens.accessToken = token;
       AsyncStorage.setItem("access", token);
-      this.setState(state => ({tokens}));
+      this.setState(state => ({tokens}), this.updateUser());
     }
 
     this.updateRefresh = (token) => {
@@ -119,7 +119,6 @@ export default class ContextProvider extends React.Component {
           console.log(error);
         });
       }
-      this.updateUser();
     }
 
     this.updateUser = () => {

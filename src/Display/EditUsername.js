@@ -71,7 +71,7 @@ const EditUsername = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={{fontSize: 24, paddingLeft: 20, color: "#8d67cf"}}>Change Your Name or Username!</Text>
+        <Text style={{fontSize: 24, paddingLeft: 20, color: "#8d67cf"}}>Change Your Username or Name!</Text>
       </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>Error: Username or Name invalid!</Text>

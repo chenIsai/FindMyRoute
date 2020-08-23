@@ -91,7 +91,6 @@ const MapDisplay = (props) => {
 
   const _onMapReady = () => {
     updateMargin(0);
-    hideButtons();
   }
 
   const onLongPress = (e) => {
@@ -156,6 +155,7 @@ const MapDisplay = (props) => {
 
   useEffect(() => {
     findPosition(true);
+    hideButtons();
   }, [])
 
   useEffect(() => {

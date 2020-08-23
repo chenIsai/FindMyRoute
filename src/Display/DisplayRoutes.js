@@ -54,7 +54,12 @@ function DisplayRoutes(props) {
         "Authorization": "Bearer " + tokens.accessToken,
       }
     }).then((response) => {
-      return response.json();
+      if (response.ok) {
+        return response.json();
+      }
+      if (response.status === 403) {
+        tokens.refreshAccessToken();
+      }
     }).then((data) => {
       updateRoutes(data);
     }).catch((error) => {

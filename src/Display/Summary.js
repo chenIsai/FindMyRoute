@@ -1,13 +1,13 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
-import {View, Text, TouchableNativeFeedback, StyleSheet, Alert} from "react-native";
+import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from "react-native";
+import getDistance from "geolib/es/getDistance";
 
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
-import MarkersContext from "../Context/MarkersContext";
 import DirectionsContext from "../Context/DirectionsContext";
 
 import Geolocation from "@react-native-community/geolocation";
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Header from "./Header";
 
 const Summary = (props) => {
@@ -30,10 +30,20 @@ export default Summary;
 
 const CurrentRun = () => {
   const directions = useContext(DirectionsContext);
+  const distance = useContext(DistanceContext);
+
   const [time, updateTime] = useState(0);
   const [latLonArr, updatelatLon] = useState([]);
   const timerRef = useRef();
 
+  const startButtonOpacity = useRef(new Animated.Value(1)).current;
+  const buttonTrayOpacity = useRef(new Animated.Value(0)).current;
+
+  const pauseButtonX = useRef(new Animated.Value(0)).current;
+  const cancelButtonX = useRef(new Animated.Value(0)).current;
+  const TouchableAnimated = Animated.createAnimatedComponent(TouchableWithoutFeedback)
+
+  // TIMER RELATED FUNCTIONS
   const startTimer = () => {
     const interval = setInterval(onTick, 1000);
     directions.setRunning();
@@ -55,6 +65,13 @@ const CurrentRun = () => {
     directions.setRunning();
   }
 
+  const clearRun = () => {
+    directions.updateDirections([]);
+    updatelatLon([]);
+    updateTime(0);
+  }
+
+  // GET USER POSITION
   const findPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
@@ -71,15 +88,40 @@ const CurrentRun = () => {
     );
   };
 
-  const clearRun = () => {
-    directions.updateDirections([]);
-    updatelatLon([]);
-    updateTime(0);
-  }
+  // ANIMATIONS
+const hideStartButton = () => {
+  console.log("hiding");
+  Animated.timing(startButtonOpacity, {toValue: 0, duration: 200, useNativeDriver: true}).start();
+}
+
+const showStartButton = () => {
+    Animated.timing(startButtonOpacity, {toValue: 1, duration: 300, useNativeDriver: true}).start();
+}
+
+const showButtonTray = () => {
+  Animated.timing(buttonTrayOpacity, {toValue: 1, duration: 200, useNativeDriver: true}).start();
+}
+
+const hideButtonTray = () => {
+  Animated.timing(buttonTrayOpacity, {toValue: 0, duration: 200, useNativeDriver: true}).start();
+}
+
+const animateButtonTray = (button, value) => {
+  Animated.timing(button, {toValue: value, duration: 1000, useNativeDriver: true}).start();
+}
 
   useEffect(() => {
+    var oldDistance = distance.value;
+    if (latLonArr.length > 1) {
+      console.log(getDistance(latLonArr[latLonArr.length-2], latLonArr.length-1));
+      oldDistance += getDistance(latLonArr[latLonArr.length-2], latLonArr[latLonArr.length-1]);
+      distance.updateDistance(oldDistance);
+    }
     directions.updateDirections(latLonArr);
   }, [latLonArr]);
+  useEffect(() => {
+    hideButtonTray();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -93,23 +135,55 @@ const CurrentRun = () => {
           <Text style={{color: "dimgrey"}}>Ye</Text>
         </View>
       </View>
-      <TouchableNativeFeedback
-        onPress={() => directions.isRunning ? stopTimer() : startTimer()}
-        background={TouchableNativeFeedback.Ripple("grey")}
-        >
-        <View style={styles.startStopButton}>
-          <Text style={{color: "white", fontSize: 24,}}>{directions.isRunning ? "Stop run" : "Start Run"}</Text>
-        </View>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback
-        onPress={() => clearRun()}
-        background={TouchableNativeFeedback.Ripple("grey")}
-        >
-        <View style={styles.startStopButton}>
-          <Text style={{color: "white", fontSize: 24,}}>Clear Run</Text>
-        </View>
-      </TouchableNativeFeedback>
       <Text style={{alignSelf: "center", marginTop: 50, fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
+      <TouchableAnimated style={{opacity: startButtonOpacity}}>
+        <View style={{alignSelf: "center", overflow: "hidden"}}>
+          <Icon
+            style={styles.buttonIcon}
+            name={"play"}
+            size={50}
+            onPress={() => {
+              hideStartButton();
+              showButtonTray();
+            }}
+            />
+        </View>
+      </TouchableAnimated>
+      <View>
+        <View style={styles.buttonTray}>
+          <TouchableAnimated style={[{opacity: buttonTrayOpacity},
+            {transform: [{translateX: pauseButtonX}]}]}
+            onPress={() => {
+              stopTimer();
+              hideButtonTray();
+              showStartButton();
+            }}
+            >
+            <View>
+              <Icon
+                style={styles.buttonIcon}
+                name={"pause"}
+                size={50} />
+            </View>
+          </TouchableAnimated>
+          <TouchableAnimated style={[{opacity: buttonTrayOpacity},
+            {transform: [{translateX: cancelButtonX}]}]}
+            onPress={() => {
+              clearRun();
+              hideButtonTray();
+              showStartButton();
+            }}
+            >
+            <View>
+              <Icon
+                style={styles.buttonIcon}
+                name={"close"}
+                size={50}
+                />
+            </View>
+          </TouchableAnimated>
+        </View>
+      </View>
     </View>
   )
 }
@@ -131,4 +205,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
+
+  buttonIcon: {
+    borderRadius: 60,
+    alignSelf: "baseline",
+    backgroundColor: "white",
+    padding: 5,
+  },
+
+  buttonTray: {
+    position: "absolute",
+    flexDirection: "row",
+    alignSelf: "center",
+    bottom: 0,
+    left: 0,
+  }
 })

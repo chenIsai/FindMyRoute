@@ -94,7 +94,12 @@ const MainScreen = (props) => {
               </TouchableNativeFeedback>
               <TouchableNativeFeedback
                 onPress={() => {
-                  buttonID === 1 ? logout() : clearRoutes();
+                  if (buttonID === 1) {
+                    logout();
+                  } else {
+                    clearRoutes();
+                    setVisible(false);
+                  }
                 }}>
                 <View style={styles.negativeButton}>
                   <Text style={{color: "white"}}>{buttonID === 1 ? "Log me out!" : "Delete ALL Routes"}</Text>
@@ -121,8 +126,8 @@ const Profile = () => {
         name={"person"}
         size={80}/>
       <View style={styles.textStack}>
-        <Text style={{fontWeight: "bold"}}>{user.value.name}</Text>
-        <Text style={{color: "grey"}}>{user.value.username}</Text>
+        <Text style={{fontWeight: "bold"}}>{user.value ? user.value.name : "Not connected"}</Text>
+        <Text style={{color: "grey"}}>{user.value ? user.value.username : ""}</Text>
       </View>
     </View>
   )
@@ -135,11 +140,11 @@ const Details = () => {
     <View style={styles.detailsView}>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
         <Text style={{fontWeight: "bold"}}>Saved Routes</Text>
-        <Text style={{color: "dimgrey"}}>{user.value.routes}</Text>
+        <Text style={{color: "dimgrey"}}>{user.value ? user.value.routes : 0}</Text>
       </View>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
         <Text style={{fontWeight: "bold"}}>Distance Ran</Text>
-        <Text style={{color: "dimgrey"}}>{user.value.distance} {unit.value}</Text>
+        <Text style={{color: "dimgrey"}}>{user.value ? user.value.distance : 0} {unit.value}</Text>
       </View>
     </View>
   )

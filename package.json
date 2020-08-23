@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^5.7.1",
     "dialog": "^0.3.1",
     "dotenv": "^8.2.0",
+    "geolib": "^3.3.1",
     "native-base": "^2.13.13",
     "react": "^16.11.0",
     "react-native": "^0.62.2",

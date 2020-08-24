@@ -23,12 +23,6 @@ const AppNavigator = (props) => {
     return (
       <Loading isLoading={props.isLoading} update={updateStatus}/>
     )
-  } else if (!tokens.refreshToken) {
-    return (
-      <NavigationContainer>
-        <AuthNavigator />
-      </NavigationContainer>
-    )
   }
   return (
     <NavigationContainer>

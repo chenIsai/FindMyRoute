@@ -7,24 +7,22 @@ import DirectionsContext from "../Context/DirectionsContext";
 
 import Geolocation from "react-native-geolocation-service";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Header from "./Header";
 
-const Summary = (props) => {
+const RunningScreen = (props) => {
   const distance = useContext(DistanceContext);
   const unit = useContext(UnitContext);
   const showDistance = unit.value === "km" ? distance.total / 1000 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
   return (
     <View style={styles.container}>
       <Header navigation={props.navigation} header={"Display"}/>
-      <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
-        <Text>{showDistance} {unit.value}</Text>
-      </View>
       <CurrentRun />
     </View>
   )
 }
 
-export default Summary;
+export default RunningScreen;
 
 const CurrentRun = () => {
   const directions = useContext(DirectionsContext);
@@ -162,19 +160,30 @@ const CurrentRun = () => {
     <View style={styles.container}>
       <View style={styles.runDetails}>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
-          <Text style={{fontWeight: "bold"}}>Current Distance Ran</Text>
+          <Icon
+            name={"shoe-print"}
+            size={30}
+            />
           <Text style={{color: "dimgrey"}}>{showDistance} {unit.value}</Text>
         </View>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
-          <Text style={{fontWeight: "bold"}}>Average Speed</Text>
+          <Icon
+            name={"clock-fast"}
+            size={30}
+            />
           <Text style={{color: "dimgrey"}}>{averageSpeed()}</Text>
         </View>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
-          <Text style={{fontWeight: "bold"}}>Current Speed</Text>
+          <Ionicons
+            name={"speedometer-outline"}
+            size={30}
+            />
           <Text style={{color: "dimgrey"}}>{currentSpeed()}</Text>
         </View>
       </View>
-      <Text style={{alignSelf: "center", marginTop: 50, fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
+      <View style={{flexDirection: "row", alignItems: "center", alignSelf: "center", marginRight: 20}}>
+        <Text style={{fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
+      </View>
       <View>
         <View style={styles.buttonTray}>
           <TouchableAnimated style={[{opacity: buttonTrayOpacity},

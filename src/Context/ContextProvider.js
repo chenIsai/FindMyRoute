@@ -67,9 +67,9 @@ export default class ContextProvider extends React.Component {
 
     // Current Directions (decoded route)
     this.updateDirections = (updated) => {
-       const directions = {...this.state.directions};
-       directions.value = updated;
-       this.setState(state => ({directions}));
+      const directions = {...this.state.directions};
+      directions.value = updated;
+      this.setState(state => ({directions}));
     },
 
     this.setRunning = () => {

@@ -4,7 +4,7 @@ import {Text, AppState, Alert} from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import MapScreen from "../Map/MapScreen.js";
-import Summary from "../Display/Summary.js";
+import RunningScreen from "../Display/RunningScreen.js";
 
 
 import AsyncStorage from "@react-native-community/async-storage";
@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 const Footer = () => {
   return (
     <Tab.Navigator lazy={false}>
-      <Tab.Screen name="Display" component={Summary} />
+      <Tab.Screen name="Display" component={RunningScreen} />
       <Tab.Screen name="Map" component={MapScreen} />
     </Tab.Navigator>
   );

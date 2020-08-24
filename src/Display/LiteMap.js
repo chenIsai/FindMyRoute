@@ -12,7 +12,6 @@ const LiteMap = (props) => {
       showsUserLocation={false}
       initialRegion={{latitude: 0, longitude: 0, latitudeDelta: 0.0721, longitudeDelta: 0.0421}}
       onMapReady={() => {
-        console.log(props.markers);
         if (props.markers.length) {
           map.fitToCoordinates(props.markers, {
             edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },

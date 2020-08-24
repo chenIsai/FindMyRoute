@@ -6,6 +6,7 @@ const AuthContext = React.createContext({
     updateAccess: () => {},
     updateRefresh: () => {},
     refreshAccess: () => {},
+    logout: () => {},
 }});
 
 export default AuthContext;

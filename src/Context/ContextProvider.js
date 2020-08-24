@@ -90,7 +90,7 @@ export default class ContextProvider extends React.Component {
       const tokens = {...this.state.tokens};
       tokens.refreshToken = token;
       AsyncStorage.setItem("refresh", token);
-      this.setState(state => ({tokens}));
+      this.setState(state => ({tokens}), this.updateUser());
     }
 
     this.refreshAccessToken = () => {
@@ -140,13 +140,18 @@ export default class ContextProvider extends React.Component {
       })
     }
 
-    this.state = {
+    this.logout = () => {
+      AsyncStorage.getAllKeys().then(keys => AsyncStorage.multiRemove(keys)).then(this.setState(this.initialState, this._loadState))
+    }
+
+    this.initialState = {
       tokens: {
         accessToken: null,
         refreshToken: null,
         updateAccess: this.updateAccess,
         updateRefresh: this.updateRefresh,
         refreshAccess: this.refreshAccessToken,
+        logout: this.logout,
       },
       mapRegion: {
         latitude: 0,
@@ -161,7 +166,7 @@ export default class ContextProvider extends React.Component {
         clearDistance: this.clearDistance,
       },
       unit: {
-        value: "m",
+        value: "km",
         updateUnit: this.updateUnit,
       },
       markers: {
@@ -186,6 +191,8 @@ export default class ContextProvider extends React.Component {
       },
       isLoading: true,
     }
+
+    this.state = this.initialState;
   }
 
   componentDidMount = () => {
@@ -199,7 +206,7 @@ export default class ContextProvider extends React.Component {
       var tokens = {...this.state.tokens};
       var unit = {...this.state.unit};
 
-      unit.value = items[0][1] !== null ? items[0][1] : "m";
+      unit.value = items[0][1] !== null ? items[0][1] : "km";
       tokens.accessToken = items[1][1] !== null ? items[1][1] : "";
       tokens.refreshToken = items[2][1] !== null ? items[2][1] : "";
       this.setState({unit, tokens, isLoading: false});

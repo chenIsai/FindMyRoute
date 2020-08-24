@@ -48,6 +48,7 @@ const MainScreen = (props) => {
         "Content-Type": "application/json",
       }
     }).then((response) => {
+      tokens.logout();
       tokens.updateAccess("");
       tokens.updateRefresh("");
     }).catch((error) => {

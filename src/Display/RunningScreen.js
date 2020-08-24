@@ -157,32 +157,32 @@ const CurrentRun = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={{flex: 1, justifyContent: "center"}}>
       <View style={styles.runDetails}>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Icon
             name={"shoe-print"}
+            color={"dimgrey"}
             size={30}
             />
-          <Text style={{color: "dimgrey"}}>{showDistance} {unit.value}</Text>
+          <Text style={{fontSize: 20}}>{showDistance} {unit.value}</Text>
         </View>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Icon
             name={"clock-fast"}
+            color={"dimgrey"}
             size={30}
             />
-          <Text style={{color: "dimgrey"}}>{averageSpeed()}</Text>
+          <Text style={{fontSize: 20}}>{averageSpeed()}</Text>
         </View>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Ionicons
             name={"speedometer-outline"}
+            color={"dimgrey"}
             size={30}
             />
-          <Text style={{color: "dimgrey"}}>{currentSpeed()}</Text>
+          <Text style={{fontSize: 20}}>{currentSpeed()}</Text>
         </View>
-      </View>
-      <View style={{flexDirection: "row", alignItems: "center", alignSelf: "center", marginRight: 20}}>
-        <Text style={{fontSize: 20}}> {Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
       </View>
       <View>
         <View style={styles.buttonTray}>
@@ -230,6 +230,9 @@ const CurrentRun = () => {
               />
           </View>
         </TouchableAnimated>
+      </View>
+      <View style={{flexDirection: "row", alignItems: "center", alignSelf: "center",}}>
+        <Text style={{fontSize: 20}}>{Math.floor(time/60)}:{time % 60 > 9 ? time % 60 : "0" + time % 60}</Text>
       </View>
     </View>
   )

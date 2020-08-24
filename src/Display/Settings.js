@@ -229,7 +229,6 @@ const UnitPicker = () => {
           unit.updateUnit(value)}
         >
           <Picker.Item label="Km" value="km" />
-          <Picker.Item label="M" value="m" />
           <Picker.Item label="Mi" value="mi"/>
         </Picker>
       </View>

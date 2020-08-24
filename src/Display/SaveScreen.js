@@ -24,8 +24,6 @@ function SaveScreen({navigation}) {
   const distance = useContext(DistanceContext);
   const directions = useContext(DirectionsContext);
   const tokens = useContext(AuthContext);
-  const showDistance = unit.value === "m" ? distance.total : (
-    unit.value === "km" ? distance.total/1000 : Math.round(distance.total/1609 + Number.EPSILON * 100)/100);
 
   const encodeMarkers = (markers) => {
     return encode(markers.map((item) => [item.latitude, item.longitude]));

@@ -41,10 +41,10 @@ const SignUp = (props) => {
   const sendRegister = () => {
     var error = false;
     if (username === "" || password === "" || givenName === "") {
-      updateError("Error: One or more fields are empty");
+      updateError("One or more fields are empty");
       error = true;
     } else if (password !== confirm) {
-      updateError("Error: Passwords do not match");
+      updateError("Passwords do not match");
       error = true;
     }
     if (error) {

@@ -56,7 +56,9 @@ const Login = (props) => {
       return response.status;
     }).then((data) => {
       if (Number.isInteger(data)) {
-        updateStatus(data);
+        updateValid(false);
+        shake();
+        fadeInAndOut();
       } else {
         tokens.updateAccess(data.accessToken);
         tokens.updateRefresh(data.refreshToken);
@@ -72,7 +74,8 @@ const Login = (props) => {
         <Text style={styles.topText}>Login</Text>
       </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
-        <Text style={{color: "#ED4337"}}>Error: Username or Password incorrect!</Text>
+        <Text style={{color: "#ED4337"}}>{username === "" ? "Username cannot be empty!":
+          (password === "" ? "Password cannot be empty!" : "Username or Password incorrect!")}</Text>
       </Animated.View>
       <View style={styles.inputViews}>
         <View style={{justifyContent: "center"}}>

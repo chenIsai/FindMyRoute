@@ -18,7 +18,7 @@ import RouteContext from "../Context/RouteContext";
 import DirectionsContext from "../Context/DirectionsContext";
 
 import MapView, {Marker, Polyline} from "react-native-maps";
-import Geolocation from "@react-native-community/geolocation";
+import Geolocation from "react-native-geolocation-service";
 import {decode} from "@mapbox/polyline";
 
 const apiKey = links.key;
@@ -85,7 +85,7 @@ const MapDisplay = (props) => {
         Alert.alert(error.message);
         throw error;
       },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 200 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 200 }
     );
   };
 
@@ -222,6 +222,7 @@ const MapDisplay = (props) => {
         onPress={() => {
           if (!trayVisible) {
             showButtons();
+            return;
           }
           clearMarkers()
         }}

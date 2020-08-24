@@ -11,7 +11,7 @@ const SignUp = (props) => {
   const [username, updateUsername] = useState("");
   const [password, updatePassword] = useState("");
   const [confirm, updateConfirm] = useState("");
-  const [icon, updateIcon] = useState("eye");
+  const [icon, updateIcon] = useState("eye-off");
   const [status, updateStatus] = useState("");
   const [errorText, updateError] = useState("abc");
   const [valid, updateValid] = useState(true);

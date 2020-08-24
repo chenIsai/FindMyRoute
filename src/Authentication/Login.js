@@ -8,7 +8,7 @@ import links from "./link";
 const Login = (props) => {
   const [username, updateUsername] = useState("");
   const [password, updatePassword] = useState("");
-  const [icon, updateIcon] = useState("eye");
+  const [icon, updateIcon] = useState("eye-off");
   const [status, updateStatus] = useState("");
   const [valid, updateValid] = useState(true);
   const tokens = useContext(AuthContext);

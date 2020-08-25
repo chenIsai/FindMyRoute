@@ -1,5 +1,6 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
 import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from "react-native";
+import getPreciseDistance from "geolib/es/getPreciseDistance";
 
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
@@ -29,11 +30,12 @@ const CurrentRun = () => {
   const distance = useContext(DistanceContext);
   const unit = useContext(UnitContext);
 
-  const showDistance = unit.value === "km" ? distance.total/1000 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
+  const showDistance = unit.value === "km" ? Math.round((distance.total/1000 + Number.EPSILON) * 1000)/1000  : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
 
   const [time, updateTime] = useState(0);
   const [latLonArr, updateArray] = useState([]);
   const [speed, setSpeed] = useState(0);
+  const [lastAndCurrent, updateLocation] = useState(0);
   const timerRef = useRef();
 
   // TIMER RELATED FUNCTIONS
@@ -66,13 +68,19 @@ const CurrentRun = () => {
   const findPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
-        const latLon = [{latitude: position.coords["latitude"], longitude: position.coords["longitude"]}];
+        const latLon = {latitude: position.coords["latitude"], longitude: position.coords["longitude"]};
         setSpeed(Math.round(position.coords.speed * 100)/100);
-        if (time % 5) {
+        if (!(time % 5)) {
           updateArray(prevArr => {
             return prevArr.concat(latLon)
           });
         }
+        updateLocation(prevLoc => {
+          const newLoc = [];
+          newLoc[0] = prevLoc[1];
+          newLoc[1] = latLon;
+          return newLoc;
+        });
       },
       error => {
         Alert.alert(error.message);
@@ -153,6 +161,13 @@ const CurrentRun = () => {
   }, [latLonArr]);
 
   useEffect(() => {
+    if (lastAndCurrent[0]) {
+      const traveled = getPreciseDistance(lastAndCurrent[0], lastAndCurrent[1], 0.01);
+      distance.updateDistance(traveled);
+    }
+  }, [lastAndCurrent]);
+
+  useEffect(() => {
     hideButtonTray();
   }, []);
 
@@ -162,7 +177,7 @@ const CurrentRun = () => {
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Icon
             name={"shoe-print"}
-            color={"dimgrey"}
+            color={"grey"}
             size={30}
             />
           <Text style={{fontSize: 20}}>{showDistance} {unit.value}</Text>
@@ -170,7 +185,7 @@ const CurrentRun = () => {
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Icon
             name={"clock-fast"}
-            color={"dimgrey"}
+            color={"grey"}
             size={30}
             />
           <Text style={{fontSize: 20}}>{averageSpeed()}</Text>
@@ -178,7 +193,7 @@ const CurrentRun = () => {
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Ionicons
             name={"speedometer-outline"}
-            color={"dimgrey"}
+            color={"grey"}
             size={30}
             />
           <Text style={{fontSize: 20}}>{currentSpeed()}</Text>

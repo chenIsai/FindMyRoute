@@ -4,6 +4,7 @@ import getPreciseDistance from "geolib/es/getPreciseDistance";
 
 import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
+import RunContext from "../Context/RunContext";
 import DirectionsContext from "../Context/DirectionsContext";
 
 import Geolocation from "react-native-geolocation-service";
@@ -26,22 +27,27 @@ const RunningScreen = (props) => {
 export default RunningScreen;
 
 const CurrentRun = () => {
-  const directions = useContext(DirectionsContext);
-  const distance = useContext(DistanceContext);
+  const run = useContext(RunContext);
   const unit = useContext(UnitContext);
 
-  const showDistance = unit.value === "km" ? Math.round((distance.total/1000 + Number.EPSILON) * 1000)/1000  : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
+  const showDistance = unit.value === "km" ? Math.round((run.distance/1000 + Number.EPSILON) * 1000)/1000  : Math.round((run.distance/1609 + Number.EPSILON) * 100)/100;
 
   const [time, updateTime] = useState(0);
   const [latLonArr, updateArray] = useState([]);
   const [speed, setSpeed] = useState(0);
   const [lastAndCurrent, updateLocation] = useState(0);
+  const [buttonState, updateButton] = useState(0);
   const timerRef = useRef();
+
+  const changeButton = () => {
+    const nextButton = (buttonState + 1) % 3;
+    updateButton(nextButton);
+  }
 
   // TIMER RELATED FUNCTIONS
   const startTimer = () => {
     const interval = setInterval(onTick, 1000);
-    directions.setRunning();
+    run.setRunning();
     findPosition();
     timerRef.current = interval;
   }
@@ -55,11 +61,11 @@ const CurrentRun = () => {
 
   const stopTimer = () => {
     clearInterval(timerRef.current);
-    directions.setRunning();
+    run.setRunning();
   }
 
   const clearRun = () => {
-    directions.updateDirections([]);
+    run.clearRun();
     updateArray([]);
     updateTime(0);
   }
@@ -143,9 +149,9 @@ const CurrentRun = () => {
   const averageSpeed = () => {
     if (time) {
       if (unit.value === "km") {
-        return Math.round((distance.total / time * 3.6 + Number.EPSILON) * 100)/100 + " km/h";
+        return Math.round((run.distance / time * 3.6 + Number.EPSILON) * 100)/100 + " km/h";
       } else {
-        return Math.round((distance.total / time * 2.237 + Number.EPSILON) * 100)/100 + " mi/h";
+        return Math.round((run.distance / time * 2.237 + Number.EPSILON) * 100)/100 + " mi/h";
       }
     } else {
       return "0 " + unit.value + "/h";
@@ -155,15 +161,15 @@ const CurrentRun = () => {
 
   // EFFECTS
   useEffect(() => {
-    if (directions.isRunning) {
-      directions.updateDirections(latLonArr);
+    if (run.isRunning) {
+      run.updateRunDirections(latLonArr);
     }
   }, [latLonArr]);
 
   useEffect(() => {
     if (lastAndCurrent[0]) {
       const traveled = getPreciseDistance(lastAndCurrent[0], lastAndCurrent[1], 0.01);
-      distance.updateDistance(traveled);
+      run.updateRunDistance(traveled);
     }
   }, [lastAndCurrent]);
 
@@ -204,14 +210,14 @@ const CurrentRun = () => {
           <TouchableAnimated style={[{opacity: buttonTrayOpacity},
             {transform: [{translateX: pauseButtonX}]}]}
             onPress={() => {
-              stopTimer();
               buttonTrayAnimations();
+              changeButton();
             }}
             >
             <View>
-              <Icon
+              <Ionicons
                 style={styles.buttonIcon}
-                name={"pause"}
+                name={"save-outline"}
                 size={50} />
             </View>
           </TouchableAnimated>
@@ -219,8 +225,8 @@ const CurrentRun = () => {
             {transform: [{translateX: cancelButtonX}]}]}
             onPress={() => {
               clearRun();
-              stopTimer();
               buttonTrayAnimations();
+              changeButton();
             }}
             >
             <View>
@@ -236,12 +242,17 @@ const CurrentRun = () => {
           <View style={{alignSelf: "center", overflow: "hidden"}}>
             <Icon
               style={styles.buttonIcon}
-              name={"play"}
+              name={!buttonState ? "play" : "stop"}
               size={50}
               onPress={() => {
-                if (!directions.isRunning)
-                startTimer();
-                startButtonAnimations();
+                if (!buttonState && !run.isRunning) {
+                  startTimer();
+                  changeButton();
+                } else if (buttonState === 1 && run.isRunning) {
+                  stopTimer();
+                  startButtonAnimations();
+                  changeButton();
+                }
               }}
               />
           </View>

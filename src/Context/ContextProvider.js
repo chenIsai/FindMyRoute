@@ -5,6 +5,7 @@ import MarkersContext from "../Context/MarkersContext";
 import UnitContext from "../Context/UnitContext";
 import RouteContext from "../Context/RouteContext";
 import DirectionsContext from "../Context/DirectionsContext";
+import RunContext from "../Context/RunContext";
 import UserContext from "../Context/UserContext";
 import AuthContext from "../Context/AuthContext";
 
@@ -72,11 +73,37 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({directions}));
     },
 
+    // Live tracking user runs
+
     this.setRunning = () => {
-      const directions = {...this.state.directions};
-      directions.isRunning = !directions.isRunning;
-      this.setState(state => ({directions}));
+      const run = {...this.state.run};
+      run.isRunning = !run.isRunning;
+      this.setState(state => ({run}));
     },
+
+    this.updateRunDistance = (distance, add=true) => {
+      const run = {...this.state.run};
+      if (add) {
+        run.distance += distance;
+      } else {
+        run.distance = distance;
+      }
+      this.setState(state => ({run}));
+    }
+
+    this.updateRunDirections = (updated) => {
+      const run = {...this.state.run};
+      run.directions = updated;
+      this.setState(state => ({run}));
+    }
+
+    this.clearRun = () => {
+      const run = {...this.state.run};
+      run.directions = [],
+      run.distance = 0;
+      run.isRunning = false;
+      this.setState(state => ({run}));
+    }
 
     //  Access and Refresh tokens
     this.updateAccess = (token) => {
@@ -181,13 +208,20 @@ export default class ContextProvider extends React.Component {
       },
       directions: {
         value: [],
-        isRunning: false,
         updateDirections: this.updateDirections,
-        setRunning: this.setRunning,
       },
       user: {
         value: [],
         updateUser: this.updateUser,
+      },
+      run: {
+        distance: 0,
+        directions: [],
+        isRunning: false,
+        updateRunDistance: this.updateRunDistance,
+        updateRunDirections: this.updateRunDirections,
+        setRunning: this.setRunning,
+        clearRun: this.clearRun,
       },
       isLoading: true,
     }
@@ -217,17 +251,19 @@ export default class ContextProvider extends React.Component {
     return (
       <AuthContext.Provider value={this.state.tokens}>
         <UserContext.Provider value={this.state.user}>
-          <DirectionsContext.Provider value={this.state.directions}>
-            <RouteContext.Provider value={this.state.route}>
-              <UnitContext.Provider value={this.state.unit}>
-                <DistanceContext.Provider value={this.state.distance}>
-                  <MarkersContext.Provider value={this.state.markers}>
-                    <AppNavigator isLoading={this.state.isLoading}/>
-                  </MarkersContext.Provider>
-                </DistanceContext.Provider>
-              </UnitContext.Provider>
-            </RouteContext.Provider>
-          </DirectionsContext.Provider>
+          <RunContext.Provider value={this.state.run}>
+            <DirectionsContext.Provider value={this.state.directions}>
+              <RouteContext.Provider value={this.state.route}>
+                <UnitContext.Provider value={this.state.unit}>
+                  <DistanceContext.Provider value={this.state.distance}>
+                    <MarkersContext.Provider value={this.state.markers}>
+                      <AppNavigator isLoading={this.state.isLoading}/>
+                    </MarkersContext.Provider>
+                  </DistanceContext.Provider>
+                </UnitContext.Provider>
+              </RouteContext.Provider>
+            </DirectionsContext.Provider>
+          </RunContext.Provider>
         </UserContext.Provider>
       </AuthContext.Provider>
     )

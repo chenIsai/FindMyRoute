@@ -124,104 +124,95 @@ function DisplayRoutes(props) {
     return (
       <Splash />
     )
-  } else if (savedRoutes) {
-    if (savedRoutes.length > 0) {
-      return (
-        <View style={styles.container}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            isVisible={modalVisible}
-            onRequestClose={() => {
-              setVisible(false);
-            }}
-            onBackdropPress={() => {
-              setVisible(false);
-            }}
-            backdropOpacity={0}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalView}>
-                <Text
-                  style={{padding: 15, paddingLeft: 0, paddingBottom: 3, marginLeft: 15, marginRight: 15, borderBottomWidth: 1}}
-                  >
-                  Change the name of your route
-                </Text>
-                <TextInput
-                  style={{margin: 15, marginTop: 5, marginBottom: 0, textAlignVertical: "top", backgroundColor: "#97d197"}}
-                  maxLength={24}
-                  value={editName}
-                  onChangeText={(text) => updateName(text)}
-                  placeholder={"Name"}
-                  />
-                  <Text
-                    style={{paddingRight: 15, paddingTop: 5, paddingBottom: 3, marginLeft: 15, marginRight: 15, borderBottomWidth: 1}}
-                    >Update or add a description!</Text>
-                <TextInput
-                  style={{margin: 15, marginTop: 5, textAlignVertical: "top", backgroundColor: "#97d197"}}
-                  blurOnSubmit={true}
-                  maxLength={50}
-                  multiline={true}
-                  numberOfLines={2}
-                  value={editDescription}
-                  onChangeText={(text) => updateDescription(text)}
-                  placeholder={"Enter a description for the route (optional)"} />
-                <View style = {{flexDirection: "row",}}>
-                  <TouchableNativeFeedback
-                    onPress={() => setVisible(false)}>
-                    <View style={styles.cancelButton}>
-                      <Text style={{fontWeight: "bold", color: "grey"}}>Cancel</Text>
-                    </View>
-                  </TouchableNativeFeedback>
-                  <TouchableNativeFeedback
-                    onPress={() => editRoute(currentRoute, editName, editDescription)}>
-                    <View style={styles.saveButton}>
-                      <Text style={{color: "white"}}>Save</Text>
-                    </View>
-                  </TouchableNativeFeedback>
+  }
+  return (
+    <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        isVisible={modalVisible}
+        onRequestClose={() => {
+          setVisible(false);
+        }}
+        onBackdropPress={() => {
+          setVisible(false);
+        }}
+        backdropOpacity={0}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text
+              style={{padding: 15, paddingLeft: 0, paddingBottom: 3, marginLeft: 15, marginRight: 15, borderBottomWidth: 1}}
+              >
+              Change the name of your route
+            </Text>
+            <TextInput
+              style={{margin: 15, marginTop: 5, marginBottom: 0, textAlignVertical: "top", backgroundColor: "#97d197"}}
+              maxLength={24}
+              value={editName}
+              onChangeText={(text) => updateName(text)}
+              placeholder={"Name"}
+              />
+              <Text
+                style={{paddingRight: 15, paddingTop: 5, paddingBottom: 3, marginLeft: 15, marginRight: 15, borderBottomWidth: 1}}
+                >Update or add a description!</Text>
+            <TextInput
+              style={{margin: 15, marginTop: 5, textAlignVertical: "top", backgroundColor: "#97d197"}}
+              blurOnSubmit={true}
+              maxLength={50}
+              multiline={true}
+              numberOfLines={2}
+              value={editDescription}
+              onChangeText={(text) => updateDescription(text)}
+              placeholder={"Enter a description for the route (optional)"} />
+            <View style = {{flexDirection: "row",}}>
+              <TouchableNativeFeedback
+                onPress={() => setVisible(false)}>
+                <View style={styles.cancelButton}>
+                  <Text style={{fontWeight: "bold", color: "grey"}}>Cancel</Text>
                 </View>
-              </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                onPress={() => editRoute(currentRoute, editName, editDescription)}>
+                <View style={styles.saveButton}>
+                  <Text style={{color: "white"}}>Save</Text>
+                </View>
+              </TouchableNativeFeedback>
             </View>
-          </Modal>
-          <Header navigation={props.navigation} header={"Saved Routes"}/>
-          <ScrollView
-            style={{flex: 1}}
-            contentContainerStyle={{flexGrow: .1}}
-            overScrollMode={"always"}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={() => getRoutes()} />
-            }
-            >
-            {savedRoutes.map((route, index) => {
-              const showDistance = unit.value === "km" ? distance.total/1000 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
-              return (
-                <LiteView
-                  key={route.name}
-                  name={route.name}
-                  distance={showDistance}
-                  markers={decodeMarkers(route.markers)}
-                  directions={decodeRoute(route.route)}
-                  unit={unit.value}
-                  description={route.description}
-                  delete={(name) => deleteRoute(name)}
-                  edit={(name, description) => openModal(name, description)}
-                />)})}
-          </ScrollView>
+          </View>
         </View>
-      )
-    }
-    else {
-      return (
-        <View style={{flex: 1}}>
-          <Header navigation={props.navigation} header={"Saved Routes"}/>
+      </Modal>
+      <Header navigation={props.navigation} header={"Saved Routes"}/>
+      <ScrollView
+        style={{flex: 1}}
+        contentContainerStyle={{flexGrow: .1}}
+        overScrollMode={"always"}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => getRoutes()} />
+        }
+        >
+        {savedRoutes.length === 0 ? (
           <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <Text>You have no saved routes</Text>
             <Button title="Go to Map" onPress={() => props.navigation.navigate("Map")}/>
           </View>
-        </View>
-      )
-    }
-  }
+        ) : savedRoutes.map((route, index) => {
+          const showDistance = unit.value === "km" ? route.distance/1000 : Math.round((route.distance/1609 + Number.EPSILON) * 100)/100;
+          return (
+            <LiteView
+              key={route.name}
+              name={route.name}
+              distance={showDistance}
+              markers={decodeMarkers(route.markers)}
+              directions={decodeRoute(route.route)}
+              unit={unit.value}
+              description={route.description}
+              delete={(name) => deleteRoute(name)}
+              edit={(name, description) => openModal(name, description)}
+            />)})}
+      </ScrollView>
+    </View>
+  )
 }
 
 

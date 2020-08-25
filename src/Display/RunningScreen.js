@@ -143,9 +143,9 @@ const CurrentRun = () => {
   const averageSpeed = () => {
     if (time) {
       if (unit.value === "km") {
-        return Math.round(distance.total / time * 3600)/100 + " km/h";
+        return Math.round((distance.total / time * 3.6 + Number.EPSILON) * 100)/100 + " km/h";
       } else {
-        return Math.round(distance.total / time * 2237)/100 + " mi/h";
+        return Math.round((distance.total / time * 2.237 + Number.EPSILON) * 100)/100 + " mi/h";
       }
     } else {
       return "0 " + unit.value + "/h";
@@ -239,6 +239,7 @@ const CurrentRun = () => {
               name={"play"}
               size={50}
               onPress={() => {
+                if (!directions.isRunning)
                 startTimer();
                 startButtonAnimations();
               }}

@@ -180,12 +180,6 @@ export default class ContextProvider extends React.Component {
         refreshAccess: this.refreshAccessToken,
         logout: this.logout,
       },
-      mapRegion: {
-        latitude: 0,
-        longitude: 0,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
       distance: {
         value: [],
         total: 0,

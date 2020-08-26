@@ -18,24 +18,22 @@ const Footer = () => {
           let iconName;
           if (route.name === "Current Run") {
             iconName = focused ? "run-fast" : "run"
-          } else if (route.name === "Map") {
-            iconName = focused ? "map" : "map-outline"
           } else if (route.name === "Plan Your Route") {
-            iconName = focused ? "map-marker" : "map-marker-plus-outline"
+            iconName = focused ? "map" : "map-outline"
           }
 
           return <Icon name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
-        activeTintColor: "#3fc0b7",
-        inactiveTintColor: "#468abd",
+        activeTintColor: "#468abd",
+        inactiveTintColor: "#354d9c",
         activeBackgroundColor: "#C6DEA6",
-        inactiveBackgroundColor: "#ffdfdf"
+        inactiveBackgroundColor: "#C6DEA6"
       }}
       >
       <Tab.Screen name="Current Run" component={RunningScreen} />
-      <Tab.Screen name="Map" component={MapScreen} />
+      <Tab.Screen name="Plan Your Route" component={MapScreen} />
     </Tab.Navigator>
   );
 }

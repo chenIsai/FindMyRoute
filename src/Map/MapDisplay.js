@@ -5,7 +5,8 @@ import {
   Button,
   Alert,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Text
 } from "react-native";
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -13,6 +14,7 @@ import Modal from "react-native-modal"
 import links from "../Authentication/link";
 
 import DistanceContext from "../Context/DistanceContext";
+import UnitContext from "../Context/UnitContext";
 import MarkersContext from "../Context/MarkersContext";
 import RouteContext from "../Context/RouteContext";
 import DirectionsContext from "../Context/DirectionsContext";
@@ -27,7 +29,9 @@ const MapDisplay = (props) => {
   const distance = useContext(DistanceContext);
   const markers = useContext(MarkersContext);
   const route = useContext(RouteContext);
+  const unit = useContext(UnitContext);
   const directions = useContext(DirectionsContext);
+  const showDistance = unit.value === "km" ? Math.round((distance.total/1000 + Number.EPSILON) * 100)/100 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
 
   const mapRef = useRef(null);
   const [marginBottom, updateMargin] = useState(1);
@@ -179,6 +183,9 @@ const MapDisplay = (props) => {
           strokeWidth={6}
         />
       </MapView>
+      <View style={styles.distanceView}>
+        <Text style={{fontSize: 20, fontWeight: "bold", color: "grey"}}>{showDistance} {unit.value}</Text>
+      </View>
       <View style={styles.menuView}>
         <Icon
           name={"md-menu"}
@@ -211,7 +218,7 @@ const MapDisplay = (props) => {
           }
         }}
         >
-        <View style={[styles.iconStyles, {bottom: 75}]}>
+        <View style={[styles.iconStyles, {bottom: 130}]}>
           <Icon
             name={"save-outline"}
             size={30}
@@ -227,7 +234,7 @@ const MapDisplay = (props) => {
           clearMarkers()
         }}
         >
-        <View style={[styles.iconStyles, {bottom: 130}]}>
+        <View style={[styles.iconStyles, {bottom: 75}]}>
           <Icon
             name={"trash-outline"}
             size={30}
@@ -256,6 +263,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignSelf: "flex-start",
     flexDirection: "row",
+  },
+// 9AD1E2
+  distanceView: {
+    position: "absolute",
+    backgroundColor: "#cbf2ef",
+    padding: 5,
+    alignSelf: "baseline",
+    bottom: 40,
+    left: 10,
   },
 
   menuView: {

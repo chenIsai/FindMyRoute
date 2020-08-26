@@ -1,6 +1,7 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
 import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from "react-native";
 import getPreciseDistance from "geolib/es/getPreciseDistance";
+import MapView from "react-native-maps";
 
 import UnitContext from "../Context/UnitContext";
 import RunContext from "../Context/RunContext";
@@ -11,9 +12,24 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Header from "./Header";
 
 const RunningScreen = (props) => {
+  const run = useContext(RunContext);
   return (
     <View style={styles.container}>
-      <Header navigation={props.navigation} header={"Track Your Runs"}/>
+      <Header navigation={props.navigation} header={"Track Your Run"}/>
+      <MapView
+        style={{flex: .8}}
+        liteMode
+        showsUserLocation={true}
+        followsUserLocation={true}
+        showsMyLocationButton={true}
+        >
+        {run.directions.length ? (
+          <Polyline
+            coordinates={run.directions}
+            strokeWidth={4}
+          />
+      ) : null}
+      </MapView>
       <CurrentRun />
     </View>
   )

@@ -2,10 +2,8 @@ import React, {useContext, useState, useRef, useEffect} from "react";
 import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from "react-native";
 import getPreciseDistance from "geolib/es/getPreciseDistance";
 
-import DistanceContext from "../Context/DistanceContext";
 import UnitContext from "../Context/UnitContext";
 import RunContext from "../Context/RunContext";
-import DirectionsContext from "../Context/DirectionsContext";
 
 import Geolocation from "react-native-geolocation-service";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,12 +11,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Header from "./Header";
 
 const RunningScreen = (props) => {
-  const distance = useContext(DistanceContext);
-  const unit = useContext(UnitContext);
-  const showDistance = unit.value === "km" ? distance.total / 1000 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
   return (
     <View style={styles.container}>
-      <Header navigation={props.navigation} header={"Display"}/>
+      <Header navigation={props.navigation} header={"Track Your Runs"}/>
       <CurrentRun />
     </View>
   )
@@ -268,12 +263,11 @@ const CurrentRun = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lime"
+    backgroundColor: "#84ebab"
   },
 
   startStopButton: {
     alignSelf: "center",
-    backgroundColor: "lightblue",
     padding: 10,
   },
 

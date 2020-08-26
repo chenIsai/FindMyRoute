@@ -59,6 +59,7 @@ function DisplayRoutes(props) {
       }
       if (response.status === 403) {
         tokens.refreshAccessToken();
+        Alert.alert("Error refreshing, please try again!");
       }
     }).then((data) => {
       updateRoutes(data);

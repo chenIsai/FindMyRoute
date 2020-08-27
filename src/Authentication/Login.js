@@ -60,8 +60,7 @@ const Login = (props) => {
         shake();
         fadeInAndOut();
       } else {
-        tokens.updateAccess(data.accessToken);
-        tokens.updateRefresh(data.refreshToken);
+        tokens.setTokens({access: data.accessToken, refresh: data.refreshToken})
       }
     }).catch((error) => {
       console.log(error)

@@ -72,8 +72,7 @@ const SignUp = (props) => {
       if (data.isInteger) {
         updateStatus(data)
       } else {
-        tokens.updateAccess(data.accessToken);
-        tokens.updateRefresh(data.refreshToken);
+        tokens.setTokens({access: data.accessToken, refresh: data.refreshToken})
       }
     }).catch((error) => {
       console.log(error)

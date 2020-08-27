@@ -108,11 +108,11 @@ export default class ContextProvider extends React.Component {
     //  Access and Refresh tokens
     this.setTokens = (newTokens) => {
       const tokens = {...this.state.tokens};
-      if (newTokens.access) {
+      if (newTokens.access || newTokens.access === "") {
         tokens.accessToken = newTokens.access;
         AsyncStorage.setItem("access", newTokens.access);
       }
-      if (newTokens.refresh) {
+      if (newTokens.refresh || newTokens.access === "") {
         tokens.refreshToken = newTokens.refresh;
         AsyncStorage.setItem("refresh", newTokens.refresh);
       }

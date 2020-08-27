@@ -54,8 +54,8 @@ const MapDisplay = (props) => {
   }
 
   const hideButtons = () => {
-    slideButton(slideSave, 55, 100);
-    slideButton(slideDelete, 110, 200);
+    slideButton(slideSave, 110, 100);
+    slideButton(slideDelete, 55, 200);
     fadeButton(fadeSave, 0, 100);
     fadeButton(fadeDelete, 0, 200);
     setVisible(false);

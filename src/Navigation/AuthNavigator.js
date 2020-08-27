@@ -1,6 +1,5 @@
 import React, {useState, useContext} from "react";
 import {createStackNavigator} from "@react-navigation/stack";
-import {NavigationContainer} from "@react-navigation/native";
 
 import Login from "../Authentication/Login";
 import SignUp from "../Authentication/SignUp";

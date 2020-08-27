@@ -7,7 +7,3 @@ const RouteContext = React.createContext({
 }});
 
 export default RouteContext;
-
-// Routes use:
-// response.routes[0].overview_polyline.points
-// response.routes[0].legs[0].distance

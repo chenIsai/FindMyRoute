@@ -165,6 +165,7 @@ export default class ContextProvider extends React.Component {
     }
 
     this.logout = () => {
+      this.state.tokens.setTokens({access: "", refresh: ""});
       AsyncStorage.getAllKeys().then(keys => AsyncStorage.multiRemove(keys)).then(this.setState(this.initialState, this._loadState))
     }
 

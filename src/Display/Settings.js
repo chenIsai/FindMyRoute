@@ -49,8 +49,6 @@ const MainScreen = (props) => {
       }
     }).then((response) => {
       tokens.logout();
-      tokens.updateAccess("");
-      tokens.updateRefresh("");
     }).catch((error) => {
       console.log(error);
     });
@@ -131,10 +129,6 @@ const Profile = () => {
   const user = useContext(UserContext);
   return (
     <View style={styles.profile}>
-      <Icon
-        style={styles.iconStyle}
-        name={"person"}
-        size={80}/>
       <View style={styles.textStack}>
         <Text style={{fontWeight: "bold"}}>{user.value ? user.value.name : "Not connected"}</Text>
         <Text style={{color: "grey"}}>{user.value ? user.value.username : ""}</Text>

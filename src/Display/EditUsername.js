@@ -62,6 +62,11 @@ const EditUsername = ({route, navigation}) => {
       if (response.ok) {
         Alert.alert("Success!");
         navigation.goBack();
+      } else if (response.status === 403) {
+        tokens.refreshTokens;
+        Alert.alert("Error occured while saving new details! Please try again!");
+      } else {
+        Alert.alert("Unexpected Error " + response.status);
       }
     }).catch(error => {
       console.log(error);

@@ -60,6 +60,11 @@ const EditPassword = (props) => {
       if (response.ok) {
         Alert.alert("Success!");
         props.navigation.goBack();
+      } else if (response.status === 403) {
+        tokens.refreshTokens;
+        Alert.alert("Error occured while saving new details! Please try again!");
+      } else {
+        Alert.alert("Unexpected Error " + response.status);
       }
     }).catch(error => {
       console.log(error);

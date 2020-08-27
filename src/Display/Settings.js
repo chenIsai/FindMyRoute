@@ -63,6 +63,15 @@ const MainScreen = (props) => {
         "Authorization": "Bearer " + tokens.accessToken,
         "Content-Type": "application/json",
       }
+    }).then((response) => {
+      if (response.ok) {
+        Alert.alert("Success!");
+      } else if (response.status === 403) {
+        tokens.refreshTokens;
+        Alert.alert("Error occured while deleting! Please try again!");
+      } else {
+        Alert.alert("Unexpected Error " + response.status);
+      }
     }).catch((error) => {
       console.log(error);
     });

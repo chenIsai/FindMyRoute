@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 import MapScreen from "../Map/MapScreen.js";
-import RunningScreen from "../Display/RunningScreen";
+import RunStack  from "./RunStack";
 import "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
@@ -32,7 +32,7 @@ const Footer = () => {
         inactiveBackgroundColor: "#C6DEA6"
       }}
       >
-      <Tab.Screen name="Current Run" component={RunningScreen} />
+      <Tab.Screen name="Current Run" component={RunStack} />
       <Tab.Screen name="Plan Your Route" component={MapScreen} />
     </Tab.Navigator>
   );

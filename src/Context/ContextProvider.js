@@ -106,21 +106,20 @@ export default class ContextProvider extends React.Component {
     }
 
     //  Access and Refresh tokens
-    this.updateAccess = (token) => {
+    this.setTokens = (newTokens) => {
       const tokens = {...this.state.tokens};
-      tokens.accessToken = token;
-      AsyncStorage.setItem("access", token);
+      if (newTokens.access) {
+        tokens.accessToken = newTokens.access;
+        AsyncStorage.setItem("access", newTokens.access);
+      }
+      if (newTokens.refresh) {
+        tokens.refreshToken = newTokens.refresh;
+        AsyncStorage.setItem("refresh", newTokens.refresh);
+      }
       this.setState(state => ({tokens}), this.updateUser());
     }
 
-    this.updateRefresh = (token) => {
-      const tokens = {...this.state.tokens};
-      tokens.refreshToken = token;
-      AsyncStorage.setItem("refresh", token);
-      this.setState(state => ({tokens}));
-    }
-
-    this.refreshAccessToken = () => {
+    this.refreshTokens = () => {
       if (this.state.tokens.refreshToken !== "" && this.state.tokens.refreshToken) {
         fetch(links.refresh, {
           method: "POST",
@@ -136,12 +135,10 @@ export default class ContextProvider extends React.Component {
           return response.status;
         }).then((data) => {
           if (Number.isInteger(data)) {
-            this.state.tokens.updateRefresh("");
-            this.state.tokens.updateAccess("");
+            this.state.tokens.setTokens({access: "", refresh: ""});
             return;
           }
-          this.state.tokens.updateRefresh(data.refreshToken);
-          this.state.tokens.updateAccess(data.accessToken);
+          this.state.tokens.setTokens({access: data.accessToken, refresh: data.refreshToken});
         }).catch((error) => {
           console.log(error);
         });
@@ -175,9 +172,8 @@ export default class ContextProvider extends React.Component {
       tokens: {
         accessToken: null,
         refreshToken: null,
-        updateAccess: this.updateAccess,
-        updateRefresh: this.updateRefresh,
-        refreshAccess: this.refreshAccessToken,
+        setTokens: this.setTokens,
+        refreshTokens: this.refreshTokens,
         logout: this.logout,
       },
       distance: {
@@ -238,7 +234,7 @@ export default class ContextProvider extends React.Component {
       tokens.accessToken = items[1][1] !== null ? items[1][1] : "";
       tokens.refreshToken = items[2][1] !== null ? items[2][1] : "";
       this.setState({unit, tokens, isLoading: false});
-    }).then(this.refreshAccessToken);
+    }).then(this.refreshTokens);
   }
 
   render() {

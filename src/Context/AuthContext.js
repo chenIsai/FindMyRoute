@@ -3,8 +3,7 @@ const AuthContext = React.createContext({
   tokens: {
     accessToken: "",
     refreshToken: "",
-    updateAccess: () => {},
-    updateRefresh: () => {},
+    updateTokens: () => {},
     refreshAccess: () => {},
     logout: () => {},
 }});

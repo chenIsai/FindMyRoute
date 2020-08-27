@@ -10,9 +10,9 @@ import {decode} from "@mapbox/polyline"
 
 import UnitContext from "../Context/UnitContext";
 import AuthContext from "../Context/AuthContext";
-import LiteView from "./LiteView";
-import Splash from "./Splash";
-import Header from "./Header";
+import LiteView from "./Components/LiteView";
+import Splash from "./Components/Splash";
+import Header from "./Components/Header";
 import links from "../Authentication/link";
 
 function DisplayRoutes(props) {

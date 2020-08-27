@@ -1,8 +1,8 @@
 import React, {useState, useContext} from "react";
 import {createStackNavigator} from "@react-navigation/stack";
 
-import SaveScreen from "../Display/SaveScreen";
-import RunningScreen from "../Display/RunningScreen";
+import SaveScreen from "../Display/CurrentRun/SaveScreen";
+import RunningScreen from "../Display/CurrentRun/RunningScreen";
 
 const Stack = createStackNavigator();
 

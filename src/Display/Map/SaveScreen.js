@@ -1,18 +1,18 @@
 import React, {useState, useContext} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
 
-import DistanceContext from "../Context/DistanceContext";
-import UnitContext from "../Context/UnitContext";
-import MarkersContext from "../Context/MarkersContext";
-import DirectionsContext from "../Context/DirectionsContext";
-import AuthContext from "../Context/AuthContext";
+import DistanceContext from "../../Context/DistanceContext";
+import UnitContext from "../../Context/UnitContext";
+import MarkersContext from "../../Context/MarkersContext";
+import DirectionsContext from "../../Context/DirectionsContext";
+import AuthContext from "../../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import {encode} from "@mapbox/polyline"
 
-import LiteMap from "./LiteMap";
+import LiteMap from "../Components/LiteMap";
 import Icon from "react-native-vector-icons/Ionicons";
-import links from "../Authentication/link";
+import links from "../../Authentication/link";
 
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");

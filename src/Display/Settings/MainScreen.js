@@ -1,31 +1,16 @@
 import React, {useContext, useState} from "react";
 import {View, Text, TouchableNativeFeedback, StyleSheet} from "react-native";
 
-import UnitContext from "../Context/UnitContext";
-import DistanceContext from "../Context/UnitContext";
-import AuthContext from "../Context/AuthContext";
-import UserContext from "../Context/UserContext";
+import UnitContext from "../../Context/UnitContext";
+import DistanceContext from "../../Context/UnitContext";
+import AuthContext from "../../Context/AuthContext";
+import UserContext from "../../Context/UserContext";
 
 import {Picker} from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
-import links from "../Authentication/link";
-import Header from "./Header";
+import links from "../../Authentication/link";
+import Header from "../Components/Header";
 import Modal from "react-native-modal";
-import {createStackNavigator} from "@react-navigation/stack";
-import EditUsername from "./EditUsername";
-import EditPassword from "./EditPassword";
-
-const Stack = createStackNavigator();
-
-const Settings = (props) => {
-  return (
-    <Stack.Navigator screenOptions = {{headerShown: false}}>
-      <Stack.Screen name={"Profile"} component={MainScreen}/>
-      <Stack.Screen name={"EditNames"} component={EditUsername} />
-      <Stack.Screen name={"EditPass"} component={EditPassword} />
-    </Stack.Navigator>
-  )
-}
 
 const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
@@ -342,4 +327,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Settings;
+export default MainScreen;

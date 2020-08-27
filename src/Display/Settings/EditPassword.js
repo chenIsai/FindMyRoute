@@ -2,8 +2,8 @@ import React, {useState, useContext, useRef} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, Alert, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-import AuthContext from "../Context/AuthContext";
-import links from "../Authentication/link";
+import AuthContext from "../../Context/AuthContext";
+import links from "../../Authentication/link";
 
 const EditPassword = (props) => {
   const [password, updatePassword] = useState("");

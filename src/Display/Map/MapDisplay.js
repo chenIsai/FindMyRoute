@@ -11,13 +11,13 @@ import {
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal"
-import links from "../Authentication/link";
+import links from "../../Authentication/link";
 
-import DistanceContext from "../Context/DistanceContext";
-import UnitContext from "../Context/UnitContext";
-import MarkersContext from "../Context/MarkersContext";
-import RouteContext from "../Context/RouteContext";
-import DirectionsContext from "../Context/DirectionsContext";
+import DistanceContext from "../../Context/DistanceContext";
+import UnitContext from "../../Context/UnitContext";
+import MarkersContext from "../../Context/MarkersContext";
+import RouteContext from "../../Context/RouteContext";
+import DirectionsContext from "../../Context/DirectionsContext";
 
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";

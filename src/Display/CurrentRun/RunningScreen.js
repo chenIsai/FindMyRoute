@@ -3,13 +3,13 @@ import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from 
 import getPreciseDistance from "geolib/es/getPreciseDistance";
 import MapView, {Polyline} from "react-native-maps";
 
-import UnitContext from "../Context/UnitContext";
-import RunContext from "../Context/RunContext";
+import UnitContext from "../../Context/UnitContext";
+import RunContext from "../../Context/RunContext";
 
 import Geolocation from "react-native-geolocation-service";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "./Header";
+import Header from "../Components/Header";
 
 const RunningScreen = (props) => {
   const run = useContext(RunContext);

@@ -4,7 +4,7 @@ import {View, Text} from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
-import MapScreen from "../Map/MapScreen.js";
+import MapScreen from "../Display/Map/MapScreen.js";
 import RunStack  from "./RunStack";
 import "react-native-gesture-handler";
 

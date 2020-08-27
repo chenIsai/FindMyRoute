@@ -2,9 +2,9 @@ import React, {useState, useContext, useRef} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, Alert, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-import UserContext from "../Context/UserContext";
-import AuthContext from "../Context/AuthContext";
-import links from "../Authentication/link";
+import UserContext from "../../Context/UserContext";
+import AuthContext from "../../Context/AuthContext";
+import links from "../../Authentication/link";
 
 const EditUsername = ({route, navigation}) => {
   console

@@ -5,11 +5,11 @@ import {createDrawerNavigator} from "@react-navigation/drawer";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
 import AuthContext from "../Context/AuthContext";
-import AuthNavigator from "./AuthNavigator";
+import AuthStack from "./AuthStack";
 
 import Footer from "./Footer";
 import DisplayRoutes from "../Display/DisplayRoutes";
-import Settings from "../Display/Settings";
+import SettingsStack from "./SettingsStack";
 import Images from "../Images/index";
 
 const Drawer = createDrawerNavigator();
@@ -28,7 +28,7 @@ const AppNavigator = (props) => {
     <NavigationContainer>
       <Stack.Navigator screenOptions = {{headerShown: false}}>
       {!tokens.refreshToken ? (
-        <Stack.Screen name="Auth" component={AuthNavigator} />
+        <Stack.Screen name="Auth" component={AuthStack} />
       ) : (
         <Stack.Screen name="Main" component={MainApp} />
       )}
@@ -57,7 +57,7 @@ const MainApp = () => {
     <Drawer.Navigator initlaRouteName="Home">
       <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
       <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
-      <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Settings" component={SettingsStack} />
     </Drawer.Navigator>
   );
 }

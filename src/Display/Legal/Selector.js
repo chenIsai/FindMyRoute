@@ -10,7 +10,8 @@ const Selector = ({navigation}) => {
       {routes.map((name) => {
         return (
           <TouchableOpacity
-            onPress={() => navigation.navigate(name)}>
+            onPress={() => navigation.navigate(name)}
+            key={name}>
             <View style={styles.details}>
                 <Text style={{fontSize: 16, fontWeight: "bold"}}>{name}</Text>
             </View>

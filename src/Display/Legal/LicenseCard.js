@@ -32,7 +32,7 @@ export default LicenseCard;
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    marginBottom: 5,
+    marginTop: 5,
     flexDirection: "row",
     backgroundColor: "white",
   },

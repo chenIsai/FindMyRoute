@@ -10,6 +10,7 @@ import AuthStack from "./AuthStack";
 import Footer from "./Footer";
 import DisplayRoutes from "../Display/DisplayRoutes";
 import SettingsStack from "./SettingsStack";
+import LegalStack from "./LegalStack";
 import Images from "../Images/index";
 
 const Drawer = createDrawerNavigator();
@@ -58,6 +59,7 @@ const MainApp = () => {
       <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
       <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
       <Drawer.Screen name="Settings" component={SettingsStack} />
+      <Drawer.Screen name="Legal" component={LegalStack} />
     </Drawer.Navigator>
   );
 }

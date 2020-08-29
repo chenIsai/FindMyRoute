@@ -46,7 +46,7 @@ function SaveScreen({navigation}) {
       markers: encodeMarkers(markers.value),
       route: route,
     });
-    fetch(links.routes, {
+    fetch(links.savePlanned, {
       method: "POST",
       body: routeJSON,
       headers: {

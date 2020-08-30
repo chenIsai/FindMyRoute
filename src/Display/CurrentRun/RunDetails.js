@@ -19,7 +19,7 @@ const RunDetails = ({navigation}) => {
   const [runCoordinates, updateRunCoordinates] = useState([]);
   const [speed, setSpeed] = useState(0);
   const [lastUsedPosition, updateLastUsed] = useState(0);
-  const [currentPos, updateCurrentPosition] = useState({});
+  const [currentPos, updateCurrentPosition] = useState(0);
   const [buttonState, updateButton] = useState(0);
   const timerRef = useRef();
 
@@ -41,8 +41,9 @@ const RunDetails = ({navigation}) => {
       if (distanceBetween < 20) {
         return;
       } else {
-        updateRunCoordinates(currentPos);
+        updateRunCoordinates(prevRun => prevRun.concat(currentPos));
         updateLastUsed(currentPos);
+        run.updateRunDistance(distanceBetween);
       }
     } else {
       updateLastUsed(currentPos);
@@ -79,7 +80,7 @@ const RunDetails = ({navigation}) => {
     updateTime(0);
     setSpeed(0);
     updateLastUsed(0);
-    updateCurrentPosition({});
+    updateCurrentPosition(0);
   }
 
   // GET USER POSITION

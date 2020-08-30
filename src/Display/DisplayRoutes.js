@@ -205,7 +205,7 @@ function DisplayRoutes(props) {
               name={route.name}
               distance={showDistance}
               markers={decodeMarkers(route.markers)}
-              directions={decodeRoute(route.route)}
+              route={decodeRoute(route.route)}
               unit={unit.value}
               description={route.description}
               delete={(name) => deleteRoute(name)}

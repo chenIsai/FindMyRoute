@@ -4,6 +4,8 @@ import MapView, {Marker, Polyline} from "react-native-maps";
 
 const LiteMap = (props) => {
   let map = null;
+  const willRenderMarkers = props.markers && props.markers.length;
+  const willRenderRoute = props.route && props.route.length;
   return (
     <MapView
       liteMode
@@ -12,27 +14,27 @@ const LiteMap = (props) => {
       showsUserLocation={false}
       initialRegion={{latitude: 0, longitude: 0, latitudeDelta: 0.0721, longitudeDelta: 0.0421}}
       onMapReady={() => {
-        if (props.markers && props.markers.length) {
+        if (willRenderMarkers) {
           map.fitToCoordinates(props.markers, {
             edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
             animated: false,
           });
-        } else if (props.directions && props.directions.length) {
-          map.fitToCoordinates(props.directions, {
+        } else if (willRenderRoute) {
+          map.fitToCoordinates(props.route, {
             edgePadding: { top: 100, right: 100, bottom: 100, left: 100}, animated: false,
           });
         }
         }}
       >
-      {props.markers ? (
+      {willRenderMarkers ? (
         props.markers.map((coordinate) => {
           const key = coordinate.latitude.toString() + "," + coordinate.longitude.toString();
           return(<Marker coordinate={coordinate} key={key}/>)
         })) : null
       }
-      {props.directions.length ? (
+      {willRenderRoute ? (
         <Polyline
-          coordinates={props.directions}
+          coordinates={props.route}
           strokeWidth={4}
         />
       ) : null}

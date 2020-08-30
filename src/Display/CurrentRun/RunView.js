@@ -9,7 +9,7 @@ import Geolocation from "react-native-geolocation-service";
 import RunDetails from "./RunDetails";
 import Header from "../Components/Header";
 
-const RunningScreen = (props) => {
+const RunView = (props) => {
   const run = useContext(RunContext);
   const [marginBottom, updateMargin] = useState(1);
   const [initialRegion, updateRegion] = useState(null);
@@ -54,12 +54,12 @@ const RunningScreen = (props) => {
           />
       ) : null}
       </MapView>
-      <RunDetails />
+      <RunDetails navigation={props.navigation}/>
     </View>
   )
 }
 
-export default RunningScreen;
+export default RunView;
 
 const styles = StyleSheet.create({
   container: {

@@ -11,7 +11,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import links from "../../Authentication/link";
 import {encode} from "@mapbox/polyline"
 
-const RunDetails = () => {
+const RunDetails = ({navigation}) => {
   const run = useContext(RunContext);
   const unit = useContext(UnitContext);
 
@@ -164,7 +164,7 @@ const RunDetails = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.runDetails}>
+      <View style={styles.details}>
         <View style={{alignSelf: "baseline", alignItems: "center"}}>
           <Icon
             name={"shoe-print"}
@@ -195,8 +195,11 @@ const RunDetails = () => {
           <TouchableAnimated style={[{opacity: buttonTrayOpacity},
             {transform: [{translateX: pauseButtonX}]}]}
             onPress={() => {
-              buttonTrayAnimations();
-              changeButton();
+              if (run.directions.length) {
+                navigation.navigate("SaveScreen")
+              } else {
+                Alert.alert("No route detected!");
+              }
             }}
             >
             <View>
@@ -263,7 +266,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  runDetails: {
+  details: {
     padding: 10,
     flexDirection: "row",
     justifyContent: "space-evenly",

@@ -74,7 +74,7 @@ function SaveScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.mapStyle}>
-        <LiteMap markers={markers.value} directions={directions.value}/>
+        <LiteMap markers={markers.value} route={directions.value}/>
       </View>
       <View>
         <View style={styles.nameRow}>

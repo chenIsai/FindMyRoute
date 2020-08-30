@@ -10,7 +10,7 @@ function LiteView(props) {
   return(
     <View style={styles.container}>
       <View style={styles.map}>
-        <LiteMap directions={props.directions} markers={props.markers}/>
+        <LiteMap route={props.route} markers={props.markers}/>
       </View>
       <View style={styles.details}>
         <View style={{flex: .2, justifyContent: "flex-start", borderBottomWidth: 1, flexDirection: "row"}}>

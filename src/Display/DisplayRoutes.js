@@ -204,7 +204,7 @@ function DisplayRoutes(props) {
               key={route.name}
               name={route.name}
               distance={showDistance}
-              markers={decodeMarkers(route.markers)}
+              markers={route.markers ? decodeMarkers(route.markers) : null}
               route={decodeRoute(route.route)}
               unit={unit.value}
               description={route.description}

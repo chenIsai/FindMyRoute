@@ -1,5 +1,5 @@
-import React, {useContext, useState} from "react";
-import {View, Text, TouchableNativeFeedback, StyleSheet} from "react-native";
+import React, {useContext, useState, useEffect} from "react";
+import {View, Text, TouchableNativeFeedback, StyleSheet, Alert} from "react-native";
 
 import UnitContext from "../../Context/UnitContext";
 import DistanceContext from "../../Context/UnitContext";
@@ -17,7 +17,8 @@ const MainScreen = (props) => {
   const [buttonID, updateID] = useState(0);
   const tokens = useContext(AuthContext);
   const logoutText = "Are you sure you want to log out?";
-  const deleteText = "Are you sure you want to delete ALL routes?";
+  const clearText = "Are you sure you want to delete ALL routes?";
+  const deleteText = "Are you sure you want to PERMANENTLY delete your account?";
 
   const openModal = (id) => {
     updateID(id);
@@ -39,8 +40,20 @@ const MainScreen = (props) => {
     });
   }
 
+  const deleteAccount = () => {
+    fetch(links.deleteAccount, {
+      method: "DELETE",
+      headers: {
+        "Authorization": "Bearer " + tokens.accessToken,
+        "Content-Type": "application/json",
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
   const clearRoutes = () => {
-    fetch(links.deleteALL, {
+    fetch(links.deleteRoutes, {
       method: "DELETE",
       headers: {
         "Authorization": "Bearer " + tokens.accessToken,
@@ -76,8 +89,8 @@ const MainScreen = (props) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={{fontSize: 20, padding: 10}}>{buttonID === 1 ? "Log Out " : "Delete "}Confirmation</Text>
-            <Text style={{fontSize: 18, padding: 10, marginBottom: 30}}>{buttonID === 1 ? logoutText : deleteText }</Text>
+            <Text style={{fontSize: 20, padding: 10}}>{buttonID === 1 ? "Log Out " : (buttonID === 2 ? "Clear Routes " : "Delete Account ")}Confirmation</Text>
+            <Text style={{fontSize: 18, padding: 10, marginBottom: 30}}>{buttonID === 1 ? logoutText : (buttonID === 2 ? clearText : deleteText) }</Text>
             <View style = {{flexDirection: "row",}}>
               <TouchableNativeFeedback
                 onPress={() => setVisible(false)}>
@@ -89,13 +102,17 @@ const MainScreen = (props) => {
                 onPress={() => {
                   if (buttonID === 1) {
                     logout();
-                  } else {
+                  } else if (buttonID === 2){
                     clearRoutes();
+                    setVisible(false);
+                  } else {
+                    deleteAccount();
+                    tokens.logout();
                     setVisible(false);
                   }
                 }}>
                 <View style={styles.negativeButton}>
-                  <Text style={{color: "white"}}>{buttonID === 1 ? "Log me out!" : "Delete ALL Routes"}</Text>
+                  <Text style={{color: "white"}}>{buttonID === 1 ? "Log me out!" : (buttonID === 2 ? "Delete ALL Routes" : "Delete Account")}</Text>
                 </View>
               </TouchableNativeFeedback>
             </View>
@@ -112,6 +129,9 @@ const MainScreen = (props) => {
 
 const Profile = () => {
   const user = useContext(UserContext);
+  useEffect(() => {
+    user.updateUser();
+  }, []);
   return (
     <View style={styles.profile}>
       <View style={styles.textStack}>
@@ -125,6 +145,7 @@ const Profile = () => {
 const Details = () => {
   const unit = useContext(UnitContext);
   const user = useContext(UserContext);
+  const showDistance = !user.value ? 0 : (unit.value === "km" ? Math.round((user.value.distance/1000 + Number.EPSILON) * 1000)/1000  : Math.round((user.value.distance/1609 + Number.EPSILON) * 100)/100);
   return (
     <View style={styles.detailsView}>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
@@ -133,7 +154,7 @@ const Details = () => {
       </View>
       <View style={{alignSelf: "baseline", alignItems: "center"}}>
         <Text style={{fontWeight: "bold"}}>Distance Ran</Text>
-        <Text style={{color: "dimgrey"}}>{user.value ? user.value.distance : 0} {unit.value}</Text>
+        <Text style={{color: "dimgrey"}}>{showDistance} {unit.value}</Text>
       </View>
     </View>
   )
@@ -149,6 +170,7 @@ const Options = (props) => {
         <UnitPicker />
         <OptionsRow name={"clearSaved"} hide={true} showModal={props.showModal}/>
         <Logout showModal={props.showModal}/>
+        <Delete showModal={props.showModal}/>
       </View>
     </View>
   )
@@ -157,7 +179,7 @@ const Options = (props) => {
 const OptionsRow = (props) => {
   const user = useContext(UserContext)
   const callbacks = {
-    "clearSaved": () => props.showModal(0),
+    "clearSaved": () => props.showModal(2),
     "editName": () => props.navigation.navigate("EditNames", {
       username: user.value.username,
       name: user.value.name,
@@ -202,7 +224,16 @@ const Logout = (props) => {
       </View>
     </TouchableNativeFeedback>
   )
+}
 
+const Delete = (props) => {
+  return (
+    <TouchableNativeFeedback onPress={() => props.showModal(3)}>
+      <View style={[styles.optionsRow, {marginTop: 25}]}>
+        <Text style={{alignSelf: "center", color: "red"}}>Delete Account</Text>
+      </View>
+    </TouchableNativeFeedback>
+  )
 }
 
 const UnitPicker = () => {

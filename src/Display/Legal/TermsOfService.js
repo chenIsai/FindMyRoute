@@ -1,49 +1,63 @@
 import React from "react";
 import {ScrollView, View, Text, StyleSheet} from "react-native";
-import privacy from "./Docs/privacy-docs";
+import tos from "./Docs/ToS-docs";
 
-const PrivacyPolicy = ({navigation}) => {
+const TermsOfService = ({navigation}) => {
   return (
     <ScrollView style={styles.container}>
       <View>
         <Text style={styles.headerText}>
-          Privacy Policy
+          Terms of Service
         </Text>
         <Text style={styles.dateText}>
-          Last Updated: {privacy.date}
-        </Text>
-        <Text style={styles.infoText}>
-          {privacy.policy}
+          Last Updated: {tos.date}
         </Text>
         <Text style={[styles.headerText, {fontSize: 18}]}>
-          What Information Do We Collect
+          Acceptance of Terms
         </Text>
         <Text style={styles.infoText}>
-          {privacy.information}
+          {tos.terms}
         </Text>
         <Text style={[styles.headerText, {fontSize: 18}]}>
-          Why and How do We Use Your Information
+          User Accounts
         </Text>
         <Text style={styles.infoText}>
-          {privacy.geolocation}
+          {tos.accounts}
         </Text>
         <Text style={[styles.headerText, {fontSize: 18}]}>
-          Changes to the Privacy Policy
+          Your Information
         </Text>
         <Text style={styles.infoText}>
-          {privacy.changes}
+          {tos.location}
+        </Text>
+        <Text style={[styles.headerText, {fontSize: 18}]}>
+          Privacy Policy
+        </Text>
+        <Text style={styles.infoText}>
+          Read our {
+            <Text
+              style={{color: "blue"}}
+              onPress={() => navigation.navigate("Privacy Policy")}
+              >Privacy Policy</Text>
+          }
+        </Text>
+        <Text style={[styles.headerText, {fontSize: 18}]}>
+          Changes to the Terms of Service
+        </Text>
+        <Text style={styles.infoText}>
+          {tos.changes}
         </Text>
         <Text style={[styles.headerText, {fontSize: 18}]}>
           Contact Us
         </Text>
         <Text style={[styles.infoText, {paddingBottom: 50}]}>
-          {privacy.contact}
+          {tos.contact}
         </Text>
       </View>
     </ScrollView>
   )
 }
-export default PrivacyPolicy;
+export default TermsOfService;
 
 const styles = StyleSheet.create({
   container: {

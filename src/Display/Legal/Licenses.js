@@ -8,7 +8,6 @@ const Licenses = (props) => {
   const data = Object.keys(licenses).map(key => ({name: key, ...licenses[key]}));
   return (
     <View style={{flex: 1}}>
-      <Header navigation={props.navigation} header={"Licenses"}/>
       <FlatList
         data={data}
         renderItem={({item}) => <LicenseCard item={item} />}

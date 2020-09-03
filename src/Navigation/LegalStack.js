@@ -9,8 +9,9 @@ const Stack = createStackNavigator();
 
 const LegalStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name={"Selector"} component={Selector} />
+    <Stack.Navigator>
+      <Stack.Screen name={"Selector"} component={Selector}
+        options={{headerShown: false}}/>
       <Stack.Screen name={"Licenses"} component={Licenses} />
       <Stack.Screen name={"Terms of Service"} component={TermsOfService} />
       <Stack.Screen name={"Privacy Policy"} component={PrivacyPolicy} />

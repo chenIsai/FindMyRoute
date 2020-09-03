@@ -1,6 +1,5 @@
 import React from "react";
 import {View, Text, TouchableOpacity, StyleSheet, Image, Linking} from "react-native";
-import licenses from "./license-docs";
 
 const LicenseCard = (props) => {
   var name, version;

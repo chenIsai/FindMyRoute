@@ -313,7 +313,6 @@ const styles = StyleSheet.create({
   optionsRow: {
     flexDirection: "row",
     padding: 10,
-    marginBottom: 0.2,
     borderWidth: 0.3,
     backgroundColor: "white",
     borderColor: "silver",

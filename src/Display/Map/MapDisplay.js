@@ -13,11 +13,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal"
 import links from "../../Authentication/link";
 
-import DistanceContext from "../../Context/DistanceContext";
 import UnitContext from "../../Context/UnitContext";
-import MarkersContext from "../../Context/MarkersContext";
-import RouteContext from "../../Context/RouteContext";
-import DirectionsContext from "../../Context/DirectionsContext";
+import PlanContext from "../../Context/PlanContext";
 
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
@@ -26,17 +23,14 @@ import {decode} from "@mapbox/polyline";
 const apiKey = links.key;
 
 const MapDisplay = (props) => {
-  const distance = useContext(DistanceContext);
-  const markers = useContext(MarkersContext);
-  const route = useContext(RouteContext);
   const unit = useContext(UnitContext);
-  const directions = useContext(DirectionsContext);
-  const showDistance = unit.value === "km" ? Math.round((distance.total/1000 + Number.EPSILON) * 100)/100 : Math.round((distance.total/1609 + Number.EPSILON) * 100)/100;
+  const plan = useContext(PlanContext);
+  const showDistance = unit.value === "km" ? Math.round((plan.distance/1000 + Number.EPSILON) * 100)/100 : Math.round((plan.distance/1609 + Number.EPSILON) * 100)/100;
 
   const mapRef = useRef(null);
   const [marginBottom, updateMargin] = useState(1);
-  const [calculated, updateCalculated] = useState(route.value.length);
-  const [totalMarkers, updateTotalMarkers] = useState(markers.value.length);
+  const [calculated, updateCalculated] = useState(plan.route.length);
+  const [totalMarkers, updateTotalMarkers] = useState(plan.markers.length);
   const [trayVisible, setVisible] = useState(true);
 
   const slideSave = useRef(new Animated.Value(0)).current;
@@ -101,7 +95,8 @@ const MapDisplay = (props) => {
     if (totalMarkers <= 9) {
       updateTotalMarkers(totalMarkers+1);
       const coordinate = e.nativeEvent.coordinate;
-      markers.updateMarkers(coordinate);
+      const markers = plan.markers.concat(coordinate);
+      plan.updateMarkers(markers);
     } else {
       Alert.alert("Max number of markers reached!");
     }
@@ -114,21 +109,21 @@ const MapDisplay = (props) => {
   }
 
   const getDirections = async () => {
-    if (calculated >= markers.value.length-1) {
+    if (calculated >= plan.markers.length-1) {
       return;
     }
-    var merged = mergeCoords(markers.value[calculated], markers.value[calculated+1]);
+    var merged = mergeCoords(plan.markers[calculated], plan.markers[calculated+1]);
     var start = merged.start;
     var end = merged.end;
 
     try {
       const raw = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const response = await raw.json();
-      route.updateRoute(response.routes[0].overview_polyline.points);
-      distance.updateDistance(response.routes[0].legs[0].distance.value);
+      plan.updateRoute(response.routes[0].overview_polyline.points);
+      plan.updateDistance(plan.distance + response.routes[0].legs[0].distance.value);
       const updated = decodeResponse(response);
       updateCalculated(updated.calculated);
-      directions.updateDirections(updated.directions);
+      plan.updateDirections(updated.directions);
     }
     catch(error) {
       console.log(error);
@@ -143,18 +138,15 @@ const MapDisplay = (props) => {
         longitude: point[1]
       }
     });
-    const newDirections = directions.value.concat(decoded);
+    const newDirections = plan.directions.concat(decoded);
     const totalCalculated = calculated+1
     return {directions: newDirections, calculated: totalCalculated};
   }
 
-  const clearMarkers = () => {
-    markers.clearMarkers();
+  const clearPlan = () => {
     updateCalculated(0);
     updateTotalMarkers(0);
-    distance.clearDistance();
-    route.clearRoute();
-    directions.updateDirections([]);
+    plan.clearPlan();
   }
 
   useEffect(() => {
@@ -164,7 +156,7 @@ const MapDisplay = (props) => {
 
   useEffect(() => {
     getDirections();
-  }, [markers.value])
+  }, [plan.markers])
 
   return (
     <View style={styles.container}>
@@ -175,11 +167,11 @@ const MapDisplay = (props) => {
         onMapReady={_onMapReady}
         onLongPress={onLongPress}
         >
-        {markers.value.map((coordinate, index) => {
+        {plan.markers.map((coordinate, index) => {
           return (<Marker coordinate={coordinate} key={index}/>)
         })}
         <Polyline
-          coordinates={directions.value}
+          coordinates={plan.directions}
           strokeWidth={6}
         />
       </MapView>
@@ -210,7 +202,7 @@ const MapDisplay = (props) => {
           if (!trayVisible) {
             showButtons();
           } else {
-            if (directions.value.length) {
+            if (plan.directions.length) {
               props.navigation.push("SaveScreen")
             } else {
               Alert.alert("Invalid Route Selected!");
@@ -231,7 +223,7 @@ const MapDisplay = (props) => {
             showButtons();
             return;
           }
-          clearMarkers()
+          clearPlan()
         }}
         >
         <View style={[styles.iconStyles, {bottom: 75}]}>

@@ -10,9 +10,6 @@ import {decode} from "@mapbox/polyline"
 
 import UnitContext from "../Context/UnitContext";
 import AuthContext from "../Context/AuthContext";
-import DistanceContext from "../Context/DistanceContext";
-import MarkersContext from "../Context/MarkersContext";
-import DirectionsContext from "../Context/DirectionsContext";
 
 import LiteView from "./Components/LiteView";
 import Splash from "./Components/Splash";
@@ -30,9 +27,6 @@ function DisplayRoutes(props) {
 
   const unit = useContext(UnitContext);
   const tokens = useContext(AuthContext);
-  const directions = useContext(DirectionsContext);
-  const markers = useContext(MarkersContext)
-  const distance = useContext(DistanceContext);
 
   const decodeRoute = (route) => {
     const points = decode(route);
@@ -125,12 +119,12 @@ function DisplayRoutes(props) {
     setVisible(false);
   }
 
-  const openRoute = (routeDist, routeDir, routeMarkers) => {
-    distance.updateDistance(routeDist);
-    markers.updateMarkers(routeMarkers);
-    directions.updateDirections(routeDir);
-    props.navigation.navigate("Plan Your Route");
-  }
+  // const openRoute = (routeDist, routeDir, routeMarkers) => {
+  //   distance.updateDistance(routeDist);
+  //   markers.updateMarkers(routeMarkers);
+  //   directions.updateDirections(routeDir);
+  //   props.navigation.navigate("Plan Your Route");
+  // }
 
   useEffect(() => {
     setTimeout(() => getRoutes(), 200)

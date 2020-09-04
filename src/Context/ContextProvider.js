@@ -1,13 +1,10 @@
 import React from "react"
 
-import DistanceContext from "../Context/DistanceContext";
-import MarkersContext from "../Context/MarkersContext";
-import UnitContext from "../Context/UnitContext";
-import RouteContext from "../Context/RouteContext";
-import DirectionsContext from "../Context/DirectionsContext";
-import RunContext from "../Context/RunContext";
-import UserContext from "../Context/UserContext";
-import AuthContext from "../Context/AuthContext";
+import UnitContext from "./UnitContext";
+import RunContext from "./RunContext";
+import UserContext from "./UserContext";
+import AuthContext from "./AuthContext";
+import PlanContext from "./PlanContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import AppNavigator from "../Navigation/AppNavigator";
@@ -18,20 +15,11 @@ export default class ContextProvider extends React.Component {
     super(props);
 
     // Distance
-    this.updateDistance = (value) => {
-      const distance = {...this.state.distance};
-      distance.value = distance.value.concat(value);
-      distance.total = distance.value.reduce((total, next) => total + next, 0);
-      this.setState(state => ({distance}));
+    this.updateDistance = (distance) => {
+      const plan = {...this.state.plan};
+      plan.distance = distance;
+      this.setState(state => ({plan}));
     }
-
-    this.clearDistance = () => {
-      const distance = {...this.state.distance};
-      distance.value = [];
-      distance.total = 0;
-      this.setState(state=> ({distance}));
-    }
-
     // Unit
     this.updateUnit = (value) => {
       const unit = {...this.state.unit};
@@ -41,37 +29,31 @@ export default class ContextProvider extends React.Component {
     }
 
     // Markers
-    this.clearMarkers = () => {
-      const markers = {...this.state.markers};
-      markers.value = [];
-      this.setState(state => ({markers}));
-    }
-
-    this.updateMarkers = (coordinates) => {
-      const markers = {...this.state.markers};
-      markers.value = markers.value.concat(coordinates);
-      this.setState(state => ({markers}));
+    this.updateMarkers = (markers) => {
+      console.log(this.state.plan);
+      const plan = {...this.state.plan};
+      plan.markers = markers;
+      this.setState(state => ({plan}));
     }
 
     // Current route
     this.updateRoute = (overview_polyline) => {
-      const route = {...this.state.route};
-      route.value = route.value.concat(overview_polyline);
-      this.setState(state => ({route}));
-    }
-
-    this.clearRoute = () => {
-      const route = {...this.state.route};
-      route.value = [];
-      this.setState(state => ({route}));
+      const plan = {...this.state.plan};
+      plan.route = plan.route.concat(overview_polyline);
+      this.setState(state => ({plan}));
     }
 
     // Current Directions (decoded route)
     this.updateDirections = (updated) => {
-      const directions = {...this.state.directions};
-      directions.value = updated;
-      this.setState(state => ({directions}));
+      const plan = {...this.state.plan};
+      plan.directions = updated;
+      this.setState(state => ({plan}));
     },
+
+    this.clearPlan = () => {
+      const plan = this.initialState.plan;
+      this.setState(state => ({plan}));
+    }
 
     // Live tracking user runs
 
@@ -179,29 +161,9 @@ export default class ContextProvider extends React.Component {
         refreshTokens: this.refreshTokens,
         logout: this.logout,
       },
-      distance: {
-        value: [],
-        total: 0,
-        updateDistance: this.updateDistance,
-        clearDistance: this.clearDistance,
-      },
       unit: {
         value: "km",
         updateUnit: this.updateUnit,
-      },
-      markers: {
-        value: [],
-        updateMarkers: this.updateMarkers,
-        clearMarkers: this.clearMarkers,
-      },
-      route: {
-        value: [],
-        updateRoute: this.updateRoute,
-        clearRoute: this.clearRoute,
-      },
-      directions: {
-        value: [],
-        updateDirections: this.updateDirections,
       },
       user: {
         value: [],
@@ -215,6 +177,17 @@ export default class ContextProvider extends React.Component {
         updateRunDirections: this.updateRunDirections,
         setRunning: this.setRunning,
         clearRun: this.clearRun,
+      },
+      plan: {
+        distance: 0,
+        directions: [],
+        route: [],
+        markers: [],
+        updateDistance: this.updateDistance,
+        updateDirections: this.updateDirections,
+        updateMarkers: this.updateMarkers,
+        updateRoute: this.updateRoute,
+        clearPlan: this.clearPlan,
       },
       isLoading: true,
     }
@@ -244,19 +217,13 @@ export default class ContextProvider extends React.Component {
     return (
       <AuthContext.Provider value={this.state.tokens}>
         <UserContext.Provider value={this.state.user}>
-          <RunContext.Provider value={this.state.run}>
-            <DirectionsContext.Provider value={this.state.directions}>
-              <RouteContext.Provider value={this.state.route}>
-                <UnitContext.Provider value={this.state.unit}>
-                  <DistanceContext.Provider value={this.state.distance}>
-                    <MarkersContext.Provider value={this.state.markers}>
-                      <AppNavigator isLoading={this.state.isLoading}/>
-                    </MarkersContext.Provider>
-                  </DistanceContext.Provider>
-                </UnitContext.Provider>
-              </RouteContext.Provider>
-            </DirectionsContext.Provider>
-          </RunContext.Provider>
+          <UnitContext.Provider value={this.state.unit}>
+            <PlanContext.Provider value={this.state.plan}>
+              <RunContext.Provider value={this.state.run}>
+                <AppNavigator isLoading={this.state.isLoading}/>
+              </RunContext.Provider>
+            </PlanContext.Provider>
+          </UnitContext.Provider>
         </UserContext.Provider>
       </AuthContext.Provider>
     )

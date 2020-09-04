@@ -1,10 +1,8 @@
 import React, {useState, useContext} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
 
-import DistanceContext from "../../Context/DistanceContext";
+import PlanContext from "../../Context/PlanContext";
 import UnitContext from "../../Context/UnitContext";
-import MarkersContext from "../../Context/MarkersContext";
-import DirectionsContext from "../../Context/DirectionsContext";
 import AuthContext from "../../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
@@ -19,10 +17,8 @@ function SaveScreen({navigation}) {
   const [description, _onChangeDesc] = useState("");
   const [pressable, gotPressed] = useState(false);
 
-  const markers = useContext(MarkersContext);
   const unit = useContext(UnitContext);
-  const distance = useContext(DistanceContext);
-  const directions = useContext(DirectionsContext);
+  const plan = useContext(PlanContext);
   const tokens = useContext(AuthContext);
 
   const encodeMarkers = (markers) => {
@@ -35,15 +31,15 @@ function SaveScreen({navigation}) {
       return;
     }
     gotPressed(true);
-    const latlon = directions.value.map((point) => {
+    const latlon = plan.directions.map((point) => {
       return [point.latitude, point.longitude]
     })
     const route = encode(latlon);
     const routeJSON = JSON.stringify({
       name: name,
-      distance: distance.total,
+      distance: plan.distance,
       description,
-      markers: encodeMarkers(markers.value),
+      markers: encodeMarkers(plan.markers),
       route: route,
     });
     fetch(links.savePlanned, {
@@ -74,7 +70,7 @@ function SaveScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.mapStyle}>
-        <LiteMap markers={markers.value} route={directions.value}/>
+        <LiteMap markers={plan.markers} route={plan.directions}/>
       </View>
       <View>
         <View style={styles.nameRow}>

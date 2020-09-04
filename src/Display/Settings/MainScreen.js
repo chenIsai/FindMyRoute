@@ -2,7 +2,6 @@ import React, {useContext, useState, useEffect} from "react";
 import {View, Text, TouchableNativeFeedback, StyleSheet, Alert} from "react-native";
 
 import UnitContext from "../../Context/UnitContext";
-import DistanceContext from "../../Context/UnitContext";
 import AuthContext from "../../Context/AuthContext";
 import UserContext from "../../Context/UserContext";
 

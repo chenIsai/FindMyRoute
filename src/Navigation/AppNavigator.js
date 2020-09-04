@@ -9,7 +9,7 @@ import AuthStack from "./AuthStack";
 
 import Footer from "./Footer";
 import DisplayRoutes from "../Display/DisplayRoutes";
-import SettingsStack from "./SettingsStack";
+import ProfileStack from "./ProfileStack";
 import LegalStack from "./LegalStack";
 import Images from "../Images/index";
 
@@ -58,7 +58,7 @@ const MainApp = () => {
     <Drawer.Navigator initlaRouteName="Home">
       <Drawer.Screen name="Home" component={Footer} options={{title: "Home"}}/>
       <Drawer.Screen name="Saved Routes" component={DisplayRoutes}/>
-      <Drawer.Screen name="Settings" component={SettingsStack} />
+      <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Legal" component={LegalStack} />
     </Drawer.Navigator>
   );

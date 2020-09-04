@@ -10,6 +10,7 @@ import {decode} from "@mapbox/polyline"
 
 import UnitContext from "../Context/UnitContext";
 import AuthContext from "../Context/AuthContext";
+import PlanContext from "../Context/PlanContext";
 
 import LiteView from "./Components/LiteView";
 import Splash from "./Components/Splash";
@@ -26,6 +27,7 @@ function DisplayRoutes(props) {
   const [refreshing, updateRefresh] = useState(false);
 
   const unit = useContext(UnitContext);
+  const plan = useContext(PlanContext);
   const tokens = useContext(AuthContext);
 
   const decodeRoute = (route) => {
@@ -59,9 +61,9 @@ function DisplayRoutes(props) {
       if (response.ok) {
         return response.json();
       }
-      if (response.status === 403) {
+      if (response.status === 401) {
         tokens.refreshTokens();
-        Alert.alert("Error refreshing, please try again!");
+        getRoutes();
       }
     }).then((data) => {
       updateRoutes(data);
@@ -119,12 +121,12 @@ function DisplayRoutes(props) {
     setVisible(false);
   }
 
-  // const openRoute = (routeDist, routeDir, routeMarkers) => {
-  //   distance.updateDistance(routeDist);
-  //   markers.updateMarkers(routeMarkers);
-  //   directions.updateDirections(routeDir);
-  //   props.navigation.navigate("Plan Your Route");
-  // }
+  const openRoute = (routeDist, routeDir, routeMarkers) => {
+    plan.updateDistance(routeDist);
+    plan.updateMarkers(routeMarkers);
+    plan.updateDirections(routeDir);
+    props.navigation.navigate("Plan Your Route");
+  }
 
   useEffect(() => {
     setTimeout(() => getRoutes(), 200)

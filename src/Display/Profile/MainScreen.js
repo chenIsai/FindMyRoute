@@ -131,8 +131,8 @@ const Profile = () => {
   return (
     <View style={styles.profile}>
       <View style={styles.textStack}>
-        <Text style={{fontWeight: "bold"}}>{user.value ? user.value.name : "Not connected"}</Text>
-        <Text style={{color: "grey"}}>{user.value ? user.value.username : ""}</Text>
+        <Text style={{fontSize: 24}}>{user.value ? "Welcome back, " + user.value.name : "Not connected"}</Text>
+        <Text style={{marginTop: 10, color: "green"}}>{user.value ? user.value.username : ""}</Text>
       </View>
     </View>
   )
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     borderColor: "lightgrey",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#67cfb3",
+    backgroundColor: "#FABF7D",
   },
 
   textStack: {

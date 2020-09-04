@@ -1,12 +1,12 @@
 import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
-import MainScreen from "../Display/Settings/MainScreen";
-import EditUsername from "../Display/Settings/EditUsername";
-import EditPassword from "../Display/Settings/EditPassword";
+import MainScreen from "../Display/Profile/MainScreen";
+import EditUsername from "../Display/Profile/EditUsername";
+import EditPassword from "../Display/Profile/EditPassword";
 
 const Stack = createStackNavigator();
 
-const SettingsStack = (props) => {
+const ProfileStack = (props) => {
   return (
     <Stack.Navigator screenOptions = {{headerShown: false}}>
       <Stack.Screen name={"Profile"} component={MainScreen}/>
@@ -16,4 +16,4 @@ const SettingsStack = (props) => {
   )
 }
 
-export default SettingsStack;
+export default ProfileStack;

@@ -64,6 +64,6 @@ export default RunView;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#84ebab"
+    backgroundColor: "#C6FADF"
   },
 })

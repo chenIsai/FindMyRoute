@@ -26,10 +26,10 @@ const Footer = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: "#468abd",
+        activeTintColor: "#F57622",
         inactiveTintColor: "#354d9c",
-        activeBackgroundColor: "#C6DEA6",
-        inactiveBackgroundColor: "#C6DEA6"
+        activeBackgroundColor: "#6FDEA5",
+        inactiveBackgroundColor: "#6FDEA5"
       }}
       >
       <Tab.Screen name="Current Run" component={RunStack} />

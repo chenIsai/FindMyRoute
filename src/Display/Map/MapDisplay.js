@@ -119,11 +119,14 @@ const MapDisplay = (props) => {
     try {
       const raw = await fetch(`https://maps.googleapis.com/maps/api/directions/json?mode=walking&origin=${start}&destination=${end}&key=${apiKey}`);
       const response = await raw.json();
-      plan.updateRoute(response.routes[0].overview_polyline.points);
-      plan.updateDistance(plan.distance + response.routes[0].legs[0].distance.value);
       const updated = decodeResponse(response);
       updateCalculated(updated.calculated);
-      plan.updateDirections(updated.directions);
+      const newPlan = {
+        route: response.routes[0].overview_polyline.points,
+        distance: plan.distance + response.routes[0].legs[0].distance.value,
+        directions: updated.directions,
+      }
+      plan.updatePlan(newPlan);
     }
     catch(error) {
       console.log(error);

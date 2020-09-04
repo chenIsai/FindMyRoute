@@ -9,6 +9,7 @@ const PlanContext = React.createContext({
     updateDirections: () => {},
     updateMarkers: () => {},
     updateRoute: () => {},
+    updatePlan: () => {},
     clearPlan: () => {},
 }});
 

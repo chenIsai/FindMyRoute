@@ -49,6 +49,23 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({plan}));
     },
 
+    this.updatePlan = (newPlan) => {
+      const plan = {...this.state.plan};
+      if (newPlan.distance) {
+        plan.distance = newPlan.distance;
+      }
+      if (newPlan.directions) {
+        plan.directions = newPlan.directions;
+      }
+      if (newPlan.route) {
+        plan.route = newPlan.route;
+      }
+      if (newPlan.markers) {
+        plan.markers = newPlan.markers;
+      }
+      this.setState(state => ({plan}));
+    }
+
     this.clearPlan = () => {
       const plan = this.initialState.plan;
       this.setState(state => ({plan}));
@@ -186,6 +203,7 @@ export default class ContextProvider extends React.Component {
         updateDirections: this.updateDirections,
         updateMarkers: this.updateMarkers,
         updateRoute: this.updateRoute,
+        updatePlan: this.updatePlan,
         clearPlan: this.clearPlan,
       },
       isLoading: true,

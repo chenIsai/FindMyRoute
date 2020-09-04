@@ -10,6 +10,10 @@ import {decode} from "@mapbox/polyline"
 
 import UnitContext from "../Context/UnitContext";
 import AuthContext from "../Context/AuthContext";
+import DistanceContext from "../Context/DistanceContext";
+import MarkersContext from "../Context/MarkersContext";
+import DirectionsContext from "../Context/DirectionsContext";
+
 import LiteView from "./Components/LiteView";
 import Splash from "./Components/Splash";
 import Header from "./Components/Header";
@@ -23,8 +27,12 @@ function DisplayRoutes(props) {
   const [editName, updateName] = useState("");
   const [editDescription, updateDescription] = useState("");
   const [refreshing, updateRefresh] = useState(false);
+
   const unit = useContext(UnitContext);
   const tokens = useContext(AuthContext);
+  const directions = useContext(DirectionsContext);
+  const markers = useContext(MarkersContext)
+  const distance = useContext(DistanceContext);
 
   const decodeRoute = (route) => {
     const points = decode(route);
@@ -115,6 +123,13 @@ function DisplayRoutes(props) {
       console.log(error);
     });
     setVisible(false);
+  }
+
+  const openRoute = (routeDist, routeDir, routeMarkers) => {
+    distance.updateDistance(routeDist);
+    markers.updateMarkers(routeMarkers);
+    directions.updateDirections(routeDir);
+    props.navigation.navigate("Plan Your Route");
   }
 
   useEffect(() => {
@@ -210,6 +225,7 @@ function DisplayRoutes(props) {
               description={route.description}
               delete={(name) => deleteRoute(name)}
               edit={(name, description) => openModal(name, description)}
+              open={(distance, directions, markers) => openRoute(distance, directions, markers)}
             />)})}
       </ScrollView>
     </View>

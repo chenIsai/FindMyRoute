@@ -11,6 +11,12 @@ function LiteView(props) {
     <View style={styles.container}>
       <View style={styles.map}>
         <LiteMap route={props.route} markers={props.markers}/>
+          <Icon
+            style={{position: "absolute", bottom: 0, right: 0, padding: 5}}
+            name={"open-outline"}
+            size={20}
+            onPress={() => props.open(props.distance, props.route, props.markers)}
+            />
       </View>
       <View style={styles.details}>
         <View style={{flex: .2, justifyContent: "flex-start", borderBottomWidth: 1, flexDirection: "row"}}>

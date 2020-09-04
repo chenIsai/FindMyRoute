@@ -51,7 +51,7 @@ const SaveScreen = ({navigation}) => {
       } else {
         if (response.status === 409) {
           Alert.alert("A route with the same name already exists!");
-        } else if (response.status === 403) {
+        } else if (response.status === 401) {
           tokens.refreshTokens();
           Alert.alert("Error occured while saving, please try again!");
         }

@@ -129,9 +129,6 @@ const MainScreen = (props) => {
 
 const Profile = () => {
   const user = useContext(UserContext);
-  useEffect(() => {
-    user.updateUser();
-  }, []);
   return (
     <View style={styles.profile}>
       <View style={styles.textStack}>

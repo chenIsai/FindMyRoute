@@ -12,6 +12,7 @@ const EditUsername = ({route, navigation}) => {
   const [name, updateName] = useState(route.params.name);
   const [valid, updateValid] = useState(true);
   const tokens = useContext(AuthContext);
+  const user = useContext(UserContext);
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
@@ -34,7 +35,6 @@ const EditUsername = ({route, navigation}) => {
 
   const link = links.editUser;
   const updateBoth = () => {
-    console.log("Called");
     if (username === "" || name === "") {
       updateValid(false);
       shake();
@@ -61,6 +61,7 @@ const EditUsername = ({route, navigation}) => {
     }).then((response) => {
       if (response.ok) {
         Alert.alert("Success!");
+        user.updateUser();
         navigation.goBack();
       } else if (response.status === 403) {
         tokens.refreshTokens;

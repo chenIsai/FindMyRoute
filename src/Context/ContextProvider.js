@@ -116,7 +116,7 @@ export default class ContextProvider extends React.Component {
         tokens.refreshToken = newTokens.refresh;
         AsyncStorage.setItem("refresh", newTokens.refresh);
       }
-      this.setState(state => ({tokens}), this.updateUser());
+      this.setState(state => ({tokens}), () => this.updateUser());
     }
 
     this.refreshTokens = () => {
@@ -154,6 +154,8 @@ export default class ContextProvider extends React.Component {
       }).then((response) => {
         if (response.ok) {
           return response.json();
+        } else if (response.status === 401) {
+          this.refreshTokens();
         }
       }).then((userData) => {
         const user = {...this.state.user}

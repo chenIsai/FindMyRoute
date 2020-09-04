@@ -77,7 +77,7 @@ function SaveScreen({navigation}) {
           <Icon
             style={{paddingRight: 5}}
             name={"bookmark"}
-            color={"#b0b2f5"}
+            color={"#78AD92"}
             size={30}
             />
           <TextInput style={styles.nameInput}
@@ -90,7 +90,7 @@ function SaveScreen({navigation}) {
           <Icon
             style={{paddingRight: 5, alignSelf: "center"}}
             name={"document-text"}
-            color={"#b0b2f5"}
+            color={"#78AD92"}
             size={30}
             />
           <TextInput style={styles.descriptionInput}
@@ -108,11 +108,11 @@ function SaveScreen({navigation}) {
         >
         <View style={styles.buttonView}>
           <Icon
-            color={"#b0b2f5"}
+            color={"#78AD92"}
             name={"save"}
             size={30}
           />
-        <Text style={{alignSelf: "center", fontSize: 18, padding: 5, paddingBottom: 10, color: "white"}}>
+        <Text style={{alignSelf: "center", fontSize: 18, padding: 5, paddingBottom: 10, color: "#C6FADF"}}>
             Save Route
           </Text>
         </View>
@@ -127,12 +127,12 @@ export default SaveScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#b0f5f2"
+    backgroundColor: "#C6FADF"
   },
 
   mapStyle: {
     height: 250,
-    backgroundColor: "deepskyblue",
+    backgroundColor: "#3C7A5A",
     flexDirection: "row",
     margin: 10,
     marginTop: 30,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "center",
     justifyContent: "center",
-    backgroundColor: "deepskyblue",
+    backgroundColor: "#617A6D",
     height: 60,
     padding: 10,
   },

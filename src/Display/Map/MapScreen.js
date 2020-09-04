@@ -13,7 +13,10 @@ function MapScreen(props) {
         options = {{headerShown: false}}/>
       <Stack.Screen name="SaveScreen"
         component={SaveScreen}
-        options={{title: "Save Route", headerTitleAlign: "center"}}/>
+        options={{title: "Save Route",
+        headerStyle: {
+          backgroundColor: "#A8E3B4"
+        }}}/>
     </Stack.Navigator>
   );
 }

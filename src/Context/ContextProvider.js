@@ -30,7 +30,6 @@ export default class ContextProvider extends React.Component {
 
     // Markers
     this.updateMarkers = (markers) => {
-      console.log(this.state.plan);
       const plan = {...this.state.plan};
       plan.markers = markers;
       this.setState(state => ({plan}));

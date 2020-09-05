@@ -9,7 +9,7 @@ const EditPassword = (props) => {
   const [password, updatePassword] = useState("");
   const [confirm, updateConfirm] = useState("");
   const [errorText, updateErrorText] = useState("");
-  const [icon, updateIcon] = useState("eye");
+  const [icon, updateIcon] = useState("eye-off");
   const [valid, updateValid] = useState(true);
   const tokens = useContext(AuthContext);
 
@@ -34,14 +34,14 @@ const EditPassword = (props) => {
 
   const updatePass = () => {
     if (password === "") {
-      updateErrorText("Error: Cannot use an empty password!");
+      updateErrorText("Cannot use an empty password!");
       updateValid(false);
       shake();
       fadeInAndOut();
       return;
     }
     if (password !== confirm) {
-      updateErrorText("Error: Passwords do not match!");
+      updateErrorText("Passwords do not match!");
       updateValid(false);
       shake();
       fadeInAndOut();
@@ -73,6 +73,9 @@ const EditPassword = (props) => {
 
   return (
     <View style={styles.container}>
+      <View>
+        <Text style={{fontSize: 24, paddingLeft: 20, color: "#8d67cf"}}>Update Your password!</Text>
+      </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>{errorText}</Text>
       </Animated.View>
@@ -106,7 +109,7 @@ const EditPassword = (props) => {
       <Animated.View
         style={[styles.buttonView,
           {transform: [{translateX: shakeAnimation}]},
-          {backgroundColor: valid ? "#67cfb3" : "#ED4337"}]}>
+          {backgroundColor: valid ? "#8d67cf" : "#ED4337"}]}>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
           onPress={() => updatePass()}
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderColor: "#67cfb3",
+    borderColor: "#8d67cf",
     margin: 5,
     marginLeft: 20,
     marginRight: 20,
@@ -154,13 +157,6 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: "white",
-  },
-
-  signUpText: {
-    color: "#67cfb3",
-    padding: 10,
-    marginTop: 10,
-    fontWeight: "bold",
   },
 })
 

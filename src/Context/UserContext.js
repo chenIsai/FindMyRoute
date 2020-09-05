@@ -1,6 +1,6 @@
 import React from "react";
 const UserContext = React.createContext({
-  User: {
+  user: {
     value: [],
     updateUser: () => {},
 }});

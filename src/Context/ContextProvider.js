@@ -5,6 +5,7 @@ import RunContext from "./RunContext";
 import UserContext from "./UserContext";
 import AuthContext from "./AuthContext";
 import PlanContext from "./PlanContext";
+import SplitsContext from "./SplitsContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import AppNavigator from "../Navigation/AppNavigator";
@@ -103,12 +104,18 @@ export default class ContextProvider extends React.Component {
       this.setState(state => ({run}));
     }
 
+    // Splits for Current Run
+    this.updateSplits = (value) => {
+      const splits = {...this.state.splits};
+      splits.value = value;
+      this.setState(state => ({splits}));
+    }
+
     //  Access and Refresh tokens
     this.setTokens = (newTokens) => {
       const tokens = {...this.state.tokens};
       if (newTokens.access || newTokens.access === "") {
         tokens.accessToken = newTokens.access;
-        AsyncStorage.setItem("access", newTokens.access);
       }
       if (newTokens.refresh || newTokens.access === "") {
         tokens.refreshToken = newTokens.refresh;
@@ -206,6 +213,10 @@ export default class ContextProvider extends React.Component {
         updatePlan: this.updatePlan,
         clearPlan: this.clearPlan,
       },
+      splits: {
+        value: [],
+        updateSplits: this.updateSplits,
+      },
       isLoading: true,
     }
 
@@ -217,15 +228,14 @@ export default class ContextProvider extends React.Component {
   }
 
   _loadState = async () => {
-    const keys = ["unit", "access", "refresh"];
+    const keys = ["unit", "refresh"];
 
     AsyncStorage.multiGet(keys, (err, items) => {
       var tokens = {...this.state.tokens};
       var unit = {...this.state.unit};
 
       unit.value = items[0][1] !== null ? items[0][1] : "km";
-      tokens.accessToken = items[1][1] !== null ? items[1][1] : "";
-      tokens.refreshToken = items[2][1] !== null ? items[2][1] : "";
+      tokens.refreshToken = items[1][1] !== null ? items[1][1] : "";
       this.setState({unit, tokens, isLoading: false});
     }).then(this.refreshTokens);
   }
@@ -237,7 +247,9 @@ export default class ContextProvider extends React.Component {
           <UnitContext.Provider value={this.state.unit}>
             <PlanContext.Provider value={this.state.plan}>
               <RunContext.Provider value={this.state.run}>
-                <AppNavigator isLoading={this.state.isLoading}/>
+                <SplitsContext.Provider value={this.state.splits}>
+                  <AppNavigator isLoading={this.state.isLoading}/>
+                </SplitsContext.Provider>
               </RunContext.Provider>
             </PlanContext.Provider>
           </UnitContext.Provider>

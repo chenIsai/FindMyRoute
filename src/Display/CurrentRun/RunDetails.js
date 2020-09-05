@@ -4,6 +4,7 @@ import getPreciseDistance from "geolib/es/getPreciseDistance";
 
 import UnitContext from "../../Context/UnitContext";
 import RunContext from "../../Context/RunContext";
+import SplitsContext from "../../Context/SplitsContext";
 
 import Geolocation from "react-native-geolocation-service";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,6 +15,7 @@ import {encode} from "@mapbox/polyline"
 const RunDetails = ({navigation}) => {
   const run = useContext(RunContext);
   const unit = useContext(UnitContext);
+  const splits = useContext(SplitsContext);
 
   const [time, updateTime] = useState(0);
   const [runCoordinates, updateRunCoordinates] = useState([]);
@@ -53,6 +55,16 @@ const RunDetails = ({navigation}) => {
   useEffect(() => {
     hideButtonTray();
   }, []);
+
+  useEffect(() => {
+    if ((run.distance/1000) > splits.value.length + 1) {
+      const split = {
+        lastIndex: run.directions.length-1,
+        time,
+      }
+      splits.updateSplits(splits.value.concat(split));
+    }
+  }, [run.distance]);
 
   // TIMER RELATED FUNCTIONS
   const startTimer = () => {
@@ -259,7 +271,8 @@ export default RunDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: "#C6FADF"
   },
 
   startStopButton: {

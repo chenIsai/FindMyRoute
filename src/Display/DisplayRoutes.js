@@ -63,7 +63,7 @@ function DisplayRoutes(props) {
       }
       if (response.status === 401) {
         tokens.refreshTokens();
-        getRoutes();
+        setTimeout(() => getRoutes(), 100)
       }
     }).then((data) => {
       updateRoutes(data);

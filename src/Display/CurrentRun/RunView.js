@@ -7,6 +7,7 @@ import RunContext from "../../Context/RunContext";
 
 import Geolocation from "react-native-geolocation-service";
 import RunDetails from "./RunDetails";
+import Swiper from "./Swiper";
 import Header from "../Components/Header";
 
 const RunView = (props) => {
@@ -54,7 +55,7 @@ const RunView = (props) => {
           />
       ) : null}
       </MapView>
-      <RunDetails navigation={props.navigation}/>
+      <Swiper navigation={props.navigation}/>
     </View>
   )
 }
@@ -64,6 +65,5 @@ export default RunView;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#C6FADF"
   },
 })

@@ -62,8 +62,7 @@ function DisplayRoutes(props) {
         return response.json();
       }
       if (response.status === 401) {
-        tokens.refreshTokens();
-        setTimeout(() => getRoutes(), 100)
+        tokens.refreshTokens;
       }
     }).then((data) => {
       updateRoutes(data);
@@ -129,8 +128,8 @@ function DisplayRoutes(props) {
   }
 
   useEffect(() => {
-    setTimeout(() => getRoutes(), 200)
-  }, [])
+    getRoutes();
+  }, [tokens.accessToken])
 
   if (!savedRoutes) {
     return (

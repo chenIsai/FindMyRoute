@@ -121,7 +121,7 @@ export default class ContextProvider extends React.Component {
         tokens.refreshToken = newTokens.refresh;
         AsyncStorage.setItem("refresh", newTokens.refresh);
       }
-      this.setState(state => ({tokens}), () => this.updateUser());
+      this.setState(state => ({tokens}));
     }
 
     this.refreshTokens = () => {

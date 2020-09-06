@@ -15,9 +15,14 @@ const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
   const [buttonID, updateID] = useState(0);
   const tokens = useContext(AuthContext);
+  const user = useContext(UserContext);
   const logoutText = "Are you sure you want to log out?";
   const clearText = "Are you sure you want to delete ALL routes?";
   const deleteText = "Are you sure you want to PERMANENTLY delete your account?";
+
+  useEffect(() => {
+    user.updateUser();
+  }, [tokens.accessToken]);
 
   const openModal = (id) => {
     updateID(id);
@@ -128,10 +133,11 @@ const MainScreen = (props) => {
 
 const Profile = () => {
   const user = useContext(UserContext);
+
   return (
     <View style={styles.profile}>
       <View style={styles.textStack}>
-        <Text style={{fontSize: 24}}>{user.value ? "Welcome back, " + user.value.name : "Not connected"}</Text>
+        <Text style={{fontSize: 24}}>{user.value && user.value.name ? "Welcome back, " + user.value.name : ""}</Text>
         <Text style={{marginTop: 10, color: "green"}}>{user.value ? user.value.username : ""}</Text>
       </View>
     </View>

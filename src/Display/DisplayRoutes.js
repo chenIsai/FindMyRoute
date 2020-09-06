@@ -86,6 +86,8 @@ function DisplayRoutes(props) {
       if (response.status === 401) {
         tokens.refreshTokens();
         setDelete(routeName);
+      } else {
+        getRoutes();
       }
     }).catch((error) => {
       console.log(error);

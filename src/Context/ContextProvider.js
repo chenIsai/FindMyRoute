@@ -237,7 +237,7 @@ export default class ContextProvider extends React.Component {
       unit.value = items[0][1] !== null ? items[0][1] : "km";
       tokens.refreshToken = items[1][1] !== null ? items[1][1] : "";
       this.setState({unit, tokens, isLoading: false});
-    }).then(this.refreshTokens);
+    }).then(this.refreshTokens());
   }
 
   render() {

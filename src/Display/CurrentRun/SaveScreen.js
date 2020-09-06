@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
 
 import UnitContext from "../../Context/UnitContext";
@@ -26,6 +26,12 @@ const SaveScreen = ({navigation}) => {
     return encode(pointArray);
   }
 
+  useEffect(() => {
+    if (pressed) {
+      saveRoute();
+    }
+  }, [tokens.accessToken]);
+
   const saveRoute = () => {
     if (!name) {
       Alert.alert("Route must have a name!");
@@ -37,6 +43,7 @@ const SaveScreen = ({navigation}) => {
       distance: run.distance,
       route: encodeRun(),
     });
+    setPressed(true)
     fetch(links.saveRan, {
       method: "POST",
       body: routeJSON,
@@ -53,10 +60,8 @@ const SaveScreen = ({navigation}) => {
           Alert.alert("A route with the same name already exists!");
         } else if (response.status === 401) {
           tokens.refreshTokens();
-          Alert.alert("Error occured while saving, please try again!");
         }
       }
-      setPressed(false);
     }).catch((error) => {
       console.log(error);
     });

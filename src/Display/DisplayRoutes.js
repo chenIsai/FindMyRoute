@@ -24,6 +24,7 @@ function DisplayRoutes(props) {
   const [currentRoute, updateCurrent] = useState("");
   const [editName, updateName] = useState("");
   const [editDescription, updateDescription] = useState("");
+  const [deleteName, setDelete] = useState("");
   const [refreshing, updateRefresh] = useState(false);
 
   const unit = useContext(UnitContext);
@@ -62,7 +63,7 @@ function DisplayRoutes(props) {
         return response.json();
       }
       if (response.status === 401) {
-        tokens.refreshTokens;
+        tokens.refreshTokens();
       }
     }).then((data) => {
       updateRoutes(data);
@@ -82,7 +83,10 @@ function DisplayRoutes(props) {
         "Content-Type": "application/json",
       }
     }).then((response) => {
-      getRoutes();
+      if (response.status === 401) {
+        tokens.refreshTokens();
+        setDelete(routeName);
+      }
     }).catch((error) => {
       console.log(error);
     });
@@ -128,7 +132,13 @@ function DisplayRoutes(props) {
   }
 
   useEffect(() => {
-    getRoutes();
+    if (deleteName !== "") {
+      deleteRoute(deleteName);
+      getRoutes();
+      setDelete("");
+    } else {
+      getRoutes();
+    }
   }, [tokens.accessToken])
 
   if (!savedRoutes) {

@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {View, Text, StyleSheet, TextInput, TouchableNativeFeedback, Alert} from "react-native";
 
 import PlanContext from "../../Context/PlanContext";
@@ -15,11 +15,17 @@ import links from "../../Authentication/link";
 function SaveScreen({navigation}) {
   const [name, _onChangeName] = useState("");
   const [description, _onChangeDesc] = useState("");
-  const [pressable, gotPressed] = useState(false);
+  const [pressed, setPressed] = useState(false);
 
   const unit = useContext(UnitContext);
   const plan = useContext(PlanContext);
   const tokens = useContext(AuthContext);
+
+  useEffect(() => {
+    if (pressed) {
+      saveRoute();
+    }
+  }, [tokens.accessToken]);
 
   const encodeMarkers = (markers) => {
     return encode(markers.map((item) => [item.latitude, item.longitude]));
@@ -30,7 +36,7 @@ function SaveScreen({navigation}) {
       Alert.alert("Please enter a name for your route!");
       return;
     }
-    gotPressed(true);
+    setPressed(true);
     const latlon = plan.directions.map((point) => {
       return [point.latitude, point.longitude]
     })
@@ -58,9 +64,7 @@ function SaveScreen({navigation}) {
           Alert.alert("You cannot have two routes with the same name!");
         } else if (response.status === 401) {
           tokens.refreshTokens();
-          Alert.alert("Error occured while saving! Please try again!");
         }
-        gotPressed(false);
       }
     }).catch((error) => {
       console.log(error)
@@ -103,7 +107,7 @@ function SaveScreen({navigation}) {
         </View>
       </View>
       <TouchableNativeFeedback
-        disabled = {pressable}
+        disabled = {pressed}
         onPress={() => saveRoute()}
         >
         <View style={styles.buttonView}>

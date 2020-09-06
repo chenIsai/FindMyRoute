@@ -14,6 +14,7 @@ import Modal from "react-native-modal";
 const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
   const [buttonID, updateID] = useState(0);
+  const [clearPressed, setClear] = useState(false);
   const tokens = useContext(AuthContext);
   const user = useContext(UserContext);
   const logoutText = "Are you sure you want to log out?";
@@ -21,6 +22,10 @@ const MainScreen = (props) => {
   const deleteText = "Are you sure you want to PERMANENTLY delete your account?";
 
   useEffect(() => {
+    if (clearPressed) {
+      clearRoutes();
+      setClear(false);
+    }
     user.updateUser();
   }, [tokens.accessToken]);
 
@@ -67,8 +72,8 @@ const MainScreen = (props) => {
       if (response.ok) {
         Alert.alert("Success!");
       } else if (response.status === 401) {
-        tokens.refreshTokens;
-        Alert.alert("Error occured while deleting! Please try again!");
+        tokens.refreshTokens();
+        setClear(true);
       } else {
         Alert.alert("Unexpected Error " + response.status);
       }

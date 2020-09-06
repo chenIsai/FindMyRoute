@@ -63,7 +63,7 @@ const EditUsername = ({route, navigation}) => {
         Alert.alert("Success!");
         user.updateUser();
         navigation.goBack();
-      } else if (response.status === 403) {
+      } else if (response.status === 401) {
         tokens.refreshTokens;
         Alert.alert("Error occured while saving new details! Please try again!");
       } else {

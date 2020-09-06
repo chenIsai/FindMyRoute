@@ -56,7 +56,7 @@ function SaveScreen({navigation}) {
       } else {
         if (response.status === 409) {
           Alert.alert("You cannot have two routes with the same name!");
-        } else if (response.status === 403) {
+        } else if (response.status === 401) {
           tokens.refreshTokens();
           Alert.alert("Error occured while saving! Please try again!");
         }

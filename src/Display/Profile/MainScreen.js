@@ -61,7 +61,7 @@ const MainScreen = (props) => {
     }).then((response) => {
       if (response.ok) {
         Alert.alert("Success!");
-      } else if (response.status === 403) {
+      } else if (response.status === 401) {
         tokens.refreshTokens;
         Alert.alert("Error occured while deleting! Please try again!");
       } else {

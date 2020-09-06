@@ -29,6 +29,7 @@ const SaveScreen = ({navigation}) => {
   useEffect(() => {
     if (pressed) {
       saveRoute();
+      setPressed(false);
     }
   }, [tokens.accessToken]);
 
@@ -54,9 +55,11 @@ const SaveScreen = ({navigation}) => {
     }).then((response) => {
       if (response.ok) {
         Alert.alert("Success");
+        setPressed(false);
         navigation.goBack();
       } else {
         if (response.status === 409) {
+          setPressed(false);
           Alert.alert("A route with the same name already exists!");
         } else if (response.status === 401) {
           tokens.refreshTokens();

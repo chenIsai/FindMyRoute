@@ -15,6 +15,7 @@ const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
   const [buttonID, updateID] = useState(0);
   const [clearPressed, setClear] = useState(false);
+  const [deleteUser, setDelete] = useState(false);
   const tokens = useContext(AuthContext);
   const user = useContext(UserContext);
   const logoutText = "Are you sure you want to log out?";
@@ -25,6 +26,8 @@ const MainScreen = (props) => {
     if (clearPressed) {
       clearRoutes();
       setClear(false);
+    } else if (deleteUser) {
+      deleteAccount();
     }
     user.updateUser();
   }, [tokens.accessToken]);
@@ -55,6 +58,13 @@ const MainScreen = (props) => {
       headers: {
         "Authorization": "Bearer " + tokens.accessToken,
         "Content-Type": "application/json",
+      }
+    }).then((response) => {
+      if (response.status === 401) {
+        tokens.refreshTokens();
+        setDelete(true);
+      } else {
+        tokens.logout();
       }
     }).catch((error) => {
       console.log(error);
@@ -116,8 +126,6 @@ const MainScreen = (props) => {
                     setVisible(false);
                   } else {
                     deleteAccount();
-                    tokens.logout();
-                    setVisible(false);
                   }
                 }}>
                 <View style={styles.negativeButton}>

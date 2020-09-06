@@ -24,6 +24,7 @@ function SaveScreen({navigation}) {
   useEffect(() => {
     if (pressed) {
       saveRoute();
+      setPressed(false);
     }
   }, [tokens.accessToken]);
 
@@ -58,10 +59,12 @@ function SaveScreen({navigation}) {
     }).then((response) => {
       if (response.ok) {
         Alert.alert("Success");
+        setPressed(false);
         navigation.goBack();
       } else {
         if (response.status === 409) {
           Alert.alert("You cannot have two routes with the same name!");
+          setPressed(false);
         } else if (response.status === 401) {
           tokens.refreshTokens();
         }

@@ -1,4 +1,4 @@
-import React, {useState, useContext, useRef} from "react";
+import React, {useState, useContext, useRef, useEffect} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, Alert, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -11,8 +11,16 @@ const EditUsername = ({route, navigation}) => {
   const [username, updateUsername] = useState(route.params.username);
   const [name, updateName] = useState(route.params.name);
   const [valid, updateValid] = useState(true);
+  const [pressed, setPressed] = useState(false);
   const tokens = useContext(AuthContext);
   const user = useContext(UserContext);
+
+  useEffect(() => {
+    if (pressed) {
+      setPressed(false);
+      updateBoth();
+    }
+  }, [tokens.accessToken])
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
@@ -35,6 +43,7 @@ const EditUsername = ({route, navigation}) => {
 
   const link = links.editUser;
   const updateBoth = () => {
+    setPressed(true);
     if (username === "" || name === "") {
       updateValid(false);
       shake();
@@ -64,8 +73,7 @@ const EditUsername = ({route, navigation}) => {
         user.updateUser();
         navigation.goBack();
       } else if (response.status === 401) {
-        tokens.refreshTokens;
-        Alert.alert("Error occured while saving new details! Please try again!");
+        tokens.refreshTokens();
       } else {
         Alert.alert("Unexpected Error " + response.status);
       }
@@ -107,6 +115,7 @@ const EditUsername = ({route, navigation}) => {
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
           onPress={() => updateBoth()}
+          disabled={pressed}
         >
           <View style={styles.loginButton}>
             <Text style={styles.buttonText}>CHANGE</Text>
@@ -130,7 +139,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderColor: "#67cfb3",
+    borderColor: "#8d67cf",
     margin: 5,
     marginLeft: 20,
     marginRight: 20,

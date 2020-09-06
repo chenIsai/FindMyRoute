@@ -1,4 +1,4 @@
-import React, {useState, useContext, useRef} from "react";
+import React, {useState, useContext, useRef, useEffect} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, Alert, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -11,7 +11,15 @@ const EditPassword = (props) => {
   const [errorText, updateErrorText] = useState("");
   const [icon, updateIcon] = useState("eye-off");
   const [valid, updateValid] = useState(true);
+  const [pressed, setPressed] = useState(false);
   const tokens = useContext(AuthContext);
+
+  useEffect(() => {
+    if (pressed) {
+      setPressed(false);
+      updatePass();
+    }
+  }, [tokens.accessToken])
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
@@ -33,11 +41,13 @@ const EditPassword = (props) => {
   }
 
   const updatePass = () => {
+    setPressed(true);
     if (password === "") {
       updateErrorText("Cannot use an empty password!");
       updateValid(false);
       shake();
       fadeInAndOut();
+      setPressed(false);
       return;
     }
     if (password !== confirm) {
@@ -45,6 +55,7 @@ const EditPassword = (props) => {
       updateValid(false);
       shake();
       fadeInAndOut();
+      setPressed(false);
       return;
     }
     fetch(links.editPass, {
@@ -59,12 +70,13 @@ const EditPassword = (props) => {
     }).then((response) => {
       if (response.ok) {
         Alert.alert("Success!");
+        setPressed(false);
         props.navigation.goBack();
       } else if (response.status === 401) {
-        tokens.refreshTokens;
-        Alert.alert("Error occured while saving new details! Please try again!");
+        tokens.refreshTokens();
       } else {
         Alert.alert("Unexpected Error " + response.status);
+        setPressed(false);
       }
     }).catch(error => {
       console.log(error);
@@ -74,7 +86,7 @@ const EditPassword = (props) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={{fontSize: 24, paddingLeft: 20, color: "#8d67cf"}}>Update Your password!</Text>
+        <Text style={{fontSize: 24, paddingLeft: 20, color: "#8d67cf"}}>Update Your Password!</Text>
       </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>{errorText}</Text>
@@ -113,6 +125,7 @@ const EditPassword = (props) => {
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("grey", true)}
           onPress={() => updatePass()}
+          disabled={pressed}
         >
           <View style={styles.loginButton}>
             <Text style={styles.buttonText}>UPDATE PASSWORD</Text>

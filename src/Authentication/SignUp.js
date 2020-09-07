@@ -101,7 +101,7 @@ const SignUp = (props) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.topText}>Sign Up</Text>
+        <Text style={styles.topText}>New to FindMyRoute?{"\n"}Sign Up Here</Text>
       </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>{errorText}</Text>
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     margin: 30,
+    marginBottom: 0,
     marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#67cfb3",

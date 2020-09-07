@@ -12,7 +12,7 @@ const Login = (props) => {
   const [icon, updateIcon] = useState("eye-off");
   const [status, updateStatus] = useState("");
   const [valid, updateValid] = useState(true);
-  
+
   const passwordInput = useRef(null);
   const netInfo = useNetInfo();
   const tokens = useContext(AuthContext);
@@ -79,7 +79,7 @@ const Login = (props) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.topText}>Login</Text>
+        <Text style={styles.topText}>Welcome back, {"\n"}Login to Continue</Text>
       </View>
       <Animated.View style={[{paddingLeft: 20, opacity: fadeAnimation}, {transform: [{translateX: shakeAnimation}]}]}>
         <Text style={{color: "#ED4337"}}>{username === "" ? "Username cannot be empty!":
@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     margin: 30,
+    marginBottom: 0,
     marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#67cfb3",

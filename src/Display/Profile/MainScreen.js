@@ -28,9 +28,11 @@ const MainScreen = (props) => {
 
   useEffect(() => {
     if (clearPressed) {
+      console.log("A");
       clearRoutes();
       setClear(false);
     } else if (deleteUser) {
+      console.log("C");
       deleteAccount();
     }
     if (tokens.accessToken !== "") {

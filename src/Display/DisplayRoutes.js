@@ -4,7 +4,6 @@ import {ScrollView, View, Text, TextInput,
         Alert, RefreshControl} from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/Ionicons";
-import {useNetInfo} from "@react-native-community/netinfo";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import {decode} from "@mapbox/polyline"
@@ -26,7 +25,6 @@ function DisplayRoutes(props) {
   const [editDescription, updateDescription] = useState("");
   const [deleteName, setDelete] = useState("");
   const [refreshing, updateRefresh] = useState(false);
-  const netInfo = useNetInfo();
 
   const unit = useContext(UnitContext);
   const plan = useContext(PlanContext);
@@ -54,12 +52,6 @@ function DisplayRoutes(props) {
   }
 
   const getRoutes = () => {
-    const connection = netInfo.isConnected;
-    if (!connection) {
-      Alert.alert("No internet connection!");
-      updateRoutes([]);
-      return;
-    }
     fetch(links.routes, {
       method: "GET",
       headers: {
@@ -71,20 +63,18 @@ function DisplayRoutes(props) {
       }
       if (response.status === 401) {
         tokens.refreshTokens();
+      } else {
+        Alert.alert("No connection!");
       }
     }).then((data) => {
       updateRoutes(data);
     }).catch((error) => {
-      console.log(error);
+      Alert.alert("Could not communicate with server!");
+      updateRoutes([])
     });
   }
 
   const deleteRoute = (routeName) => {
-    const connection = netInfo.isConnected;
-    if (!connection) {
-      Alert.alert("No internet connection!");
-      return;
-    }
     fetch(links.routes, {
       method: "DELETE",
       body: JSON.stringify({
@@ -102,7 +92,7 @@ function DisplayRoutes(props) {
         getRoutes();
       }
     }).catch((error) => {
-      console.log(error);
+      Alert.alert("Could not communicate with server!")
     });
   }
 
@@ -114,11 +104,6 @@ function DisplayRoutes(props) {
   }
 
   const editRoute = (routeName, newName, description) => {
-    const connection = netInfo.isConnected;
-    if (!connection) {
-      Alert.alert("No internet connection!");
-      return;
-    }
     fetch(links.editRoute, {
       method: "POST",
       body: JSON.stringify({
@@ -138,7 +123,7 @@ function DisplayRoutes(props) {
         Alert.alert("Error " + response.status);
       }
     }).catch((error) => {
-      console.log(error);
+      Alert.alert("Could not communicate with server!")
     });
     setVisible(false);
   }

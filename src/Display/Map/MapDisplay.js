@@ -128,11 +128,6 @@ const MapDisplay = (props) => {
   }
 
   const getDirections = async () => {
-    const connection = netInfo.isConnected;
-    if (!connection) {
-      Alert.alert("No internet connection!");
-      return;
-    }
     if (calculated >= plan.markers.length-1) {
       return;
     }
@@ -153,7 +148,7 @@ const MapDisplay = (props) => {
       plan.updatePlan(newPlan);
     }
     catch(error) {
-      console.log(error);
+      Alert.alert("Could not communicate with server!");
     }
   }
 

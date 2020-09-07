@@ -1,5 +1,5 @@
-import React, {useContext, useState, useRef} from "react";
-import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated} from "react-native";
+import React, {useContext, useState, useRef, useEffect} from "react";
+import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated, PermissionsAndroid} from "react-native";
 import MapView, {Polyline} from "react-native-maps";
 
 import UnitContext from "../../Context/UnitContext";
@@ -11,6 +11,7 @@ import Swiper from "./Swiper";
 import Header from "../Components/Header";
 
 const RunView = (props) => {
+  const [locationPermission, setPermission] = useState(false);
   const run = useContext(RunContext);
   const [marginBottom, updateMargin] = useState(1);
   const [initialRegion, updateRegion] = useState(null);
@@ -34,17 +35,46 @@ const RunView = (props) => {
     );
   };
 
+  useEffect(() => {
+    if (!locationPermission) {
+      requestLocationPermission();
+    }
+  }, []);
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setPermission(true);
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  if (!locationPermission) {
+    return (
+      <View>
+        <Text>Location Permission Required</Text>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <Header navigation={props.navigation} header={"Track Your Run"}/>
       <MapView
         style={{flex: .8, marginBottom}}
         ref={mapRef}
-        showsUserLocation={true}
-        followsUserLocation={true}
+        showsUserLocation={locationPermission}
+        followsUserLocation={locationPermission}
         zoomControlEnabled={true}
         onMapReady={() => {
-          toUserPosition();
+          if (locationPermission) {
+            toUserPosition();
+          }
           updateMargin(0);
         }}
         >

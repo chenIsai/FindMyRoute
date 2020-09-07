@@ -6,7 +6,8 @@ import {
   Alert,
   Animated,
   TouchableWithoutFeedback,
-  Text
+  Text,
+  PermissionsAndroid
 } from "react-native";
 import Picker from "@react-native-community/picker";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -32,6 +33,22 @@ const MapDisplay = (props) => {
   const [calculated, updateCalculated] = useState(plan.route.length);
   const [totalMarkers, updateTotalMarkers] = useState(plan.markers.length);
   const [trayVisible, setVisible] = useState(true);
+  const [locationPermission, setPermission] = useState(false);
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setPermission(true);
+        findPosition();
+        hideButtons();
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const slideSave = useRef(new Animated.Value(0)).current;
   const fadeSave = useRef(new Animated.Value(1)).current;
@@ -153,13 +170,22 @@ const MapDisplay = (props) => {
   }
 
   useEffect(() => {
-    findPosition(true);
-    hideButtons();
+    if (!locationPermission) {
+      requestLocationPermission();
+    }
   }, [])
 
   useEffect(() => {
     getDirections();
   }, [plan.markers])
+
+  if (!locationPermission) {
+    return (
+      <View>
+        <Text>Location Permission Required</Text>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>

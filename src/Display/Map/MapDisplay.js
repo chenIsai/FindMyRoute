@@ -181,8 +181,13 @@ const MapDisplay = (props) => {
 
   if (!locationPermission) {
     return (
-      <View>
-        <Text>Location Permission Required</Text>
+      <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <Text style={{fontSize: 18}}>Location Permission Required</Text>
+          <Button
+            onPress={() => requestLocationPermission()}
+            title={"Get Permission!"}/>
+        </View>
       </View>
     )
   }

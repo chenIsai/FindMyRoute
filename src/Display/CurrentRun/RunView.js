@@ -1,5 +1,5 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
-import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated, PermissionsAndroid} from "react-native";
+import {View, Text, TouchableWithoutFeedback, StyleSheet, Alert, Animated, PermissionsAndroid, Button} from "react-native";
 import MapView, {Polyline} from "react-native-maps";
 
 import UnitContext from "../../Context/UnitContext";
@@ -56,8 +56,14 @@ const RunView = (props) => {
 
   if (!locationPermission) {
     return (
-      <View>
-        <Text>Location Permission Required</Text>
+      <View style={{flex: 1}}>
+        <Header navigation={props.navigation} header={"Track Your Run"}/>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <Text style={{fontSize: 18}}>Location Permission Required</Text>
+          <Button
+            onPress={() => requestLocationPermission()}
+            title={"Get Permission!"}/>
+        </View>
       </View>
     )
   }

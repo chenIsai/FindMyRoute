@@ -1,6 +1,10 @@
 {
   "name": "FindMyRoute",
-  "version": "0.0.1",
+  "description" : "A running planner and tracker",
+  "homepage" : "https://chenisai.github.io/findmyroute-web/#/findmyroute-web",
+  "author" : "Isaiah Chen",
+  "version": "1.0.0",
+  "repository" : "https://github.com/chenIsai/FindMyRoute/",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

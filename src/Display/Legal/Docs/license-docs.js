@@ -35,6 +35,12 @@ const licenses = {
         "licenseUrl": "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
         "parents": "FindMyRoute"
     },
+    "@react-navigation/material-top-tabs@5.2.16": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-navigation/react-navigation",
+        "licenseUrl": "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
+        "parents": "FindMyRoute"
+    },
     "@react-navigation/native@5.7.1": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -53,22 +59,16 @@ const licenses = {
         "licenseUrl": "https://github.com/tomas/dialog/raw/master/README.md",
         "parents": "FindMyRoute"
     },
-    "dotenv@8.2.0": {
-        "licenses": "BSD-2-Clause",
-        "repository": "https://github.com/motdotla/dotenv",
-        "licenseUrl": "https://github.com/motdotla/dotenv/raw/master/LICENSE",
-        "parents": "FindMyRoute"
-    },
     "geolib@3.3.1": {
         "licenses": "MIT",
         "repository": "https://github.com/manuelbieh/geolib",
         "licenseUrl": "https://github.com/manuelbieh/geolib/raw/master/LICENSE",
         "parents": "FindMyRoute"
     },
-    "react-native-calendars@1.300.0": {
+    "react-native-collapsible@1.5.3": {
         "licenses": "MIT",
-        "repository": "https://github.com/wix/react-native-calendars",
-        "licenseUrl": "https://github.com/wix/react-native-calendars/raw/master/LICENSE",
+        "repository": "git+https://oblador@github.com/oblador/react-native-collapsible",
+        "licenseUrl": "git+https://oblador@github.com/oblador/react-native-collapsible/raw/master/LICENSE",
         "parents": "FindMyRoute"
     },
     "react-native-dialog@5.6.0": {
@@ -117,6 +117,12 @@ const licenses = {
         "licenses": "MIT",
         "repository": "https://github.com/kmagiera/react-native-screens",
         "licenseUrl": "https://github.com/kmagiera/react-native-screens/raw/master/LICENSE",
+        "parents": "FindMyRoute"
+    },
+    "react-native-tab-view@2.15.1": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-tab-view",
+        "licenseUrl": "https://github.com/react-native-community/react-native-tab-view/raw/master/LICENSE.md",
         "parents": "FindMyRoute"
     },
     "react-native-vector-icons@7.0.0": {

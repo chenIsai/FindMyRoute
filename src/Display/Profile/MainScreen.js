@@ -10,14 +10,18 @@ import Icon from "react-native-vector-icons/Ionicons";
 import links from "../../Authentication/link";
 import Header from "../Components/Header";
 import Modal from "react-native-modal";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 const MainScreen = (props) => {
   const [modalVisible, setVisible] = useState(false);
   const [buttonID, updateID] = useState(0);
   const [clearPressed, setClear] = useState(false);
   const [deleteUser, setDelete] = useState(false);
+
   const tokens = useContext(AuthContext);
   const user = useContext(UserContext);
+  const netInfo = useNetInfo();
+
   const logoutText = "Are you sure you want to log out?";
   const clearText = "Are you sure you want to delete ALL routes?";
   const deleteText = "Are you sure you want to PERMANENTLY delete your account?";
@@ -40,6 +44,11 @@ const MainScreen = (props) => {
   }
 
   const logout = () => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      tokens.logout();
+      return;
+    }
     fetch(links.logout, {
       method: "DELETE",
       body: JSON.stringify({
@@ -55,6 +64,11 @@ const MainScreen = (props) => {
   }
 
   const deleteAccount = () => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.deleteAccount, {
       method: "DELETE",
       headers: {
@@ -76,6 +90,11 @@ const MainScreen = (props) => {
   }
 
   const clearRoutes = () => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.deleteRoutes, {
       method: "DELETE",
       headers: {

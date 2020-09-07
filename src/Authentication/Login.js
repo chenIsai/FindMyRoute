@@ -1,6 +1,7 @@
 import React, {useState, useContext, useRef} from "react";
-import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet} from "react-native";
+import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet, Alert} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import AuthContext from "../Context/AuthContext";
 import links from "./link";
@@ -11,7 +12,9 @@ const Login = (props) => {
   const [icon, updateIcon] = useState("eye-off");
   const [status, updateStatus] = useState("");
   const [valid, updateValid] = useState(true);
+  
   const passwordInput = useRef(null);
+  const netInfo = useNetInfo();
   const tokens = useContext(AuthContext);
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -39,6 +42,11 @@ const Login = (props) => {
       updateValid(false);
       shake();
       fadeInAndOut();
+      return;
+    }
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
       return;
     }
     fetch(link, {

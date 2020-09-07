@@ -4,6 +4,7 @@ import {ScrollView, View, Text, TextInput,
         Alert, RefreshControl} from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import {decode} from "@mapbox/polyline"
@@ -19,13 +20,13 @@ import links from "../Authentication/link";
 
 function DisplayRoutes(props) {
   const [savedRoutes, updateRoutes] = useState(null);
-  const [isLoading, updateLoading] = useState(true);
   const [modalVisible, setVisible] = useState(false);
   const [currentRoute, updateCurrent] = useState("");
   const [editName, updateName] = useState("");
   const [editDescription, updateDescription] = useState("");
   const [deleteName, setDelete] = useState("");
   const [refreshing, updateRefresh] = useState(false);
+  const netInfo = useNetInfo();
 
   const unit = useContext(UnitContext);
   const plan = useContext(PlanContext);
@@ -53,6 +54,12 @@ function DisplayRoutes(props) {
   }
 
   const getRoutes = () => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      updateRoutes([]);
+      return;
+    }
     fetch(links.routes, {
       method: "GET",
       headers: {
@@ -73,6 +80,11 @@ function DisplayRoutes(props) {
   }
 
   const deleteRoute = (routeName) => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.routes, {
       method: "DELETE",
       body: JSON.stringify({
@@ -102,6 +114,11 @@ function DisplayRoutes(props) {
   }
 
   const editRoute = (routeName, newName, description) => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.editRoute, {
       method: "POST",
       body: JSON.stringify({

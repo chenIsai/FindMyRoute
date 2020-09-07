@@ -7,6 +7,7 @@ import AuthContext from "../../Context/AuthContext";
 
 import AsyncStorage from "@react-native-community/async-storage";
 import {encode} from "@mapbox/polyline"
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import LiteMap from "../Components/LiteMap";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -20,6 +21,8 @@ function SaveScreen({navigation}) {
   const unit = useContext(UnitContext);
   const plan = useContext(PlanContext);
   const tokens = useContext(AuthContext);
+
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (pressed) {
@@ -49,6 +52,12 @@ function SaveScreen({navigation}) {
       markers: encodeMarkers(plan.markers),
       route: route,
     });
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      setPressed(false);
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.savePlanned, {
       method: "POST",
       body: routeJSON,

@@ -1,6 +1,7 @@
 import React, {useState, useRef, useContext} from "react";
-import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet} from "react-native";
+import {View, Text, TouchableNativeFeedback, TextInput, Animated, StyleSheet, Alert} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import AuthContext from "../Context/AuthContext";
 import links from "./link";
@@ -15,10 +16,12 @@ const SignUp = (props) => {
   const [status, updateStatus] = useState("");
   const [errorText, updateError] = useState("abc");
   const [valid, updateValid] = useState(true);
+
   const usernameInput = useRef(null);
   const passwordInput = useRef(null);
   const confirmInput = useRef(null);
 
+  const netInfo = useNetInfo();
 
   const tokens = useContext(AuthContext);
 
@@ -55,6 +58,11 @@ const SignUp = (props) => {
       updateValid(false);
       shake();
       fadeInAndOut();
+      return;
+    }
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
       return;
     }
     fetch(link, {
@@ -110,6 +118,7 @@ const SignUp = (props) => {
           style={{flex: 1}}
           placeholder={"Your name"}
           onSubmitEditing={() => {usernameInput.current.focus()}}
+          blurOnSubmit={false}
           onChangeText={(text) => updateGivenName(text)}/>
       </View>
       <View style={styles.inputViews}>
@@ -123,6 +132,7 @@ const SignUp = (props) => {
         <TextInput
           ref={usernameInput}
           onSubmitEditing={() => {passwordInput.current.focus()}}
+          blurOnSubmit={false}
           style={{flex: 1}}
           placeholder={"Username"}
           onChangeText={(text) => updateUsername(text)}/>
@@ -138,6 +148,7 @@ const SignUp = (props) => {
         <TextInput
           ref={passwordInput}
           onSubmitEditing={() => {confirmInput.current.focus()}}
+          blurOnSubmit={false}
           style={{flex: 1}}
           secureTextEntry={icon !== "eye"}
           placeholder={"Password"}

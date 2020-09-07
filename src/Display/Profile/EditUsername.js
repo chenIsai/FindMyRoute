@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import UserContext from "../../Context/UserContext";
 import AuthContext from "../../Context/AuthContext";
 import links from "../../Authentication/link";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 const EditUsername = ({route, navigation}) => {
   console
@@ -14,6 +15,7 @@ const EditUsername = ({route, navigation}) => {
   const [pressed, setPressed] = useState(false);
   const tokens = useContext(AuthContext);
   const user = useContext(UserContext);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (pressed) {
@@ -55,6 +57,12 @@ const EditUsername = ({route, navigation}) => {
     }
     if (username === route.params.username && name === route.params.name) {
       navigation.goBack();
+      return;
+    }
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      setPressed(false);
       return;
     }
     fetch(links.editUser, {

@@ -20,6 +20,7 @@ import PlanContext from "../../Context/PlanContext";
 import MapView, {Marker, Polyline} from "react-native-maps";
 import Geolocation from "react-native-geolocation-service";
 import {decode} from "@mapbox/polyline";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 const apiKey = links.key;
 
@@ -34,6 +35,7 @@ const MapDisplay = (props) => {
   const [totalMarkers, updateTotalMarkers] = useState(plan.markers.length);
   const [trayVisible, setVisible] = useState(true);
   const [locationPermission, setPermission] = useState(false);
+  const netInfo = useNetInfo();
 
   const requestLocationPermission = async () => {
     try {
@@ -126,6 +128,11 @@ const MapDisplay = (props) => {
   }
 
   const getDirections = async () => {
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
+      return;
+    }
     if (calculated >= plan.markers.length-1) {
       return;
     }

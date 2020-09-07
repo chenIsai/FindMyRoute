@@ -9,11 +9,13 @@ import {encode} from "@mapbox/polyline";
 import LiteMap from "../Components/LiteMap";
 import Icon from "react-native-vector-icons/Ionicons";
 import links from "../../Authentication/link";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 const SaveScreen = ({navigation}) => {
   const [name, updateName] = useState("");
   const [description, updateDescription] = useState("");
   const [pressed, setPressed] = useState(false);
+  const netInfo = useNetInfo();
 
   const run = useContext(RunContext);
   const unit = useContext(UnitContext);
@@ -45,6 +47,12 @@ const SaveScreen = ({navigation}) => {
       route: encodeRun(),
     });
     setPressed(true)
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      setPressed(false);
+      Alert.alert("No internet connection!");
+      return;
+    }
     fetch(links.saveRan, {
       method: "POST",
       body: routeJSON,

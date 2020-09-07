@@ -1,6 +1,7 @@
 import React, {useState, useContext, useRef, useEffect} from "react";
 import {View, Text, TouchableNativeFeedback, TextInput, Animated, Alert, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import AuthContext from "../../Context/AuthContext";
 import links from "../../Authentication/link";
@@ -13,6 +14,7 @@ const EditPassword = (props) => {
   const [valid, updateValid] = useState(true);
   const [pressed, setPressed] = useState(false);
   const tokens = useContext(AuthContext);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (pressed) {
@@ -55,6 +57,12 @@ const EditPassword = (props) => {
       updateValid(false);
       shake();
       fadeInAndOut();
+      setPressed(false);
+      return;
+    }
+    const connection = netInfo.isConnected;
+    if (!connection) {
+      Alert.alert("No internet connection!");
       setPressed(false);
       return;
     }

@@ -8,8 +8,8 @@ const Stack = createStackNavigator();
 
 const ProfileStack = (props) => {
   return (
-    <Stack.Navigator screenOptions = {{headerShown: false}}>
-      <Stack.Screen name={"Profile"} component={MainScreen}/>
+    <Stack.Navigator screenOptions={{headerStyle: {backgroundColor: "#C6FADF"}}}>
+      <Stack.Screen name={"Profile"} component={MainScreen} options={{headerShown: false}}/>
       <Stack.Screen name={"EditNames"} component={EditUsername} />
       <Stack.Screen name={"EditPass"} component={EditPassword} />
     </Stack.Navigator>

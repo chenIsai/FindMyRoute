@@ -243,6 +243,7 @@ function DisplayRoutes(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#C6FADF"
   },
   headerTextView: {
     flex: 1,

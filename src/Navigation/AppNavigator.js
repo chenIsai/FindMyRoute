@@ -47,8 +47,8 @@ const Loading = (props) => {
     fadeOut();
   }
   return (
-    <Animated.View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#d3dae3", opacity: fadeAnimation}}>
-      <Image source={Images.logo300} />
+    <Animated.View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#C6FADF", opacity: fadeAnimation}}>
+      <Image source={Images.logo} />
     </Animated.View>
   )
 }

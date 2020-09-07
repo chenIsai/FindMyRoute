@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#67cfb3",
   },
   loadingText: {
-    fontSize: 36,
+    fontSize: 24,
     fontWeight: "bold",
     color: "white",
   }

@@ -138,7 +138,7 @@ function DisplayRoutes(props) {
       deleteRoute(deleteName);
       getRoutes();
       setDelete("");
-    } else {
+    } else if (tokens.accessToken !== ""){
       getRoutes();
     }
   }, [tokens.accessToken])

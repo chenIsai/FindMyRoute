@@ -29,7 +29,9 @@ const MainScreen = (props) => {
     } else if (deleteUser) {
       deleteAccount();
     }
-    user.updateUser();
+    if (tokens.accessToken !== "") {
+      user.updateUser();
+    }
   }, [tokens.accessToken]);
 
   const openModal = (id) => {
@@ -62,7 +64,9 @@ const MainScreen = (props) => {
     }).then((response) => {
       if (response.status === 401) {
         tokens.refreshTokens();
-        setDelete(true);
+        if (!deleteUser) {
+          setDelete(true);
+        }
       } else {
         tokens.logout();
       }

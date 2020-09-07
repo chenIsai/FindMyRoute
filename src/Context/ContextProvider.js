@@ -125,7 +125,7 @@ export default class ContextProvider extends React.Component {
     }
 
     this.refreshTokens = () => {
-      if (this.state.tokens.refreshToken !== "" && this.state.tokens.refreshToken) {
+      if (this.state.tokens.refreshToken && this.state.tokens.refreshToken !== "") {
         fetch(links.refresh, {
           method: "POST",
           body: JSON.stringify({token: this.state.tokens.refreshToken}),
@@ -236,8 +236,8 @@ export default class ContextProvider extends React.Component {
 
       unit.value = items[0][1] !== null ? items[0][1] : "km";
       tokens.refreshToken = items[1][1] !== null ? items[1][1] : "";
-      this.setState({unit, tokens, isLoading: false});
-    }).then(this.refreshTokens());
+      this.setState({unit, tokens, isLoading: false}, () => this.refreshTokens());
+    });
   }
 
   render() {

@@ -1,5 +1,5 @@
 import React, {useState, useContext, useRef} from "react";
-import {Animated, Image} from "react-native";
+import {View, Image} from "react-native";
 
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {NavigationContainer} from "@react-navigation/native";
@@ -20,36 +20,26 @@ const AppNavigator = (props) => {
   const [animationFinished, updateStatus] = useState(false);
   const tokens = useContext(AuthContext);
 
-  if (props.isLoading || !animationFinished) {
-    return (
-      <Loading isLoading={props.isLoading} update={updateStatus}/>
-    )
-  }
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions = {{headerShown: false}}>
-      {!tokens.refreshToken ? (
-        <Stack.Screen name="Auth" component={AuthStack} />
-      ) : (
-        <Stack.Screen name="Main" component={MainApp} />
-      )}
+        {props.isLoading ? (
+          <Stack.Screen name="Loading" component={Loading} />
+         ) : (!tokens.refreshToken ? (
+          <Stack.Screen name="Auth" component={AuthStack} />
+        ) : (
+          <Stack.Screen name="Main" component={MainApp} />
+        ))}
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-const Loading = (props) => {
-  const fadeAnimation = useRef(new Animated.Value(1)).current;
-  const fadeOut = () => {
-    Animated.timing(fadeAnimation, {toValue: 0, duration: 1000, useNativeDriver: true}).start(() => props.update(true));
-  }
-  if (!props.isLoading) {
-    fadeOut();
-  }
+const Loading = () => {
   return (
-    <Animated.View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#C6FADF", opacity: fadeAnimation}}>
+    <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#C6FADF"}}>
       <Image source={Images.logo} />
-    </Animated.View>
+    </View>
   )
 }
 

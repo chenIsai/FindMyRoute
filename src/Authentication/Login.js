@@ -11,6 +11,7 @@ const Login = (props) => {
   const [icon, updateIcon] = useState("eye-off");
   const [status, updateStatus] = useState("");
   const [valid, updateValid] = useState(true);
+  const passwordInput = useRef(null);
   const tokens = useContext(AuthContext);
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -87,6 +88,8 @@ const Login = (props) => {
         <TextInput
           style={{flex: 1}}
           placeholder={"Username"}
+          onSubmitEditing={() => {passwordInput.current.focus()}}
+          blurOnSubmit={false}
           onChangeText={(text) => updateUsername(text)}/>
       </View>
       <View style={styles.inputViews}>
@@ -98,9 +101,11 @@ const Login = (props) => {
             />
         </View>
         <TextInput
+          ref={passwordInput}
           style={{flex: 1}}
           secureTextEntry={icon !== "eye"}
           placeholder={"Password"}
+          onSubmitEditing={() => {sendLogin()}}
           onChangeText={(text) => updatePassword(text)}/>
         <View style={{justifyContent: "center"}}>
           <Icon

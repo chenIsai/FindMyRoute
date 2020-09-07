@@ -15,6 +15,10 @@ const SignUp = (props) => {
   const [status, updateStatus] = useState("");
   const [errorText, updateError] = useState("abc");
   const [valid, updateValid] = useState(true);
+  const usernameInput = useRef(null);
+  const passwordInput = useRef(null);
+  const confirmInput = useRef(null);
+
 
   const tokens = useContext(AuthContext);
 
@@ -67,10 +71,17 @@ const SignUp = (props) => {
       if (response.ok) {
         return response.json();
       }
-      return resposne.status;
+      return response.status;
     }).then((data) => {
-      if (data.isInteger) {
-        updateStatus(data)
+      if (Number.isInteger(data)) {
+        if (data === 409) {
+          updateError("Username taken!");
+        } else {
+          updateError("Unknown Error");
+        }
+        updateValid(false);
+        shake();
+        fadeInAndOut();
       } else {
         tokens.setTokens({access: data.accessToken, refresh: data.refreshToken})
       }
@@ -98,6 +109,7 @@ const SignUp = (props) => {
         <TextInput
           style={{flex: 1}}
           placeholder={"Your name"}
+          onSubmitEditing={() => {usernameInput.current.focus()}}
           onChangeText={(text) => updateGivenName(text)}/>
       </View>
       <View style={styles.inputViews}>
@@ -109,6 +121,8 @@ const SignUp = (props) => {
           />
         </View>
         <TextInput
+          ref={usernameInput}
+          onSubmitEditing={() => {passwordInput.current.focus()}}
           style={{flex: 1}}
           placeholder={"Username"}
           onChangeText={(text) => updateUsername(text)}/>
@@ -122,6 +136,8 @@ const SignUp = (props) => {
           />
         </View>
         <TextInput
+          ref={passwordInput}
+          onSubmitEditing={() => {confirmInput.current.focus()}}
           style={{flex: 1}}
           secureTextEntry={icon !== "eye"}
           placeholder={"Password"}
@@ -150,6 +166,8 @@ const SignUp = (props) => {
         </View>
         <TextInput
           style={{flex: 1}}
+          ref={confirmInput}
+          onSubmitEditing={() => {sendRegister()}}
           secureTextEntry={true}
           placeholder={"Confirm Password"}
           onChangeText={(text) => updateConfirm(text)}/>

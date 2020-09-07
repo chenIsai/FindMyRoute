@@ -135,6 +135,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+      release {
+        if (project.hasProperty('FINDMYROUTE_UPLOAD_STORE_FILE')) {
+              storeFile file(FINDMYROUTE_UPLOAD_STORE_FILE)
+              storePassword FINDMYROUTE_UPLOAD_STORE_PASSWORD
+              keyAlias FINDMYROUTE_UPLOAD_KEY_ALIAS
+              keyPassword FINDMYROUTE_UPLOAD_KEY_PASSWORD
+        }
+      }
+    }
     splits {
         abi {
             reset()
@@ -161,6 +171,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 

@@ -12,10 +12,16 @@ Here's some of the things you can do with FindMyRoute:
 
 Get the app and start tracking your runs today!
 
+## Technology
+Built using [React Native](https://reactnative.dev/)
 
+Developed in [JavaScript](https://www.javascript.com/)
 
 ## Author
 Isaiah Chen
+
+## License
+FindMyRoute is distributed under the [MIT License](https://github.com/chenIsai/FindMyRoute/blob/master/LICENSE)
 
 ### Acknowledgements
 Icon made by [Kevin Pierce](https://github.com/enigma-01)

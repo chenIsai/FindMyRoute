@@ -30,6 +30,7 @@ function DisplayRoutes(props) {
   const plan = useContext(PlanContext);
   const tokens = useContext(AuthContext);
 
+  // Decode route to coordinates
   const decodeRoute = (route) => {
     const points = decode(route);
     const directions = points.map(point => {
@@ -41,6 +42,7 @@ function DisplayRoutes(props) {
     return directions;
   }
 
+  // Decode markers string to coordinates
   const decodeMarkers = (markers) => {
     const points = decode(markers);
     return points.map((point) => {
@@ -74,6 +76,7 @@ function DisplayRoutes(props) {
     });
   }
 
+  // Fetch request for deleting routes
   const deleteRoute = (routeName) => {
     fetch(links.routes, {
       method: "DELETE",
@@ -103,6 +106,7 @@ function DisplayRoutes(props) {
     setVisible(true);
   }
 
+  // Fetch request for editing routes
   const editRoute = (routeName, newName, description) => {
     fetch(links.editRoute, {
       method: "POST",

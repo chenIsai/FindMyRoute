@@ -24,6 +24,7 @@ import {useNetInfo} from "@react-native-community/netinfo";
 
 const apiKey = links.key;
 
+// Map display for planning routes
 const MapDisplay = (props) => {
   const unit = useContext(UnitContext);
   const plan = useContext(PlanContext);
@@ -37,6 +38,7 @@ const MapDisplay = (props) => {
   const [locationPermission, setPermission] = useState(false);
   const netInfo = useNetInfo();
 
+  // Check location permission
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -52,12 +54,14 @@ const MapDisplay = (props) => {
     }
   }
 
+  // Animation values
   const slideSave = useRef(new Animated.Value(0)).current;
   const fadeSave = useRef(new Animated.Value(1)).current;
   const slideDelete = useRef(new Animated.Value(0)).current;
   const fadeDelete = useRef(new Animated.Value(1)).current;
   const TouchableAnimated = Animated.createAnimatedComponent(TouchableWithoutFeedback);
 
+  // Animation functions
   const slideButton = (button, value, duration) => {
     Animated.timing(button, {toValue: value, duration, useNativeDriver: true}).start();
   }
@@ -82,7 +86,8 @@ const MapDisplay = (props) => {
     setVisible(true);
   }
 
-  const findPosition = (animate) => {
+  // Centers map around user
+  const findPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
         var lat = position.coords["latitude"];
@@ -94,9 +99,7 @@ const MapDisplay = (props) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         };
-        if (animate) {
-          mapRef.current.animateToRegion(newRegion);
-        }
+        mapRef.current.animateToRegion(newRegion);
       },
       error => {
         Alert.alert(error.message);
@@ -106,10 +109,12 @@ const MapDisplay = (props) => {
     );
   };
 
+  // Have to update margin as workaround for recenter position button to show
   const _onMapReady = () => {
     updateMargin(0);
   }
 
+  // Places markers on map
   const onLongPress = (e) => {
     if (totalMarkers <= 9) {
       updateTotalMarkers(totalMarkers+1);
@@ -121,12 +126,14 @@ const MapDisplay = (props) => {
     }
   }
 
+  // Convert to required JSON format
   const mergeCoords = (startLoc, endLoc) => {
     const start = `${startLoc.latitude},${startLoc.longitude}`;
     const end = `${endLoc.latitude},${endLoc.longitude}`;
     return {start, end};
   }
 
+  // Fetch request to get directions for two markers
   const getDirections = async () => {
     if (calculated >= plan.markers.length-1) {
       return;
@@ -152,6 +159,7 @@ const MapDisplay = (props) => {
     }
   }
 
+  // Converts response to usable array
   const decodeResponse = (response) => {
     const points = decode(response.routes[0].overview_polyline.points);
     const decoded = points.map(point => {
@@ -165,22 +173,26 @@ const MapDisplay = (props) => {
     return {directions: newDirections, calculated: totalCalculated};
   }
 
+  // Delete planned route
   const clearPlan = () => {
     updateCalculated(0);
     updateTotalMarkers(0);
     plan.clearPlan();
   }
 
+  // Location request on initial render
   useEffect(() => {
     if (!locationPermission) {
       requestLocationPermission();
     }
   }, [])
 
+  // Calls get directions as side-effect of markers updating
   useEffect(() => {
     getDirections();
   }, [plan.markers])
 
+  // Conditional render if not given location permission
   if (!locationPermission) {
     return (
       <View style={{flex: 1}}>

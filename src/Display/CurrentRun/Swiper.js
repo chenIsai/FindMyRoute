@@ -7,6 +7,7 @@ import Splits from "./Splits";
 
 const Tab = createMaterialTopTabNavigator();
 
+// Tab navigator for swiping between run control and split information
 const Swiper = ({navigation}) => {
   return (
     <Tab.Navigator>

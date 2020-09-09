@@ -28,6 +28,7 @@ const SignUp = (props) => {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
+  // Displays shake animation and re-enables button after animation
   const shake = () => {
     Animated.sequence([
       Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
@@ -45,6 +46,7 @@ const SignUp = (props) => {
   }
 
   const link = links.signUp;
+  // Sends POST request to REST api
   const sendRegister = () => {
     var error = false;
     if (username === "" || password === "" || givenName === "") {
@@ -60,6 +62,7 @@ const SignUp = (props) => {
       fadeInAndOut();
       return;
     }
+    // Checks for connection before fetch request
     const connection = netInfo.isConnected;
     if (!connection) {
       Alert.alert("No internet connection!");

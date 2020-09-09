@@ -17,6 +17,7 @@ const EditUsername = ({route, navigation}) => {
   const user = useContext(UserContext);
   const netInfo = useNetInfo();
 
+  // Attempt to fetch if tokens update
   useEffect(() => {
     if (pressed) {
       setPressed(false);
@@ -27,6 +28,7 @@ const EditUsername = ({route, navigation}) => {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
+  // Animation functions
   const shake = () => {
     Animated.sequence([
       Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
@@ -43,6 +45,7 @@ const EditUsername = ({route, navigation}) => {
     ]).start();
   }
 
+  // Send POST request if valid input
   const link = links.editUser;
   const updateBoth = () => {
     setPressed(true);
@@ -59,6 +62,7 @@ const EditUsername = ({route, navigation}) => {
       navigation.goBack();
       return;
     }
+    // Check for connection before sending request
     const connection = netInfo.isConnected;
     if (!connection) {
       Alert.alert("No internet connection!");

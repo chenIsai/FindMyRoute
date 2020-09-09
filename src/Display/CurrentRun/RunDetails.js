@@ -12,6 +12,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import links from "../../Authentication/link";
 import {encode} from "@mapbox/polyline"
 
+// Displays and tracks user location and time
 const RunDetails = ({navigation}) => {
   const run = useContext(RunContext);
   const unit = useContext(UnitContext);
@@ -25,18 +26,21 @@ const RunDetails = ({navigation}) => {
   const [buttonState, updateButton] = useState(0);
   const timerRef = useRef();
 
+  // Cycle between three possible button displays
   const changeButton = () => {
     const nextButton = (buttonState + 1) % 3;
     updateButton(nextButton);
   }
 
   // EFFECTS
+  // Update coordinate array if running
   useEffect(() => {
     if (run.isRunning) {
       run.updateRunDirections(runCoordinates);
     }
   }, [runCoordinates]);
 
+  // Calculates change in position and decides whether or not to include point
   useEffect(() => {
     if (lastUsedPosition) {
       const distanceBetween = getPreciseDistance(lastUsedPosition, currentPos, 0.01);
@@ -52,6 +56,7 @@ const RunDetails = ({navigation}) => {
     }
   }, [currentPos])
 
+  // Hides button tray on initial render
   useEffect(() => {
     hideButtonTray();
   }, []);
@@ -173,6 +178,7 @@ const RunDetails = ({navigation}) => {
     }
   }
 
+  // Conversion from m to desired unit
   const showDistance = unit.value === "km" ? Math.round((run.distance/1000 + Number.EPSILON) * 1000)/1000  : Math.round((run.distance/1609 + Number.EPSILON) * 100)/100;
 
   return (

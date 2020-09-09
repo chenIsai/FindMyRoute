@@ -2,6 +2,7 @@ import React from "react";
 import {View, Text, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
+// Displays Header with custom name
 const Header = (props) => {
   return (
     <View style={{padding: 15, flexDirection: "row", backgroundColor: "#A8E3B4"}}>

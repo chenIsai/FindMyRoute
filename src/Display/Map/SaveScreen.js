@@ -24,6 +24,7 @@ function SaveScreen({navigation}) {
 
   const netInfo = useNetInfo();
 
+  // Attempt to fetch if tokens update
   useEffect(() => {
     if (pressed) {
       saveRoute();
@@ -31,10 +32,12 @@ function SaveScreen({navigation}) {
     }
   }, [tokens.accessToken]);
 
+  // Converts markers into string to save memory
   const encodeMarkers = (markers) => {
     return encode(markers.map((item) => [item.latitude, item.longitude]));
   }
 
+  // Sending POST request
   const saveRoute = () => {
     if (!name) {
       Alert.alert("Please enter a name for your route!");

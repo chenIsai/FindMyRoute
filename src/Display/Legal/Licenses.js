@@ -4,6 +4,7 @@ import LicenseCard from "./LicenseCard";
 import Header from "../Components/Header";
 import licenses from "./Docs/license-docs";
 
+// Displays all licenses from license-docs
 const Licenses = (props) => {
   const data = Object.keys(licenses).map(key => ({name: key, ...licenses[key]}));
   return (

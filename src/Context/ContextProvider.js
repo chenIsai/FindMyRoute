@@ -15,6 +15,8 @@ export default class ContextProvider extends React.Component {
   constructor(props) {
     super(props);
 
+    // Functions for modifying state
+
     // Distance
     this.updateDistance = (distance) => {
       const plan = {...this.state.plan};
@@ -227,6 +229,7 @@ export default class ContextProvider extends React.Component {
     this._loadState();
   }
 
+  // Checks for existing tokens and unit preference
   _loadState = async () => {
     const keys = ["unit", "refresh"];
 

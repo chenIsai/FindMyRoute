@@ -4,7 +4,7 @@ import MapView, {Marker, Polyline} from "react-native-maps";
 import LiteMap from "./LiteMap";
 import Icon from "react-native-vector-icons/Ionicons";
 
-
+// Displays map and details about the saved route
 function LiteView(props) {
   let map = null;
   return(

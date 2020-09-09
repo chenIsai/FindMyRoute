@@ -20,6 +20,7 @@ const Login = (props) => {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
+  // Displays shake animation and re-enables button after animation
   const shake = () => {
     Animated.sequence([
       Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
@@ -29,6 +30,7 @@ const Login = (props) => {
     ]).start(() => updateValid(true));
   }
 
+  // Fades error text in and out
   const fadeInAndOut = () => {
     Animated.sequence([
       Animated.timing(fadeAnimation, {toValue: 1, duration: 0, useNativeDriver: true}),
@@ -36,6 +38,7 @@ const Login = (props) => {
     ]).start();
   }
 
+  // Sends POST request to REST api
   const link = links.login;
   const sendLogin = () => {
     if (username === "" || password === "") {
@@ -44,6 +47,7 @@ const Login = (props) => {
       fadeInAndOut();
       return;
     }
+    // Checks for connection before fetch request
     const connection = netInfo.isConnected;
     if (!connection) {
       Alert.alert("No internet connection!");

@@ -16,6 +16,7 @@ const EditPassword = (props) => {
   const tokens = useContext(AuthContext);
   const netInfo = useNetInfo();
 
+  // Attempt fetch if tokens update
   useEffect(() => {
     if (pressed) {
       setPressed(false);
@@ -26,6 +27,7 @@ const EditPassword = (props) => {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
+  // Animation functions
   const shake = () => {
     Animated.sequence([
       Animated.timing(shakeAnimation, {toValue: 5, duration: 100, useNativeDriver: true}),
@@ -42,6 +44,7 @@ const EditPassword = (props) => {
     ]).start();
   }
 
+  // MAke POST request if valid input
   const updatePass = () => {
     setPressed(true);
     if (password === "") {
@@ -60,6 +63,7 @@ const EditPassword = (props) => {
       setPressed(false);
       return;
     }
+    // Check for connection before sending request
     const connection = netInfo.isConnected;
     if (!connection) {
       Alert.alert("No internet connection!");

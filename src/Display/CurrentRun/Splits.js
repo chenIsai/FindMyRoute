@@ -5,6 +5,7 @@ import SplitsContext from "../../Context/SplitsContext";
 
 import Collapsible from "react-native-collapsible";
 
+// Displays information on how long user took to run 1km
 const Splits = () => {
   const [isCollapsed, setCollapsed] = useState(true);
   const splits = useContext(SplitsContext);

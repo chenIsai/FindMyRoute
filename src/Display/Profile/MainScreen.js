@@ -169,6 +169,7 @@ const MainScreen = (props) => {
   )
 }
 
+// Display welcome message
 const Profile = () => {
   const user = useContext(UserContext);
 
@@ -182,6 +183,7 @@ const Profile = () => {
   )
 }
 
+// Displays tracking stats
 const Details = () => {
   const unit = useContext(UnitContext);
   const user = useContext(UserContext);
@@ -200,6 +202,7 @@ const Details = () => {
   )
 }
 
+// Renders pressable options
 const Options = (props) => {
   return (
     <View style={styles.optionsView}>
@@ -216,6 +219,7 @@ const Options = (props) => {
   )
 }
 
+// Renders option depending on name
 const OptionsRow = (props) => {
   const user = useContext(UserContext)
   const callbacks = {
@@ -256,6 +260,7 @@ const OptionsRow = (props) => {
   )
 }
 
+// Logout option
 const Logout = (props) => {
   return (
     <TouchableNativeFeedback onPress={() => props.showModal(1)}>
@@ -266,6 +271,7 @@ const Logout = (props) => {
   )
 }
 
+// Delete account option
 const Delete = (props) => {
   return (
     <TouchableNativeFeedback onPress={() => props.showModal(3)}>
@@ -276,6 +282,7 @@ const Delete = (props) => {
   )
 }
 
+// Select preferred unit
 const UnitPicker = () => {
   const unit = useContext(UnitContext);
   return (

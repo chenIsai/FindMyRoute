@@ -1,6 +1,7 @@
 import React from "react";
 import {View, Text, TouchableOpacity, StyleSheet, Image, Linking} from "react-native";
 
+// Pressable card which redirects to license url
 const LicenseCard = (props) => {
   var name, version;
   const loadLink = () => {

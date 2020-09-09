@@ -16,6 +16,8 @@ const RunView = (props) => {
   const [marginBottom, updateMargin] = useState(1);
   const [initialRegion, updateRegion] = useState(null);
   let mapRef = useRef(null);
+
+  // Centers map around user position
   const toUserPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
@@ -35,12 +37,14 @@ const RunView = (props) => {
     );
   };
 
+  // Check for geolocation permission
   useEffect(() => {
     if (!locationPermission) {
       requestLocationPermission();
     }
   }, []);
 
+  // Make permission request
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -54,6 +58,7 @@ const RunView = (props) => {
     }
   }
 
+  // Does not render map if no permission
   if (!locationPermission) {
     return (
       <View style={{flex: 1}}>

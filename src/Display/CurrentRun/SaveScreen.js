@@ -21,6 +21,7 @@ const SaveScreen = ({navigation}) => {
   const unit = useContext(UnitContext);
   const tokens = useContext(AuthContext);
 
+  // Converts array to encoded string
   const encodeRun = () => {
     const pointArray = run.directions.map((point) => {
       return [point.latitude, point.longitude];
@@ -28,6 +29,7 @@ const SaveScreen = ({navigation}) => {
     return encode(pointArray);
   }
 
+  // Tries to re-send fetch request after token refresh
   useEffect(() => {
     if (pressed) {
       saveRoute();
@@ -35,6 +37,7 @@ const SaveScreen = ({navigation}) => {
     }
   }, [tokens.accessToken]);
 
+  // Make POST request
   const saveRoute = () => {
     if (!name) {
       Alert.alert("Route must have a name!");
